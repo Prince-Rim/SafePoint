@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint | Weather</title>
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/weather.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" width="40" height="50" class="logo" alt="SafePoint Logo">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+        <nav class="navbar">
+            <a href="dashboard.html" class="dashboard-link" id="dashboardLink" style="display: none;">Dashboard</a>
+
+            <a href="index.html">Map</a>
+            <a href="contact.html">Discover</a>
+            <a href="mypost.html">My Reports</a>
+            <a href="weather.html" class="active">Weather</a>
+            <div class="user-dropdown" id="userDropdown">
+                <button class="user-btn" id="userBtn">Guest ▾</button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <div class="user-info-display" id="profileDisplayButton">
+                        <p class="user-display-name" id="dropdownUsername">Username</p>
+                        <p class="user-email" id="dropdownEmail">email@example.com</p>
+                        <p class="user-role" id="dropdownRole">Role</p>
+                    </div>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <main>
+        <section class="weather-section">
+            <div class="weather-container">
+                <h2>Current Live Weather</h2>
+                <p class="subtitle">Stay updated with the current weather conditions.</p>
+
+                <div class="weather-card" id="weatherCard">
+                    <div class="weather-header">
+                        <span class="material-icons weather-icon" id="weatherIcon">wb_sunny</span>
+                        <h3 id="city">Loading...</h3>
+                    </div>
+                    <p id="temperature">-- °C</p>
+                    <p id="description">Fetching weather data...</p>
+                    <div class="weather-details">
+                        <p><b>Humidity:</b> <span id="humidity">--%</span></p>
+                        <p><b>Wind Speed:</b> <span id="wind">-- m/s</span></p>
+                        <p id="coords"><b>Location:</b> --</p>
+                    </div>
+                </div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://embed.windy.com/embed2.html?lat=14.5995&lon=120.9842&zoom=5&level=surface&overlay=rain&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=default&metricTemp=default"
+                        height="450" style="border:0; border-radius:12px; overflow:hidden;">
+                </iframe>
+            </div>
+        </section>
+    </main>
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <span class="close-modal" id="closeProfileModal">&times;</span>
+
+            <div class="profile-header-background"></div>
+            <div class="profile-avatar">
+                <span class="material-icons profile-icon">person_pin</span>
+            </div>
+
+            <div class="profile-info-section">
+
+                <div class="info-group">
+                    <p class="label">User ID</p>
+                    <div class="info-row">
+                        <p id="profileUserId" class="value"></p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Display Name</p>
+                    <div class="info-row">
+                        <p id="profileDisplayName" class="value">Username</p>
+                        <button class="edit-btn" data-field="displayName">Edit</button>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Email</p>
+                    <div class="info-row">
+                        <p id="profileEmail" class="value">***********@gmail.com</p>
+                        <button class="edit-btn" data-field="email">Edit</button>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Role</p>
+                    <div class="info-row">
+                        <p id="profileRole" class="value">User/Admin/Moderator</p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Password</p>
+                    <div class="info-row" id="passwordInfoRow">
+                        <p class="value" id="profilePasswordValue">**************</p>
+                        <button class="edit-btn" data-field="password">Edit</button>
+                    </div>
+
+                    <div id="passwordEditFields" style="display: none;">
+                        <input type="password" id="currentPasswordInput" placeholder="Current Password"
+                               class="profile-edit-input" autocomplete="off">
+                        <input type="password" id="newPasswordInput" placeholder="New Password"
+                               class="profile-edit-input" autocomplete="off">
+
+                        <div class="password-feedback">
+                            <span class="strength-msg" id="passwordStrengthMsg"></span>
+                            <p class="requirements-msg" id="passwordRequirementsMsg"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-action-bar" style="display: none;" id="profileActionBar">
+                <button class="cancel-btn" id="cancelProfileEdit">Cancel</button>
+                <button class="save-btn" id="saveProfileChanges">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 SafePoint. All rights reserved.</p>
+    </footer>
+    <script src="js/site.js"></script>
+    <script src="js/weather.js"></script>
+</body>
+
+</html>

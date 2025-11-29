@@ -1,0 +1,361 @@
+﻿const API_BASE_URL = 'https://localhost:44373/api';
+
+const profileDisplayButton = document.getElementById("profileDisplayButton");
+const profileModal = document.getElementById("profileModal");
+const closeProfileModal = document.getElementById("closeProfileModal");
+const profileActionBar = document.getElementById("profileActionBar");
+const saveProfileChangesBtn = document.getElementById("saveProfileChanges");
+const cancelProfileEditBtn = document.getElementById("cancelProfileEdit");
+const editButtons = document.querySelectorAll(".edit-btn");
+const passwordEditFields = document.getElementById('passwordEditFields');
+const currentPasswordInput = document.getElementById('currentPasswordInput');
+const newPasswordInput = document.getElementById('newPasswordInput');
+const passwordStrengthMsg = document.getElementById('passwordStrengthMsg');
+const passwordRequirementsMsg = document.getElementById('passwordRequirementsMsg');
+const passwordInfoRow = document.querySelector('.info-row button[data-field="password"]')?.closest('.info-row');
+
+function checkPasswordStrength(password) {
+    let score = 0;
+    if (password.length >= 10) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    if (score <= 2) return "weak";
+    if (score === 3 || score === 4) return "medium";
+    if (score === 5) return "strong";
+}
+
+function updatePasswordStrengthDisplay() {
+    const password = newPasswordInput.value;
+    const strengthMsg = passwordStrengthMsg;
+    const requirementsMsg = passwordRequirementsMsg;
+
+    if (!strengthMsg || !requirementsMsg) return;
+
+    if (password === "") {
+        strengthMsg.textContent = "";
+        strengthMsg.className = "strength-msg";
+        requirementsMsg.textContent = "";
+        return;
+    }
+
+    const strength = checkPasswordStrength(password);
+    strengthMsg.className = "strength-msg";
+
+    if (strength === "weak") {
+        strengthMsg.textContent = "Weak password";
+        strengthMsg.classList.add("strength-weak");
+    } else if (strength === "medium") {
+        strengthMsg.textContent = "Medium password";
+        strengthMsg.classList.add("strength-medium");
+    } else if (strength === "strong") {
+        strengthMsg.textContent = "Strong password";
+        strengthMsg.classList.add("strength-strong");
+    }
+    requirementsMsg.textContent = "Password must be at least 10 characters, include uppercase, lowercase, number, and special character.";
+}
+
+if (newPasswordInput) {
+    newPasswordInput.addEventListener("input", updatePasswordStrengthDisplay);
+}
+
+function loadProfileData() {
+    const displayName = localStorage.getItem("username") || "Guest";
+    const userIdentifier = localStorage.getItem("userId") || "N/A";
+    const role = localStorage.getItem("userRole") || "User";
+    const email = localStorage.getItem("userEmail") || "N/A";
+
+    const userBtn = document.getElementById("userBtn");
+    if (userBtn) userBtn.textContent = `${displayName} ▾`;
+
+    if (document.getElementById("dropdownUsername")) document.getElementById("dropdownUsername").textContent = displayName;
+    if (document.getElementById("dropdownEmail")) document.getElementById("dropdownEmail").textContent = email;
+    if (document.getElementById("dropdownRole")) document.getElementById("dropdownRole").textContent = role;
+
+    if (profileModal) {
+        if (document.getElementById("profileUserId")) document.getElementById("profileUserId").textContent = userIdentifier;
+        if (document.getElementById("profileDisplayName")) document.getElementById("profileDisplayName").textContent = displayName;
+        if (document.getElementById("profileRole")) document.getElementById("profileRole").textContent = role;
+
+        const obscuredEmail = email.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
+        if (document.getElementById("profileEmail")) document.getElementById("profileEmail").textContent = obscuredEmail;
+
+        profileModal.dataset.fullDisplayName = displayName;
+        profileModal.dataset.fullEmail = email;
+    }
+}
+
+function toggleEditField(button) {
+    const infoRow = button.closest('.info-row');
+    const valueElement = infoRow.querySelector('.value');
+    const field = button.dataset.field;
+    const fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+    const userBtn = document.getElementById("userBtn");
+
+    if (field === 'password') {
+        if (button.textContent === 'Edit') {
+            if (passwordInfoRow) passwordInfoRow.style.display = 'none';
+            if (passwordEditFields) passwordEditFields.style.display = 'block';
+
+            if (currentPasswordInput) currentPasswordInput.value = '';
+            if (newPasswordInput) newPasswordInput.value = '';
+            updatePasswordStrengthDisplay();
+
+            if (profileActionBar) profileActionBar.style.display = 'flex';
+        } else if (button.textContent === 'Save') {
+            return;
+        }
+
+    } else {
+        if (button.textContent === 'Edit') {
+            const currentValue = profileModal.dataset[`full${fieldName}`] || valueElement.textContent;
+
+            const input = document.createElement('input');
+            input.type = (field === 'email') ? 'email' : 'text';
+            input.value = (field === 'email') ? profileModal.dataset.fullEmail : currentValue;
+            input.dataset.originalValue = input.value;
+            input.id = `editInput${fieldName}`;
+            input.classList.add('info-row-input');
+
+            valueElement.style.display = 'none';
+            infoRow.insertBefore(input, button);
+            button.textContent = 'Save';
+
+            if (profileActionBar) profileActionBar.style.display = 'flex';
+        } else if (button.textContent === 'Save') {
+            const input = infoRow.querySelector('input');
+            const newValue = input.value;
+
+            if (field === 'email') {
+                const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+                if (!emailPattern.test(newValue.trim())) {
+                    alert('Email must be a valid @gmail.com address.');
+                    return;
+                }
+                const obscuredEmail = newValue.trim().replace(/^(.{3}).*(@.*)$/, "$1*******$2");
+                valueElement.textContent = obscuredEmail;
+                localStorage.setItem("userEmail", newValue.trim());
+                profileModal.dataset.fullEmail = newValue.trim();
+            } else if (field === 'displayName') {
+                valueElement.textContent = newValue;
+                localStorage.setItem("username", newValue);
+                if (userBtn) userBtn.textContent = `${newValue} ▾`;
+                profileModal.dataset.fullDisplayName = newValue;
+            }
+
+            infoRow.removeChild(input);
+            valueElement.style.display = 'block';
+            button.textContent = 'Edit';
+
+            const isAnyFieldEditing = Array.from(editButtons).some(btn => btn.textContent === 'Save');
+            if (!isAnyFieldEditing && passwordEditFields.style.display !== 'block') {
+                if (profileActionBar) profileActionBar.style.display = 'none';
+            }
+        }
+    }
+}
+
+function resetEditFields() {
+    editButtons.forEach(button => {
+        if (button.textContent === 'Save') {
+            const infoRow = button.closest('.info-row');
+            const valueElement = infoRow.querySelector('.value');
+            const input = infoRow.querySelector('input');
+
+            if (input) {
+                infoRow.removeChild(input);
+                valueElement.style.display = 'block';
+            }
+            button.textContent = 'Edit';
+        }
+    });
+
+    if (passwordEditFields) {
+        passwordEditFields.style.display = 'none';
+        if (passwordInfoRow) passwordInfoRow.style.display = 'flex';
+        if (passwordStrengthMsg) {
+            passwordStrengthMsg.textContent = "";
+            passwordStrengthMsg.className = "strength-msg";
+        }
+        if (passwordRequirementsMsg) passwordRequirementsMsg.textContent = "";
+    }
+
+    if (profileActionBar) profileActionBar.style.display = 'none';
+    loadProfileData();
+}
+
+
+if (profileDisplayButton) {
+    profileDisplayButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const userDropdown = document.querySelector(".user-dropdown");
+        if (userDropdown) userDropdown.classList.remove("show");
+        profileModal.style.display = 'flex';
+        resetEditFields();
+    });
+}
+
+if (closeProfileModal) {
+    closeProfileModal.addEventListener('click', () => {
+        profileModal.style.display = 'none';
+        resetEditFields();
+    });
+}
+
+if (profileModal) {
+    window.addEventListener('click', (event) => {
+        if (event.target == profileModal) {
+            profileModal.style.display = 'none';
+            resetEditFields();
+        }
+    });
+}
+
+editButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const field = button.dataset.field;
+        if (field === 'username') return;
+
+        toggleEditField(button);
+    });
+});
+
+if (saveProfileChangesBtn) {
+    saveProfileChangesBtn.addEventListener('click', async () => {
+        let changesMade = false;
+
+        editButtons.forEach(button => {
+            if (button.textContent === 'Save') {
+                toggleEditField(button);
+                changesMade = true;
+            }
+        });
+
+        if (passwordEditFields.style.display === 'block') {
+            const currentPass = currentPasswordInput.value;
+            const newPass = newPasswordInput.value;
+
+            if (newPass.length > 0) {
+                const strength = checkPasswordStrength(newPass);
+
+                if (!currentPass) {
+                    alert("Please enter your current password.");
+                    return;
+                }
+
+                if (strength !== 'strong') {
+                    alert("New password is too weak. Please meet all complexity requirements.");
+                    return;
+                }
+
+                try {
+                    const userId = localStorage.getItem('userId');
+                    const userRole = localStorage.getItem('userRole');
+
+                    const response = await fetch(`${API_BASE_URL}/User/UpdatePassword`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            UserId: userId,
+                            CurrentPassword: currentPass,
+                            NewPassword: newPass,
+                            UserRole: userRole
+                        })
+                    });
+
+                    if (response.ok) {
+                        alert("Password updated successfully.");
+                        changesMade = true;
+                    } else {
+                        const errorText = await response.text();
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            alert(`Failed to update password: ${errorJson.error || errorText}`);
+                        } catch {
+                            alert(`Failed to update password: ${errorText}`);
+                        }
+                        return;
+                    }
+                } catch (error) {
+                    console.error("Error updating password:", error);
+                    alert("An error occurred while updating the password.");
+                    return;
+                }
+            }
+        }
+
+        if (changesMade) {
+        } else if (passwordEditFields.style.display !== 'block') {
+            alert("No profile changes were made.");
+        }
+        resetEditFields();
+        loadProfileData();
+    });
+}
+
+if (cancelProfileEditBtn) {
+    cancelProfileEditBtn.addEventListener('click', () => {
+        resetEditFields();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProfileData();
+
+    const userBtn = document.getElementById("userBtn");
+    const userDropdown = document.querySelector(".user-dropdown");
+
+    if (userBtn && userDropdown) {
+        userBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const userId = localStorage.getItem('userId');
+            if (!userId) return; // Disable dropdown for guests
+            userDropdown.classList.toggle("show");
+        });
+
+        window.addEventListener("click", (e) => {
+            if (!e.target.matches('.user-btn')) {
+                if (userDropdown.classList.contains('show')) {
+                    userDropdown.classList.remove("show");
+                }
+            }
+        });
+    }
+
+    checkDashboardAccess();
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = "landing.html";
+            }
+        });
+    }
+});
+
+function checkDashboardAccess() {
+    const userId = localStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole');
+    const dashboardLink = document.getElementById('dashboardLink');
+    const myReportsLink = document.querySelector('a[href="mypost.html"]');
+
+    if (userId) {
+        if (userRole === 'Admin' || userRole === 'Moderator') {
+            if (dashboardLink) dashboardLink.style.display = 'block';
+            if (myReportsLink) myReportsLink.style.display = 'none';
+        } else {
+            if (dashboardLink) dashboardLink.style.display = 'none';
+            if (myReportsLink) myReportsLink.style.display = 'inline-block';
+        }
+    } else {
+        if (dashboardLink) dashboardLink.style.display = 'none';
+        if (myReportsLink) myReportsLink.style.display = 'none';
+    }
+}

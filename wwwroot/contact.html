@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint | Discover</title>
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/contact.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" width="40" height="50" class="logo" alt="SafePoint Logo">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+        <nav class="navbar">
+            <a href="dashboard.html" class="dashboard-link" id="dashboardLink" style="display: none;">Dashboard</a>
+
+            <a href="index.html">Map</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn" id="discoverBtn">Discover ▾</a>
+                <div class="dropdown-content1" id="discoverDropdown">
+                    <a href="#about-us">About Us</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#safety-tips">Safety Tips</a>
+                    <a href="#hotlines">Hotlines</a> <a href="#contact-us">Contact Us</a>
+                </div>
+            </div>
+            <a href="mypost.html">My Reports</a>
+            <a href="weather.html">Weather</a>
+            <div class="user-dropdown" id="userDropdown">
+                <button class="user-btn" id="userBtn">Guest ▾</button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <div class="user-info-display" id="profileDisplayButton">
+                        <p class="user-display-name" id="dropdownUsername">Username</p>
+                        <p class="user-email" id="dropdownEmail">email@example.com</p>
+                        <p class="user-role" id="dropdownRole">Role</p>
+                    </div>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <main>
+        <section id="about-us" class="about-section">
+            <div class="about-container">
+                <h2>About Us</h2>
+                <div class="p-text">
+                    <p>
+                        SafePoint is a community-focused platform designed to make reporting and
+                        responding to incidents
+                        faster, safer, and more organized. Our mission is to empower individuals to
+                        share critical information
+                        while keeping their safety a top priority.
+                    </p>
+                    <p>
+                        Founded in 2025, our team is committed to enhancing public safety through
+                        innovative technology,
+                        real-time alerts, and a simple, user-friendly system.
+                    </p>
+                </div>
+                <div class="about-values">
+                    <div class="value-card">
+                        <span class="material-icons">report_problem</span>
+                        <h3>Incident Reporting</h3>
+                        <p>Submit and track incidents quickly to ensure timely attention and action
+                            from authorities and the community.</p>
+                    </div>
+                    <div class="value-card">
+                        <span class="material-icons">notifications_active</span>
+                        <h3>Real-Time Alerts</h3>
+                        <p>View the details about the incidents in your area so you can stay
+                            informed and stay safe.</p>
+                    </div>
+                    <div class="value-card">
+                        <span class="material-icons">people</span>
+                        <h3>Community Safety</h3>
+                        <p>We foster a proactive community where everyone contributes to creating
+                            safer neighborhoods.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr />
+        <section id="how-it-works" class="how-section">
+            <h2>How It Works</h2>
+            <p class="how-intro">
+                SafePoint makes reporting incidents simple. These four steps guide how reports move
+                through our system.
+            </p>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Submit a Report</h3>
+                        <p>Provide details such as location, description, and optional images to
+                            begin the process.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Initial Review</h3>
+                        <p>Reports undergo quick automated checks to filter spam and ensure clarity.
+                        </p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Publish & Notify</h3>
+                        <p>Valid reports are published on the map and visible to the community.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Stay Updated</h3>
+                        <p>Users near the incident get notifications and can follow updates in
+                            real-time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr />
+        <div id="safety-tips" class="safety-section">
+            <h2>Safety Tips</h2>
+            <ol>
+                <li>
+                    <strong>Personal Awareness</strong>
+                    <ul>
+                        <li>Stay alert when walking alone, especially at night.</li>
+                        <li>Avoid using headphones at full volume outdoors.</li>
+                        <li>Keep valuables out of sight in public areas.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Online Safety</strong>
+                    <ul>
+                        <li>Never share your exact home location publicly.</li>
+                        <li>Avoid posting photos that reveal sensitive details.</li>
+                        <li>Use strong passwords and enable two-factor authentication.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Emergency Preparedness</strong>
+                    <ul>
+                        <li>Save local emergency hotline numbers on your phone.</li>
+                        <li>Learn basic first aid techniques.</li>
+                        <li>Have a small emergency kit at home.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        <hr />
+
+        <section id="hotlines" class="hotlines-section">
+            <div class="hotlines-container">
+                <h2>Emergency Hotlines (Philippines)</h2>
+                <p>Save these numbers for immediate assistance during emergencies.</p>
+
+                <div class="hotline-grid">
+                    <div class="hotline-card">
+                        <span class="material-icons">local_police</span>
+                        <h3>National Emergency</h3>
+                        <p class="number">911</p>
+                        <p class="desc">Police, Fire, Medical</p>
+                    </div>
+                    <div class="hotline-card">
+                        <span class="material-icons">medical_services</span>
+                        <h3>Red Cross</h3>
+                        <p class="number">143</p>
+                        <p class="desc">(02) 8527-0000</p>
+                    </div>
+                    <div class="hotline-card">
+                        <span class="material-icons">warning</span>
+                        <h3>NDRRMC</h3>
+                        <p class="number">(02) 8911-1406</p>
+                        <p class="desc">Disaster Response</p>
+                    </div>
+                    <div class="hotline-card">
+                        <span class="material-icons">fire_truck</span>
+                        <h3>Bureau of Fire</h3>
+                        <p class="number">(02) 8426-0219</p>
+                        <p class="desc">Fire Protection</p>
+                    </div>
+                    <div class="hotline-card">
+                        <span class="material-icons">add_road</span>
+                        <h3>MMDA</h3>
+                        <p class="number">136</p>
+                        <p class="desc">Traffic & Road Safety</p>
+                    </div>
+                    <div class="hotline-card">
+                        <span class="material-icons">support_agent</span>
+                        <h3>Bayanihan E-Konsulta</h3>
+                        <p class="number">1555</p>
+                        <p class="desc">Medical Consultation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr />
+
+        <section id="contact-us" class="contact-section">
+            <div class="contact-container">
+                <div class="contact-form">
+                    <h2>Contact Us</h2>
+                    <form action="https://formspree.io/f/xyznrgpa" method="POST" id="contactForm" autocomplete="off">
+                        <label>
+                            Your Name:
+                            <input type="text" name="name" required>
+                        </label>
+                        <label>
+                            Your Email:
+                            <input type="email" name="email" required>
+                        </label>
+                        <label>
+                            Phone Number:
+                            <input type="text" name="phone" required>
+                        </label>
+                        <label>
+                            Your Message:
+                            <textarea name="message" rows="4" required></textarea>
+                        </label>
+                        <button type="submit" class="btnsend">Send Message</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <h2>General Location</h2>
+                    <img src="image/info.png" alt="Map Info">
+                    <div class="person">
+                        <p><b>Let us know how we can help you!</b></p>
+                        <p>
+                            <b>Technical Officer</b><br>
+                            Email: azucenajustinallen@gmail.com<br>
+                            Number: +63927-336-7422
+                        </p>
+                        <p>
+                            <b>Manager</b><br>
+                            Email: babierajanlloyd@gmail.com<br>
+                            Number: +63938-440-4437
+                        </p>
+                    </div>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/people/SafePoint/61561253925677/" target="_blank"
+                            aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://x.com/SafePointX?fbclid=IwY2xjawOTJQBleHRuA2FlbQIxMABicmlkETFWWHg4UG1Ed0lQZVRYUFhLc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHqdTLE-bs29BaMlGELxJAEwUWnNFGKqnpide2f2_9FUGVfq1fYQ9zkZOftuz_aem_qDVeEwWNM4y6-WB3PWQq3A"
+                            target="_blank" aria-label="X (Twitter)">
+                            <i class="fab fa-x-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/safepointig/?fbclid=IwY2xjawOTJV9leHRuA2FlbQIxMABicmlkETFWWHg4UG1Ed0lQZVRYUFhLc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHiANfGR0f5AyxNx-92lr8HLlsqFtO-qyVaKBeKCJ9l_J7yHIQWbZZpOeLZqZ_aem_2S6WvAYX5dB6EG2LSVh77w"
+                            target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <hr />
+
+        <div id="profileModal" class="modal">
+            <div class="modal-content profile-modal-content">
+                <span class="close-modal" id="closeProfileModal">&times;</span>
+
+                <div class="profile-header-background"></div>
+                <div class="profile-avatar">
+                    <span class="material-icons profile-icon">person_pin</span>
+                </div>
+
+                <div class="profile-info-section">
+
+                    <div class="info-group">
+                        <p class="label">User ID</p>
+                        <div class="info-row">
+                            <p id="profileUserId" class="value"></p>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Display Name</p>
+                        <div class="info-row">
+                            <p id="profileDisplayName" class="value">Username</p>
+                            <button class="edit-btn" data-field="displayName">Edit</button>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Email</p>
+                        <div class="info-row">
+                            <p id="profileEmail" class="value">***********@gmail.com</p>
+                            <button class="edit-btn" data-field="email">Edit</button>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Role</p>
+                        <div class="info-row">
+                            <p id="profileRole" class="value">User/Admin/Moderator</p>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Password</p>
+                        <div class="info-row" id="passwordInfoRow">
+                            <p class="value" id="profilePasswordValue">**************</p>
+                            <button class="edit-btn" data-field="password">Edit</button>
+                        </div>
+
+                        <div id="passwordEditFields" style="display: none;">
+                            <input type="password" id="currentPasswordInput" placeholder="Current Password"
+                                class="profile-edit-input" autocomplete="off">
+                            <input type="password" id="newPasswordInput" placeholder="New Password"
+                                class="profile-edit-input" autocomplete="off">
+
+                            <div class="password-feedback">
+                                <span class="strength-msg" id="passwordStrengthMsg"></span>
+                                <p class="requirements-msg" id="passwordRequirementsMsg"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-action-bar" style="display: none;" id="profileActionBar">
+                    <button class="cancel-btn" id="cancelProfileEdit">Cancel</button>
+                    <button class="save-btn" id="saveProfileChanges">Save Changes</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+    <script src="js/site.js"></script>
+    <script>
+        const discoverBtn = document.getElementById('discoverBtn');
+        const discoverDropdown = document.getElementById('discoverDropdown');
+
+        if (discoverBtn && discoverDropdown) {
+            discoverBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                discoverDropdown.classList.toggle('show');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (!discoverBtn.contains(e.target) && !discoverDropdown.contains(e.target)) {
+                    discoverDropdown.classList.remove('show');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

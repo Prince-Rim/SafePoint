@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint</title>
+    <link rel="stylesheet" href="css/landing.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" width="40" height="50" class="logo" alt="SafePoint Logo">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+        <nav class="auth-nav" id="authNav">
+            <a href="register.html" id="registerLink" class="btnregister" style="display: none;">Register</a>
+            <button type="button" class="btnlogin" id="loginBtn" style="display: none;">Log In</button>
+        </nav>
+    </div>
+    <div class="ltext">
+        <div class="stext">
+            <h1>See and share incidents around you.</h1>
+            <p><i>Report, stay aware, and make your community safer.</i></p>
+            <button type="button" class="btnmap" id="openMapBtn">Open Map</button>
+        </div>
+        <div class="limage">
+            <img src="image/maps.jpg" alt="Map Preview" class="map">
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2025 SafePoint. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole');
+
+            const loginBtn = document.getElementById('loginBtn');
+            const registerLink = document.getElementById('registerLink');
+            const openMapBtn = document.getElementById('openMapBtn');
+            const authNav = document.getElementById('authNav');
+
+            if (userId) {
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (registerLink) registerLink.style.display = 'none';
+
+                if (userRole === 'Admin' || userRole === 'Moderator') {
+                    if (authNav) {
+                        const dashboardLink = document.createElement('a');
+                        dashboardLink.href = 'dashboard.html';
+                        dashboardLink.className = 'btnlogin';
+                        dashboardLink.textContent = 'Dashboard';
+                        authNav.appendChild(dashboardLink);
+                    }
+                }
+
+                const logoutLink = document.createElement('button');
+                logoutLink.type = 'button';
+                logoutLink.className = 'btnregister';
+                logoutLink.textContent = 'Logout';
+                logoutLink.onclick = () => {
+                    if (confirm('Are you sure you want to log out?')) {
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = 'landing.html';
+                    }
+                };
+                if (authNav) authNav.appendChild(logoutLink);
+
+            } else {
+                if (loginBtn) loginBtn.style.display = 'block';
+                if (registerLink) registerLink.style.display = 'block';
+
+                if (loginBtn) {
+                    loginBtn.onclick = () => { window.location.href = 'login.html'; };
+                }
+            }
+
+            if (openMapBtn) {
+                openMapBtn.onclick = () => {
+                    window.location.href = 'index.html';
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>

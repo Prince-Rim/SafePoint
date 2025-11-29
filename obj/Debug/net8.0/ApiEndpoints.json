@@ -1,0 +1,775 @@
+[
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetAllAdmins",
+    "RelativePath": "api/Admin/admins",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetAllAreas",
+    "RelativePath": "api/Admin/areas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "CreateAdmin",
+    "RelativePath": "api/Admin/create-admin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminDto",
+        "Type": "SafePoint_IRS.DTOs.CreateAdminDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "CreateArea",
+    "RelativePath": "api/Admin/create-area",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "areaDto",
+        "Type": "SafePoint_IRS.DTOs.CreateAreaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "CreateModerator",
+    "RelativePath": "api/Admin/create-moderator",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "modDto",
+        "Type": "SafePoint_IRS.DTOs.CreateModeratorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "CreateUser",
+    "RelativePath": "api/Admin/create-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDto",
+        "Type": "SafePoint_IRS.DTOs.CreateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "DeleteAdmin",
+    "RelativePath": "api/Admin/delete-admin/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "DeleteModerator",
+    "RelativePath": "api/Admin/delete-moderator/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "DeletePermanent",
+    "RelativePath": "api/Admin/delete-permanent/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/Admin/delete-user/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetDeletedIncidents",
+    "RelativePath": "api/Admin/deleted",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetIncidentsByArea",
+    "RelativePath": "api/Admin/incidents-by-area/{areaCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "areaCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetAllModerators",
+    "RelativePath": "api/Admin/moderators",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetModeratorsByArea",
+    "RelativePath": "api/Admin/moderators-by-area/{areaCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "areaCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetPendingIncidents",
+    "RelativePath": "api/Admin/pending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetRecentActivity",
+    "RelativePath": "api/Admin/recent-activity",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "RecoverIncident",
+    "RelativePath": "api/Admin/recover/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "UnvalidateIncident",
+    "RelativePath": "api/Admin/unvalidate/{incidentId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "incidentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "UpdateAdmin",
+    "RelativePath": "api/Admin/update-admin/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "adminDto",
+        "Type": "SafePoint_IRS.DTOs.UpdateAdminDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "UpdateArea",
+    "RelativePath": "api/Admin/update-area/{areaCode}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "areaCode",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "areaDto",
+        "Type": "SafePoint_IRS.DTOs.CreateAreaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "UpdateModerator",
+    "RelativePath": "api/Admin/update-moderator/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "modDto",
+        "Type": "SafePoint_IRS.DTOs.UpdateModeratorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/Admin/update-user/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "userDto",
+        "Type": "SafePoint_IRS.DTOs.UpdateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/Admin/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "ValidateIncident",
+    "RelativePath": "api/Admin/validate/{incidentId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "incidentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "isAccepted",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SafePoint_IRS.DTOs.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.CommentsController",
+    "Method": "PostComment",
+    "RelativePath": "api/Comments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SafePoint_IRS.DTOs.CommentDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.CommentsController",
+    "Method": "PutComment",
+    "RelativePath": "api/Comments/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "SafePoint_IRS.DTOs.CommentDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.CommentsController",
+    "Method": "DeleteComment",
+    "RelativePath": "api/Comments/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.CommentsController",
+    "Method": "GetCommentsForIncident",
+    "RelativePath": "api/Comments/incident/{incidentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "incidentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.IncidentsController",
+    "Method": "PostIncident",
+    "RelativePath": "api/Incidents",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Userid",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Incident_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OtherHazard",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Severity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IncidentDateTime",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Area_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LocationAddress",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Latitude",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Longitude",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descr",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Img",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.IncidentsController",
+    "Method": "GetAcceptedIncidents",
+    "RelativePath": "api/Incidents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "severity",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.IncidentsController",
+    "Method": "GetIncidentById",
+    "RelativePath": "api/Incidents/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.IncidentsController",
+    "Method": "PutIncident",
+    "RelativePath": "api/Incidents/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "Userid",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "Title",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Incident_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OtherHazard",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Severity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "IncidentDateTime",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Area_Code",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "LocationAddress",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Latitude",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Longitude",
+        "Type": "System.Decimal",
+        "IsRequired": false
+      },
+      {
+        "Name": "Descr",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Img",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.IncidentsController",
+    "Method": "DeleteIncident",
+    "RelativePath": "api/Incidents/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "CreateUser",
+    "RelativePath": "api/Moderator/create-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDto",
+        "Type": "SafePoint_IRS.DTOs.CreateUserByModeratorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "GetIncidentById",
+    "RelativePath": "api/Moderator/incident/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "UpdateIncident",
+    "RelativePath": "api/Moderator/incident/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "report",
+        "Type": "SafePoint_IRS.DTOs.UpdateIncidentByModeratorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "DeleteIncident",
+    "RelativePath": "api/Moderator/incident/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "GetMyAreaIncidents",
+    "RelativePath": "api/Moderator/my-incidents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.ModeratorController",
+    "Method": "GetPendingIncidents",
+    "RelativePath": "api/Moderator/pending-incidents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.RegisterController",
+    "Method": "PostUser",
+    "RelativePath": "api/Register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userDto",
+        "Type": "SafePoint_IRS.DTOs.CreateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.UserController",
+    "Method": "UpdatePassword",
+    "RelativePath": "api/User/UpdatePassword",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SafePoint_IRS.DTOs.UpdatePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

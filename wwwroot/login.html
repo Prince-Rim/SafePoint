@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint | Login</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" alt="SafePoint Logo" class="logo">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="login-container">
+            <div class="logtext">
+                <h2>Welcome Back!</h2>
+                <p class="subtitle">Sign in to continue reporting and exploring.</p>
+            </div>
+            <form id="loginForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <span id="togglePassword" class="toggle-password material-icons">visibility_off</span>
+                    </div>
+                </div>
+                <button type="submit" class="btnlogin">Log In</button>
+                <div id="loginError" style="color:red; margin-top:5px;"></div>
+                <p class="register-text">Don’t have an account? <a href="register.html">Register here</a></p>
+            </form>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2025 SafePoint. All rights reserved.</p>
+    </footer>
+    <script src="js/login.js"></script>
+</body>
+</html>

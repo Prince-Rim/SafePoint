@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint Admin | Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="landing.html">
+                    <img src="image/spicon.png" alt="SafePoint Logo" class="logo" width="40" height="50">
+                </a>
+                <h2>SafePoint Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Overview</div>
+                <a href="#" class="nav-item active">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </a>
+
+                <a href="pending.html" class="nav-item">
+                    <span class="material-icons">pending_actions</span>
+                    Pending Reports
+                </a>
+
+                <a href="index.html" class="nav-item">
+                    <span class="material-icons">map</span>
+                    Open Map
+                </a>
+
+                <div class="nav-section-title">Manage</div>
+                <a href="user-accounts.html" class="nav-item">
+                    <span class="material-icons">people</span>
+                    User Accounts
+                </a>
+
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-item logout-btn">
+                    <span class="material-icons">logout</span>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-title">
+                    <h1>Admin Dashboard</h1>
+                    <p>Dashboard - Overview</p>
+                </div>
+            </header>
+
+            <section class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pending-count">0</h3>
+                        <p>Pending Reports</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="verified-count">0</h3>
+                        <p>Verified Reports</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="users-count">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-secondary">
+                <div class="card recent-activity">
+                    <h2>Recent Activity</h2>
+                    <p class="subtitle">Latest admin and moderator actions across reports </p>
+                    <div class="activity-list">
+                    </div>
+                </div>
+
+                <div class="card combined-chart-card">
+                    <h2>Incident Analytics</h2>
+                    <p class="subtitle">Severity and Type Distribution of Verified Reports</p>
+
+                    <div class="chart-stack-wrapper">
+                        <div class="chart-box">
+                            <h3 class="chart-title">Severity Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="severityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-box">
+                            <h3 class="chart-title">Incident Types</h3>
+                            <div class="chart-container chart-container-type">
+                                <canvas id="typeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

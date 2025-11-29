@@ -1,0 +1,185 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background: linear-gradient(135deg, #f8faff, #eaf0ff);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 50px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 45px;
+    height: 55px;
+    transition: transform 0.3s ease;
+}
+
+    .logo:hover {
+        transform: scale(1.1);
+    }
+
+.brand h2 {
+    font-weight: 700;
+    color: #397DFA;
+}
+
+.auth-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btnlogin, .btnregister {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+    font-size: .9rem;
+}
+
+.btnlogin {
+    background-color: #397DFA;
+    color: #fff;
+}
+
+    .btnlogin:hover {
+        background-color: #2f6be0;
+        box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
+    }
+
+.btnregister {
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+    line-height: 1.2;
+}
+
+    .btnregister:hover {
+        background-color: #e0e0e0;
+    }
+
+.ltext {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 130px 20px 80px;
+    gap: 60px;
+    min-height: 90vh;
+}
+
+.stext {
+    max-width: 500px;
+}
+
+    .stext h1 {
+        font-size: 2.2rem;
+        color: #1f3b73;
+        margin-bottom: 15px;
+    }
+
+    .stext p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 25px;
+    }
+
+.btnmap {
+    padding: 14px 30px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-color: #397DFA;
+    color: white;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+    .btnmap:hover {
+        background-color: #2f6be0;
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(57, 125, 250, 0.25);
+    }
+
+.limage img {
+    max-width: 360px;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .limage img:hover {
+        transform: scale(1.03);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+
+.footer {
+    background-color: #397DFA;
+    color: white;
+    text-align: center;
+    padding: 18px 0;
+    position: relative;
+    width: 100%;
+    font-size: 0.95em;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+    margin-top: auto;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 20px;
+    }
+
+    .ltext {
+        flex-direction: column;
+        padding-top: 120px;
+    }
+
+    .stext h1 {
+        font-size: 1.8rem;
+    }
+
+    .limage img {
+        max-width: 300px;
+    }
+}

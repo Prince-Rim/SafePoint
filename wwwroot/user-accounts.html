@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint Admin | User Accounts</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/user-accounts.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="landing.html">
+                    <img src="image/spicon.png" alt="SafePoint Logo" class="logo" width="40" height="50">
+                </a>
+                <h2>SafePoint Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Overview</div>
+                <a href="dashboard.html" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </a>
+                <a href="pending.html" class="nav-item">
+                    <span class="material-icons">pending_actions</span>
+                    Pending Reports
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="material-icons">map</span>
+                    Open Map
+                </a>
+
+                <div class="nav-section-title">Manage</div>
+                <a href="#" class="nav-item active">
+                    <span class="material-icons">people</span>
+                    User Accounts
+                </a>
+
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-item logout-btn">
+                    <span class="material-icons">logout</span>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header reports-header">
+                <div class="header-back">
+                    <h1>Manage Accounts</h1>
+                    <p class="subtitle">Dashboard - User Accounts</p>
+                </div>
+            </header>
+
+            <section class="user-list-card card">
+                <div class="search-title-bar">
+                    <input type="text" id="searchInput" placeholder="Search">
+                    <button id="searchTableBtn" class="btn-secondary search-table-btn">Filter</button>
+                    <button id="openModalBtn" class="btn-primary create-btn">Create New Account</button>
+                </div>
+                <div class="user-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Contact Number</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="createUserModal" class="modal-backdrop">
+        <div class="modal-content card">
+            <h1>Create User Account</h1>
+            <p class="subtitle">Dashboard - User Accounts - Create</p>
+
+            <form autocomplete="off">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number</label>
+                        <input type="tel" id="contact" name="contact" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="area">Area/Location</label>
+                        <select id="area" name="area">
+                            <option value="DEFAULT" selected>DEFAULT (Default Area)</option>
+                        </select>
+                        <span class="help-text">Will use DEFAULT if not specified. You can create areas later.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">User Role</label>
+                        <select id="role" name="role" required>
+                            <option value="" disabled selected>Select Role</option>
+                            <option value="user">User</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required minlength="8">
+                        <span class="help-text">Must be 8 characters long.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required minlength="8">
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="#" id="closeModalLink" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary create-user-submit">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="modal-backdrop">
+        <div class="modal-content card">
+            <h1>Edit User Account</h1>
+            <p class="subtitle">Dashboard - User Accounts - Edit</p>
+
+            <form id="editAccountForm" autocomplete="off">
+                <input type="hidden" id="edit-id" name="id">
+                <input type="hidden" id="edit-original-role" name="original-role">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-username">Username</label>
+                        <input type="text" id="edit-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email Address</label>
+                        <input type="email" id="edit-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-contact">Contact Number</label>
+                        <input type="text" id="edit-contact" name="contact" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-status">Status</label>
+                        <select id="edit-status" name="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="suspension-group" style="display: none;">
+                        <label for="edit-suspension-end">Suspension End Time</label>
+                        <input type="datetime-local" id="edit-suspension-end" name="suspensionEnd">
+                        <span class="help-text" style="color: #d32f2f; font-size: 0.8rem;">Leave blank for indefinite suspension.</span>
+                    </div>
+
+                    <div class="form-group" id="suspension-spacer"></div>
+
+                    <div class="form-group" id="edit-area-group" style="display: none;">
+                        <label for="edit-area">Area/Location</label>
+                        <select id="edit-area" name="area">
+                        </select>
+                        <span class="help-text">Area is only relevant for Moderators.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-role">User Role</label>
+                        <select id="edit-role" name="role" required>
+                            <option value="user">User</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-password">New Password (Optional)</label>
+                        <input type="password" id="edit-password" name="password" minlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-confirm-password">Confirm New Password</label>
+                        <input type="password" id="edit-confirm-password" name="confirm-password" minlength="8">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="#" id="closeEditModalLink" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const modal = document.getElementById('createUserModal');
+            const openBtn = document.getElementById('openModalBtn');
+            const closeLink = document.getElementById('closeModalLink');
+            modal.style.display = 'none';
+
+            openBtn.addEventListener('click', function () {
+                modal.style.display = 'flex';
+            });
+            closeLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                modal.style.display = 'none';
+            });
+            window.addEventListener('click', function (event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script src="js/user-accounts.js"></script>
+</body>
+</html>

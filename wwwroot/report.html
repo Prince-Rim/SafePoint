@@ -1,0 +1,195 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint | Report</title>
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/report.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" alt="SafePoint Logo" class="logo" width="40" height="50">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+        <nav class="navbar">
+            <a href="dashboard.html" class="dashboard-link" id="dashboardLink" style="display: none;">Dashboard</a>
+            <a href="index.html">Map</a>
+            <a href="contact.html">Discover</a>
+            <a href="mypost.html" id="myReportsLink">My Reports</a>
+            <a href="weather.html">Weather</a>
+            <div class="user-dropdown" id="userDropdown">
+                <button class="user-btn" id="userBtn">Guest ▾</button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <div class="user-info-display" id="profileDisplayButton">
+                        <p class="user-display-name" id="dropdownUsername">Username</p>
+                        <p class="user-email" id="dropdownEmail">email@example.com</p>
+                        <p class="user-role" id="dropdownRole">Role</p>
+                    </div>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="report-container">
+        <div class="report-card">
+            <h2>Post an Incident</h2>
+            <p class="subtitle">Provide clear details to help the community.</p>
+            <form id="reportForm" enctype="multipart/form-data" autocomplete="off">
+                <label for="image">Image/Evidence</label>
+                <div class="image-upload" id="imageUploadArea" draggable="true"
+                     onclick="document.getElementById('image').click()">
+                    <div id="uploadContent">
+                        <span class="material-icons">add_a_photo</span>
+                        <p>Click to upload a photo or drag one here</p>
+                    </div>
+                    <img id="imagePreview" src="#" alt="Image Preview" style="display: none;">
+                    <input type="file" id="image" name="image" accept="image/*" hidden>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" placeholder="Enter title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hazard">Incident Type</label>
+                        <select id="hazard" name="hazard" required>
+                            <option value="">Select</option>
+                            <option value="fire">Fire</option>
+                            <option value="flood">Flood</option>
+                            <option value="road">Accident</option>
+                            <option value="earthquake">Environmental/Nature</option>
+                            <option value="other">Others</option>
+                        </select>
+                        <input type="text" id="otherHazard" name="otherHazard" placeholder="Please specify"
+                               style="display:none;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="severity">Severity</label>
+                        <select id="severity" name="severity" required>
+                            <option value="">Select</option>
+                            <option value="low">Low</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="datetime">Date & Time</label>
+                        <input type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="Enter location" required>
+                </div>
+
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+                <input type="hidden" id="areaCode" name="areaCode">
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe what happened..."
+                              required></textarea>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="cancel" onclick="window.location.href='index.html'">Cancel</button>
+                    <button type="submit" class="submit">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <span class="close-modal" id="closeProfileModal">&times;</span>
+
+            <div class="profile-header-background"></div>
+            <div class="profile-avatar">
+                <span class="material-icons profile-icon">person_pin</span>
+            </div>
+
+            <div class="profile-info-section">
+
+                <div class="info-group">
+                    <p class="label">User ID</p>
+                    <div class="info-row">
+                        <p id="profileUserId" class="value"></p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Display Name</p>
+                    <div class="info-row">
+                        <p id="profileDisplayName" class="value">Username</p>
+                        <button class="edit-btn" data-field="displayName">Edit</button>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Email</p>
+                    <div class="info-row">
+                        <p id="profileEmail" class="value">***********@gmail.com</p>
+                        <button class="edit-btn" data-field="email">Edit</button>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Role</p>
+                    <div class="info-row">
+                        <p id="profileRole" class="value">User/Admin/Moderator</p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Password</p>
+                    <div class="info-row" id="passwordInfoRow">
+                        <p class="value" id="profilePasswordValue">**************</p>
+                        <button class="edit-btn" data-field="password">Edit</button>
+                    </div>
+
+                    <div id="passwordEditFields" style="display: none;">
+                        <input type="password" id="currentPasswordInput" placeholder="Current Password"
+                               class="profile-edit-input" autocomplete="off">
+                        <input type="password" id="newPasswordInput" placeholder="New Password"
+                               class="profile-edit-input" autocomplete="off">
+
+                        <div class="password-feedback">
+                            <span class="strength-msg" id="passwordStrengthMsg"></span>
+                            <p class="requirements-msg" id="passwordRequirementsMsg"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-action-bar" style="display: none;" id="profileActionBar">
+                <button class="cancel-btn" id="cancelProfileEdit">Cancel</button>
+                <button class="save-btn" id="saveProfileChanges">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 SafePoint. All rights reserved.</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+    <script src="js/report.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafePoint Admin | Pending Reports</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/pending.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="landing.html">
+                    <img src="image/spicon.png" alt="SafePoint Logo" class="logo" width="40" height="50">
+                </a>
+                <h2>SafePoint Admin</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Overview</div>
+                <a href="dashboard.html" class="nav-item">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="material-icons">pending_actions</span>
+                    Pending Reports
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="material-icons">map</span>
+                    Open Map
+                </a>
+
+                <div class="nav-section-title">Manage</div>
+                <a href="user-accounts.html" class="nav-item">
+                    <span class="material-icons">people</span>
+                    User Accounts
+                </a>
+
+                <div class="nav-section-title">Account</div>
+                <a href="#" class="nav-item logout-btn">
+                    <span class="material-icons">logout</span>
+                    Logout
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header reports-header">
+                <div class="header-back">
+                    <h1>Pending Reports</h1>
+                    <p class="subtitle">Dashboard - Pending Reports</p>
+                </div>
+            </header>
+            <section class="reports-grid">
+                <div class="report-list-panel card">
+                    <h2>Incident Reports</h2>
+                    <p class="subtitle">Filter and select a report to review details.</p>
+
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-status="Pending">Pending</button>
+                        <button class="filter-btn" data-status="Validated">Validated</button>
+                        <button class="filter-btn" data-status="Rejected">Rejected</button>
+                    </div>
+
+                    <div class="search-bar" autocomplete="off">
+                        <input type="text" id="searchInput" placeholder="Search">
+                        <button id="searchBtn" class="filter-action-btn">Filter</button>
+                    </div>
+
+                    <div class="incident-queue-list">
+                        <div class="report-item placeholder">
+                            <h4>Select Status to Load Reports</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-detail-panel card">
+                    <div class="detail-header">
+                        <h2 id="reportTitleDisplay">-- Select a Report --</h2>
+                        <p class="report-id-text">ID: <span id="reportIdDisplay">#--</span></p>
+                    </div>
+
+                    <div class="action-bar">
+                        <button id="approveBtn" class="action-btn-primary action-visibility" style="display:none;">
+                            <span class="material-icons">check_circle</span>
+                            Approve Incident Post
+                        </button>
+                        <button id="rejectBtn" class="action-btn-delete action-visibility" style="display:none;">
+                            <span class="material-icons">cancel</span>
+                            Reject
+                        </button>
+                        <button id="unvalidateBtn" class="action-btn-warning action-visibility" style="display:none;">
+                            <span class="material-icons">undo</span>
+                            Invalidate
+                        </button>
+                        <button id="restoreBtn" class="action-btn-primary action-visibility" style="display:none;">
+                            <span class="material-icons">restore</span>
+                            Restore
+                        </button>
+                        <button id="deletePermBtn" class="action-btn-delete-perm action-visibility"
+                            style="display:none;">
+                            <span class="material-icons">delete_forever</span>
+                            Delete
+                        </button>
+                        <button class="action-btn-secondary action-visibility" id="editBtn" style="display:none;">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </button>
+                    </div>
+                    <div class="scrollable-detail-content">
+                        <div class="media-placeholder" id="mediaPlaceholder">
+                            <p>Select a report to view details.</p>
+                        </div>
+                        <div class="details-section">
+                            <div class="incident-details">
+                                <h3>Incident Details</h3>
+                                <div class="detail-group">
+                                    <p>Reporter:</p> <span class="detail-value" id="detailReporter">--</span>
+                                    <p>Status:</p> <span class="detail-value" id="detailStatus">--</span>
+                                    <p>Title:</p> <span class="detail-value" id="detailTitle">--</span>
+                                    <p>Type:</p> <span class="detail-value" id="detailType">--</span>
+                                    <p>Severity:</p> <span class="detail-value" id="detailSeverity">--</span>
+                                    <p>Date & Time:</p> <span class="detail-value" id="detailDate">--</span>
+                                    <p style="grid-column: 1 / 3;">Description:</p>
+                                    <span class="detail-value" id="detailDescription"
+                                        style="grid-column: 1 / 3;">--</span>
+                                </div>
+                            </div>
+                            <div class="location-details">
+                                <h3>Location</h3>
+                                <p id="detailLocation">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" id="closeEditModal">&times;</span>
+            <h2>Edit Incident Report</h2>
+            <form id="editForm" autocomplete="off">
+                <input type="hidden" id="editIncidentId">
+
+                <div class="modal-grid-container">
+                    <div class="grid-item">
+                        <label for="editTitle">Title:</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+
+                    <div class="grid-item">
+                        <label for="editSeverity">Severity:</label>
+                        <select id="editSeverity" required>
+                            <option value="low">Low</option>
+                            <option value="moderate">Moderate</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="grid-item">
+                        <label for="editType">Incident Type:</label>
+                        <select id="editType" required>
+                            <option value="">-- Select Type --</option>
+                            <option value="fire">Fire</option>
+                            <option value="flood">Flood</option>
+                            <option value="road">Accident</option>
+                            <option value="earthquake">Environmental/Nature</option>
+                            <option value="other">Others</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="editOtherGroup" class="full-width-field" style="display:none;">
+                    <label for="editOtherHazard">Specify Other Hazard:</label>
+                    <input type="text" id="editOtherHazard"><br>
+                </div>
+
+                <div class="full-width-field">
+                    <label for="editLocationAddress">Location Address:</label>
+                    <input type="text" id="editLocationAddress" name="LocationAddress">
+                </div>
+
+                <div class="full-width-field">
+                    <label for="editDescription">Description:</label>
+                    <textarea id="editDescription" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="action-btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/pending.js"></script>
+</body>
+
+</html>

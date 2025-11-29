@@ -1,0 +1,239 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Point | Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/index.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="brand">
+            <a href="landing.html">
+                <img src="image/spicon.png" alt="SafePoint Logo" class="logo" width="40" height="50">
+            </a>
+            <h2>Safe Point</h2>
+        </div>
+        <nav class="navbar">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search incidents..." autofill="off">
+                <span class="material-icons search-icon">search</span>
+            </div>
+            <a href="dashboard.html" class="dashboard-link" id="dashboardLink" style="display: none;">Dashboard</a>
+            <a href="index.html" class="active">Map</a>
+            <a href="contact.html">Discover</a>
+            <a href="mypost.html" id="myReportsLink">My Reports</a>
+            <a href="weather.html">Weather</a>
+            <div class="user-dropdown" id="userDropdown">
+                <button class="user-btn" id="userBtn">Guest ▾</button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <div class="user-info-display" id="profileDisplayButton">
+                        <p class="user-display-name" id="dropdownUsername">Username</p>
+                        <p class="user-email" id="dropdownEmail">email@example.com</p>
+                        <p class="user-role" id="dropdownRole">Role</p>
+                    </div>
+                    <a href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="content">
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3>Filter</h3>
+                    <label for="category">Incident Category</label>
+                    <select id="category">
+                        <option value="">All</option>
+                        <option value="fire">Fire</option>
+                        <option value="flood">Flood</option>
+                        <option value="road">Accident</option>
+                        <option value="earthquake">Environmental/Nature</option>
+                        <option value="other">Others</option>
+                    </select>
+                    <label for="severity">Severity</label>
+                    <select id="severity">
+                        <option value="">All</option>
+                        <option value="low">Low</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="high">High</option>
+                    </select>
+
+                    <div class="buttons">
+                        <button class="post-btn" onclick="handlePostIncident()">+ Post Incident</button>
+                    </div>
+
+                    <h3>Recent Reports</h3>
+                    <div class="recent-reports">
+                    </div>
+                </div>
+            </div>
+            <div class="map-container">
+                <div class="top-controls">
+                    <button class="map-btn" id="locateBtn">My Location</button>
+                    <button class="map-btn" id="resetBtn">Reset</button>
+                </div>
+
+                <div class="map-legend">
+                    <h4>Legend</h4>
+                    <div class="legend-item">
+                        <span class="color-dot high"></span> High Severity
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-dot moderate"></span> Moderate Severity
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-dot low"></span> Low Severity
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-dot current"></span> Current Location
+                    </div>
+                </div>
+
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div id="viewIncidentModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeViewModal">&times;</span>
+
+                <div class="modal-body">
+                    <div class="modal-header-section">
+                        <div class="title-row">
+                            <h2 id="modalTitle">Incident Title</h2>
+                            <span id="modalSeverityBadge" class="severity-badge">Severity</span>
+                        </div>
+                        <div class="meta-row">
+                            <span id="modalType" class="meta-type">Type</span>
+                            <span class="dot-separator">•</span>
+                            <span id="modalReporter" class="meta-reporter">Reporter</span>
+                            <span class="dot-separator">•</span>
+                            <span id="modalDate" class="meta-date">Date</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-image-container">
+                        <img id="modalImage" src="" alt="Incident Image" class="incident-img">
+                        <div id="modalNoImage" class="no-image-placeholder" style="display: none;">
+                            <span class="material-icons">image_not_supported</span>
+                            <p>No Image Available</p>
+                        </div>
+                    </div>
+
+                    <div class="description-box">
+                        <h4>Description</h4>
+                        <p id="modalDescription">Description text...</p>
+                    </div>
+
+                    <div class="location-box">
+                        <span class="material-icons icon-loc">location_on</span>
+                        <span id="modalLocation">Location address</span>
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="comments-section">
+                        <div class="comments-header">
+                            <h3>Comments</h3>
+                            <span class="comment-count" id="commentCount">0</span>
+                        </div>
+
+                        <div id="commentsList" class="comments-list">
+                            <p class="no-comments">No comments yet.</p>
+                        </div>
+
+                        <div class="add-comment">
+                            <textarea id="newComment" placeholder="Write a comment..." rows="1"></textarea>
+                            <button id="submitCommentBtn" class="btn-comment">
+                                <span class="material-icons">send</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profileModal" class="modal">
+            <div class="modal-content profile-modal-content">
+                <span class="close-modal" id="closeProfileModal">&times;</span>
+
+                <div class="profile-header-background"></div>
+                <div class="profile-avatar">
+                    <span class="material-icons profile-icon">person_pin</span>
+                </div>
+
+                <div class="profile-info-section">
+
+                    <div class="info-group">
+                        <p class="label">User ID</p>
+                        <div class="info-row">
+                            <p id="profileUserId" class="value"></p>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Display Name</p>
+                        <div class="info-row">
+                            <p id="profileDisplayName" class="value">Username</p>
+                            <button class="edit-btn" data-field="displayName">Edit</button>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Email</p>
+                        <div class="info-row">
+                            <p id="profileEmail" class="value">***********@gmail.com</p>
+                            <button class="edit-btn" data-field="email">Edit</button>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Role</p>
+                        <div class="info-row">
+                            <p id="profileRole" class="value">User/Admin/Moderator</p>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <p class="label">Password</p>
+                        <div class="info-row" id="passwordInfoRow">
+                            <p class="value" id="profilePasswordValue">**************</p>
+                            <button class="edit-btn" data-field="password">Edit</button>
+                        </div>
+
+                        <div id="passwordEditFields" style="display: none;">
+                            <input type="password" id="currentPasswordInput" placeholder="Current Password"
+                                class="profile-edit-input" autocomplete="off">
+                            <input type="password" id="newPasswordInput" placeholder="New Password"
+                                class="profile-edit-input" autocomplete="off">
+
+                            <div class="password-feedback">
+                                <span class="strength-msg" id="passwordStrengthMsg"></span>
+                                <p class="requirements-msg" id="passwordRequirementsMsg"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-action-bar" style="display: none;" id="profileActionBar">
+                    <button class="cancel-btn" id="cancelProfileEdit">Cancel</button>
+                    <button class="save-btn" id="saveProfileChanges">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="js/profanity-filter.js"></script>
+    <script src="js/site.js?v=1.0"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>

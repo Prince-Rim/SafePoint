@@ -1,0 +1,60 @@
+{
+    "profiles": {
+        "SafePoint IRS": {
+            "commandName": "Project",
+            "launchBrowser": true,
+            "launchUrl": "landing",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "applicationUrl": "https://localhost:7197;http://localhost:5041",
+            "dotnetRunMessages": true
+        },
+        "http": {
+            "commandName": "Project",
+            "launchBrowser": true,
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "dotnetRunMessages": true,
+            "applicationUrl": "http://localhost:5041"
+        },
+        "https": {
+            "commandName": "Project",
+            "launchBrowser": true,
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "dotnetRunMessages": true,
+            "applicationUrl": "https://localhost:7197,http://localhost:5041"
+        },
+        "IIS Express": {
+            "commandName": "IISExpress",
+            "launchBrowser": true,
+            "launchUrl": "landing.html",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "applicationUrl": "https://localhost:44373", 
+            "httpProtocol": "Http1" 
+        },
+        "WSL": {
+            "commandName": "WSL2",
+            "launchBrowser": true,
+            "launchUrl": "https://localhost:7197",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:7197,http://localhost:5041"
+            },
+            "distributionName": ""
+        }
+    },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60287/",
+      "sslPort": 44373
+    }
+  }
+}
