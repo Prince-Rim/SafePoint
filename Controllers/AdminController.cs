@@ -46,6 +46,22 @@ namespace SafePoint_IRS.Controllers
             return moderator != null;
         }
 
+        private async Task<bool> HasPermission(string adminId, string permission)
+        {
+            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid.ToString() == adminId && a.IsActive);
+            if (admin == null) return false;
+            
+            if (admin.IsSuperAdmin) return true;
+
+            if (string.IsNullOrEmpty(admin.Permissions)) return false;
+
+            var permissions = admin.Permissions.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                               .Select(p => p.Trim())
+                                               .ToList();
+            
+            return permissions.Contains(permission);
+        }
+
         [HttpPut("update-user/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto userDto)
         {
@@ -57,6 +73,11 @@ namespace SafePoint_IRS.Controllers
             if (!await IsAdmin(requester.RequesterId))
             {
                 return Unauthorized(new { error = "Incorrect admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageUsers"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to manage users." });
             }
 
             if (!Guid.TryParse(id, out Guid userIdGuid))
@@ -119,6 +140,11 @@ namespace SafePoint_IRS.Controllers
             if (!await IsAdmin(requester.RequesterId))
             {
                 return Unauthorized(new { error = "Invalid admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageModerators"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to manage moderators." });
             }
 
             if (!Guid.TryParse(id, out Guid modIdGuid))
@@ -188,6 +214,11 @@ namespace SafePoint_IRS.Controllers
                 return Unauthorized(new { error = "Invalid admin credentials." });
             }
 
+            if (!await HasPermission(requester.RequesterId, "ManageAdmins"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to manage admins." });
+            }
+
             if (!Guid.TryParse(id, out Guid adminIdGuid))
             {
                 return BadRequest(new { error = "Invalid Admin ID format." });
@@ -250,6 +281,11 @@ namespace SafePoint_IRS.Controllers
                 return Unauthorized(new { error = "Invalid admin credentials." });
             }
 
+            if (!await HasPermission(requester.RequesterId, "ManageUsers"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to delete users." });
+            }
+
             if (!Guid.TryParse(id, out Guid userIdGuid))
             {
                 return BadRequest(new { error = "Invalid User ID format." });
@@ -302,6 +338,11 @@ namespace SafePoint_IRS.Controllers
                 return Unauthorized(new { error = "Invalid admin credentials." });
             }
 
+            if (!await HasPermission(requester.RequesterId, "ManageModerators"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to delete moderators." });
+            }
+
             if (!Guid.TryParse(id, out Guid modIdGuid))
             {
                 return BadRequest(new { error = "Invalid Moderator ID format." });
@@ -337,6 +378,11 @@ namespace SafePoint_IRS.Controllers
             if (!await IsAdmin(requester.RequesterId))
             {
                 return Unauthorized(new { error = "Invalid admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageAdmins"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to delete admins." });
             }
 
             if (!Guid.TryParse(id, out Guid adminIdGuid))
@@ -384,9 +430,10 @@ namespace SafePoint_IRS.Controllers
                     return Unauthorized(new { error = "Only Admin can create Admin accounts." });
                 }
 
-                if (!await IsAdmin(requester.RequesterId))
+                var requesterAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid.ToString() == requester.RequesterId);
+                if (requesterAdmin == null || !requesterAdmin.IsSuperAdmin)
                 {
-                    return Unauthorized(new { error = "Invalid admin credentials." });
+                    return Unauthorized(new { error = "Only Super Admin can create other Admin accounts." });
                 }
 
                 if (await _context.Admins.AnyAsync(a => a.Username == adminDto.Username || a.Email == adminDto.Email) ||
@@ -406,7 +453,9 @@ namespace SafePoint_IRS.Controllers
                     Contact = adminDto.Contact,
                     Adminpassword = hashedPassword,
                     UserRole = "Admin",
-                    IsActive = true
+                    IsActive = true,
+                    IsSuperAdmin = false, // Always false for created admins
+                    Permissions = adminDto.Permissions
                 };
 
                 _context.Admins.Add(newAdmin);
@@ -440,6 +489,10 @@ namespace SafePoint_IRS.Controllers
                 if (requester.RequesterRole == "Admin")
                 {
                     isAuthorized = await IsAdmin(requester.RequesterId);
+                    if (isAuthorized && !await HasPermission(requester.RequesterId, "ManageUsers"))
+                    {
+                        return StatusCode(403, new { error = "You do not have permission to create users." });
+                    }
                 }
                 else if (requester.RequesterRole == "Moderator")
                 {
@@ -503,6 +556,11 @@ namespace SafePoint_IRS.Controllers
                 if (!await IsAdmin(requester.RequesterId))
                 {
                     return Unauthorized(new { error = "Invalid admin credentials." });
+                }
+
+                if (!await HasPermission(requester.RequesterId, "ManageModerators"))
+                {
+                    return StatusCode(403, new { error = "You do not have permission to create moderators." });
                 }
 
                 modDto.UserRole = "Moderator";
@@ -752,6 +810,21 @@ namespace SafePoint_IRS.Controllers
         [HttpPost("recover/{id}")]
         public async Task<IActionResult> RecoverIncident(int id)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null || requester.RequesterRole != "Admin")
+            {
+                return Unauthorized(new { error = "Only Admin can recover incidents." });
+            }
+            if (!await IsAdmin(requester.RequesterId))
+            {
+                return Unauthorized(new { error = "Invalid admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageIncidents"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to recover incidents." });
+            }
+
             var rejected = await _context.RejectedIncidents.FindAsync(id);
             if (rejected == null)
             {
@@ -795,6 +868,21 @@ namespace SafePoint_IRS.Controllers
         [HttpPost("validate/{incidentId}")]
         public async Task<IActionResult> ValidateIncident(int incidentId, [FromQuery] bool isAccepted)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null || requester.RequesterRole != "Admin")
+            {
+                return Unauthorized(new { error = "Only Admin can validate incidents." });
+            }
+            if (!await IsAdmin(requester.RequesterId))
+            {
+                return Unauthorized(new { error = "Invalid admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageIncidents"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to validate incidents." });
+            }
+
             var incident = await _context.Incident
                 .Include(i => i.ValidStatus)
                 .FirstOrDefaultAsync(i => i.IncidentID == incidentId);
@@ -814,7 +902,9 @@ namespace SafePoint_IRS.Controllers
                 incident.ValidStatus.Validation_Status = true;
                 incident.ValidStatus.Validation_Date = DateTime.UtcNow;
                 
-                var requester = GetRequesterInfo();
+                
+                // var requester = GetRequesterInfo(); // Already defined at top
+
                 if (requester != null && Guid.TryParse(requester.RequesterId, out Guid validatorId))
                 {
                     incident.ValidStatus.ValidatorID = validatorId;
@@ -845,7 +935,8 @@ namespace SafePoint_IRS.Controllers
                     RejectionDate = DateTime.UtcNow
                 };
 
-                var requester = GetRequesterInfo();
+                // var requester = GetRequesterInfo(); // Already defined at top
+
                 if (requester != null && Guid.TryParse(requester.RequesterId, out Guid rejectorId))
                 {
                     rejected.RejectorID = rejectorId;
@@ -862,6 +953,21 @@ namespace SafePoint_IRS.Controllers
         [HttpPost("unvalidate/{incidentId}")]
         public async Task<IActionResult> UnvalidateIncident(int incidentId)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null || requester.RequesterRole != "Admin")
+            {
+                return Unauthorized(new { error = "Only Admin can unvalidate incidents." });
+            }
+            if (!await IsAdmin(requester.RequesterId))
+            {
+                return Unauthorized(new { error = "Invalid admin credentials." });
+            }
+
+            if (!await HasPermission(requester.RequesterId, "ManageIncidents"))
+            {
+                return StatusCode(403, new { error = "You do not have permission to unvalidate incidents." });
+            }
+
             var incident = await _context.Incident
                 .Include(i => i.ValidStatus)
                 .FirstOrDefaultAsync(i => i.IncidentID == incidentId);
@@ -903,6 +1009,11 @@ namespace SafePoint_IRS.Controllers
             if (requester.RequesterRole == "Admin")
             {
                 if (!await IsAdmin(requester.RequesterId)) return Unauthorized(new { error = "Invalid admin credentials." });
+                
+                if (!await HasPermission(requester.RequesterId, "ManageIncidents"))
+                {
+                    return StatusCode(403, new { error = "You do not have permission to delete incidents." });
+                }
             }
             else
             {

@@ -147,4 +147,5 @@ C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My 
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.pdb
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.genruntimeconfig.cache
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\ref\SafePoint IRS.dll
+C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.sourcelink.json
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -1254,6 +1254,10 @@
           "password": {
             "type": "string",
             "nullable": true
+          },
+          "permissions": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1391,6 +1395,22 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "permissions": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1459,6 +1479,18 @@
             "format": "date-time",
             "nullable": true
           },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
           "area_Code": {
             "type": "string",
             "nullable": true
@@ -1514,6 +1546,18 @@
           "suspensionEndTime": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "middleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
             "nullable": true
           }
         },
