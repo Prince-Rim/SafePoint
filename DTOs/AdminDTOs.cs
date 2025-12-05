@@ -13,6 +13,6 @@ namespace SafePoint_IRS.DTOs
 
     public class UpdateAdminDto : UpdateUserDto
     {
-        
+        public string? Permissions { get; set; }
     }
 }

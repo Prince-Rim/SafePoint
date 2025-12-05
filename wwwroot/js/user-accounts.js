@@ -92,6 +92,7 @@ function renderAccountsTable() {
             ...a,
             accountType: 'Admin',
             id: a.adminid,
+            Permissions: a.permissions || a.Permissions,
             isActive: (a.isActive !== undefined ? a.isActive : a.IsActive),
             suspensionEndTime: a.SuspensionEndTime
         }))
@@ -162,7 +163,14 @@ async function createAccount(formData) {
         };
 
         let endpoint;
-        if (role === 'admin') endpoint = '/Admin/create-admin';
+        if (role === 'admin') {
+            endpoint = '/Admin/create-admin';
+            const selectedPermissions = Array.from(document.querySelectorAll('#createUserModal input[name="permissions"]:checked'))
+                .map(cb => cb.value)
+                .join(',');
+
+            payload.Permissions = selectedPermissions;
+        }
         else if (role === 'moderator') endpoint = '/Admin/create-moderator';
         else if (role === 'user') endpoint = '/Admin/create-user';
         else return;
@@ -202,14 +210,13 @@ function editAccount(id, type) {
     }
 
     if (account) {
-        console.log('Editing account:', account);
-        console.log('Suspension End Time:', account.SuspensionEndTime || account.suspensionEndTime);
         const accountData = {
             ...account,
             accountType: type,
             id: id,
             area_Code: account.Area_Code || account.area_Code,
-            suspensionEndTime: account.SuspensionEndTime || account.suspensionEndTime
+            suspensionEndTime: account.SuspensionEndTime || account.suspensionEndTime,
+            Permissions: account.permissions || account.Permissions
         };
         openEditModal(accountData);
     } else {
@@ -219,6 +226,7 @@ function editAccount(id, type) {
 
 function openEditModal(account) {
     const modal = document.getElementById('editUserModal');
+    console.log('Opening Edit Modal for account:', account); // DEBUG LOG
     if (!modal) {
         alert("Edit Modal structure not found in HTML.");
         return;
@@ -248,14 +256,10 @@ function openEditModal(account) {
 
         if (statusSelect.value === 'inactive') {
             suspensionGroup.style.display = 'flex';
-            if (account.suspensionEndTime) {
-                let dateStr = account.suspensionEndTime;
-                if (dateStr && dateStr.length > 16) {
-                    dateStr = dateStr.substring(0, 16);
-                }
-                suspensionInput.value = dateStr;
+            if (account.suspensionEndTime && account.suspensionEndTime.length > 16) {
+                suspensionInput.value = account.suspensionEndTime.substring(0, 16);
             } else {
-                suspensionInput.value = '';
+                suspensionInput.value = account.suspensionEndTime || '';
             }
         } else {
             suspensionGroup.style.display = 'none';
@@ -278,12 +282,37 @@ function openEditModal(account) {
         if (areaGroup) areaGroup.style.display = 'none';
     }
 
+    // Handle Admin Permissions Visibility and Status
+    const permissionGroup = document.getElementById('edit-permissions-group');
+    const permissionCheckboxes = document.querySelectorAll('#edit-permission-checkboxes input[name="permissions"]');
+
+    if (account.accountType === 'Admin') {
+        if (permissionGroup) permissionGroup.style.display = 'flex';
+
+        // FIX: Parse the comma-separated Permissions string into an array and check boxes
+        const currentPermissions = (account.Permissions || "")
+            .split(',')
+            .map(p => p.trim())
+            .filter(p => p);
+
+        console.log('Parsed Permissions:', currentPermissions); // DEBUG LOG
+
+        permissionCheckboxes.forEach(checkbox => {
+            checkbox.checked = currentPermissions.includes(checkbox.value);
+        });
+
+    } else {
+        if (permissionGroup) permissionGroup.style.display = 'none';
+        permissionCheckboxes.forEach(checkbox => checkbox.checked = false);
+    }
+
     modal.style.display = 'flex';
 }
 
 async function updateAccount(formData) {
     const id = formData.get('id');
     const role = formData.get('role');
+    const originalRole = formData.get('original-role');
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
 
@@ -311,9 +340,9 @@ async function updateAccount(formData) {
 
     try {
         let endpoint = '';
-        if (role === 'admin') endpoint = `/Admin/update-admin/${id}`;
-        else if (role === 'moderator') endpoint = `/Admin/update-moderator/${id}`;
-        else if (role === 'user') endpoint = `/Admin/update-user/${id}`;
+        if (originalRole === 'admin') endpoint = `/Admin/update-admin/${id}`;
+        else if (originalRole === 'moderator') endpoint = `/Admin/update-moderator/${id}`;
+        else if (originalRole === 'user') endpoint = `/Admin/update-user/${id}`;
         else return;
 
         const headers = {
@@ -333,8 +362,14 @@ async function updateAccount(formData) {
         if (password) {
             payload.password = password;
         }
-        if (role === 'moderator') {
+
+        if (originalRole === 'moderator') {
             payload.area_Code = formData.get('area');
+        } else if (originalRole === 'admin') {
+            const selectedPermissions = Array.from(document.querySelectorAll('#editUserModal input[name="permissions"]:checked'))
+                .map(cb => cb.value)
+                .join(',');
+            payload.Permissions = selectedPermissions;
         }
 
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -345,10 +380,10 @@ async function updateAccount(formData) {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || `Failed to update ${role}`);
+            throw new Error(error.error || `Failed to update ${originalRole}`);
         }
 
-        alert(`${role} updated successfully!`);
+        alert(`${originalRole} updated successfully!`);
         closeEditModal();
         loadAllAccounts();
     } catch (error) {
@@ -403,6 +438,7 @@ function closeModal() {
         modal.style.display = 'none';
         const form = modal.querySelector('form');
         if (form) form.reset();
+        setupRoleChange();
     }
 }
 
@@ -413,6 +449,7 @@ function closeEditModal() {
         modal.querySelector('form').reset();
     }
 }
+
 function setupForm() {
     const form = document.querySelector('#createUserModal form');
     if (!form) return;
@@ -450,6 +487,10 @@ function setupEditModalListeners() {
     if (roleSelect && areaGroup) {
         roleSelect.addEventListener('change', (e) => {
             areaGroup.style.display = e.target.value === 'moderator' ? 'flex' : 'none';
+            const permissionGroup = document.getElementById('edit-permissions-group');
+            if (permissionGroup) {
+                permissionGroup.style.display = e.target.value === 'admin' ? 'flex' : 'none';
+            }
         });
     }
 
@@ -492,22 +533,30 @@ function setupSearch() {
 
 function setupRoleChange() {
     const roleSelect = document.getElementById('role');
-    // Using querySelector to find the form-group containing the area select
     const areaGroup = document.querySelector('.form-group:has(#area)');
+    const permissionGroup = document.getElementById('create-permissions-group');
 
-    if (roleSelect && areaGroup) {
-        // Hide on initial load unless a role is pre-selected
+    if (roleSelect && areaGroup && permissionGroup) {
+        const toggleVisibility = (role) => {
+            areaGroup.style.display = role === 'moderator' ? 'flex' : 'none';
+            permissionGroup.style.display = role === 'admin' ? 'flex' : 'none';
+        };
+
         if (roleSelect.value !== 'moderator') {
             areaGroup.style.display = 'none';
         }
+        if (roleSelect.value !== 'admin') {
+            permissionGroup.style.display = 'none';
+        }
 
         roleSelect.addEventListener('change', (e) => {
+            toggleVisibility(e.target.value);
+
             if (e.target.value === 'moderator') {
-                areaGroup.style.display = 'flex';
                 const areaSelect = document.getElementById('area');
                 if (areaSelect) areaSelect.value = 'DEFAULT';
-            } else {
-                areaGroup.style.display = 'none';
+            } else if (e.target.value === 'admin') {
+                document.querySelectorAll('#createUserModal input[name="permissions"]').forEach(cb => cb.checked = false);
             }
         });
     }

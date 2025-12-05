@@ -133,6 +133,7 @@ C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My 
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.RazorAssemblyInfo.cache
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.RazorAssemblyInfo.cs
+C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.sourcelink.json
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -141,11 +142,10 @@ C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My 
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoin.CB97A4EB.Up2Date
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.dll
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\refint\SafePoint IRS.dll
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.pdb
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.genruntimeconfig.cache
 C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\ref\SafePoint IRS.dll
-C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\SafePoint IRS.sourcelink.json
-C:\Users\azuce\OneDrive\Documents\Visual Studio 2022\Code Snippets\Visual C#\My Code Snippets\SafePoint IRS\SafePoint IRS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

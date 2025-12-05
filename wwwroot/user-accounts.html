@@ -118,6 +118,17 @@
                             <option value="admin">Admin</option>
                         </select>
                     </div>
+                    <div class="form-group admin-only-permission-group" id="create-permissions-group" style="display: none;">
+                        <label for="permissions">Admin Permissions</label>
+                        <div class="permission-checkboxes">
+                            <label><input type="checkbox" name="permissions" value="ManageUsers"> Manage Users</label>
+                            <label><input type="checkbox" name="permissions" value="ManageModerators"> Manage Moderators</label>
+                            <label><input type="checkbox" name="permissions" value="ManageAdmins"> Manage Admins</label>
+                            <label><input type="checkbox" name="permissions" value="ManageIncidents"> Manage Incidents</label>
+                            <label><input type="checkbox" name="permissions" value="ManageAreas"> Manage Areas</label>
+                        </div>
+                        <span class="help-text">Select specific permissions for this admin.</span>
+                    </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required minlength="8">
@@ -172,8 +183,10 @@
                     <div class="form-group" id="suspension-group" style="display: none;">
                         <label for="edit-suspension-end">Suspension End Time</label>
                         <input type="datetime-local" id="edit-suspension-end" name="suspensionEnd">
-                        <span class="help-text" style="color: #d32f2f; font-size: 0.8rem;">Leave blank for indefinite
-                            suspension.</span>
+                        <span class="help-text" style="color: #d32f2f; font-size: 0.8rem;">
+                            Leave blank for indefinite
+                            suspension.
+                        </span>
                     </div>
 
                     <div class="form-group" id="suspension-spacer"></div>
@@ -185,6 +198,17 @@
                         <span class="help-text">Area is only relevant for Moderators.</span>
                     </div>
 
+                    <div class="form-group admin-only-permission-group" id="edit-permissions-group" style="display: none;">
+                        <label for="edit-permissions">Admin Permissions</label>
+                        <div class="permission-checkboxes" id="edit-permission-checkboxes">
+                            <label><input type="checkbox" id="edit-perm-manageusers" name="permissions" value="ManageUsers"> Manage Users</label>
+                            <label><input type="checkbox" id="edit-perm-managemods" name="permissions" value="ManageModerators"> Manage Moderators</label>
+                            <label><input type="checkbox" id="edit-perm-manageadmins" name="permissions" value="ManageAdmins"> Manage Admins</label>
+                            <label><input type="checkbox" id="edit-perm-manageincidents" name="permissions" value="ManageIncidents"> Manage Incidents</label>
+                            <label><input type="checkbox" id="edit-perm-manageareas" name="permissions" value="ManageAreas"> Manage Areas</label>
+                        </div>
+                        <span class="help-text">Permissions are granted only to non-Super Admins.</span>
+                    </div>
                     <div class="form-group">
                         <label for="edit-role">User Role</label>
                         <select id="edit-role" name="role" required>
@@ -210,27 +234,6 @@
             </form>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const modal = document.getElementById('createUserModal');
-            const openBtn = document.getElementById('openModalBtn');
-            const closeLink = document.getElementById('closeModalLink');
-            modal.style.display = 'none';
-
-            openBtn.addEventListener('click', function () {
-                modal.style.display = 'flex';
-            });
-            closeLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                modal.style.display = 'none';
-            });
-            window.addEventListener('click', function (event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        });
-    </script>
     <script src="js/user-accounts.js"></script>
 </body>
 

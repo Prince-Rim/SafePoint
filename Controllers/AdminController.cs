@@ -233,6 +233,7 @@ namespace SafePoint_IRS.Controllers
             if (!string.IsNullOrEmpty(adminDto.Username)) admin.Username = adminDto.Username;
             if (!string.IsNullOrEmpty(adminDto.Email)) admin.Email = adminDto.Email;
             if (!string.IsNullOrEmpty(adminDto.Contact)) admin.Contact = adminDto.Contact;
+            if (adminDto.Permissions != null) admin.Permissions = adminDto.Permissions;
 
             if (!string.IsNullOrEmpty(adminDto.Password))
             {
@@ -725,6 +726,7 @@ namespace SafePoint_IRS.Controllers
             }
 
             var admins = await _context.Admins
+                .Where(a => !a.IsSuperAdmin)
                 .Select(a => new
                 {
                     a.Adminid,
@@ -733,7 +735,8 @@ namespace SafePoint_IRS.Controllers
                     a.Contact,
                     a.UserRole,
                     a.IsActive,
-                    a.SuspensionEndTime
+                    a.SuspensionEndTime,
+                    a.Permissions
                 })
                 .ToListAsync();
 
