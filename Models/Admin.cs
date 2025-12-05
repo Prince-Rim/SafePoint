@@ -16,6 +16,17 @@ namespace SafePoint_IRS.Models
 
         [Required]
         [MaxLength(50)]
+        public string LastName { get; set; } = string.Empty;
+
+        [MaxLength(50)]
+        public string? MiddleName { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(50)]
         public string Email { get; set; } = string.Empty;
 
         [Required]
@@ -33,6 +44,10 @@ namespace SafePoint_IRS.Models
 
         [Required]
         public bool IsActive { get; set; } = true;
+
+        public bool IsSuperAdmin { get; set; } = false;
+
+        public string? Permissions { get; set; }
 
         public DateTime? SuspensionEndTime { get; set; }
     }

@@ -651,3 +651,13 @@ main {
 .strength-strong {
     color: #28a745;
 }
+.footer {
+    background-color: #397DFA;
+    color: white;
+    text-align: center;
+    padding: 18px 0;
+    width: 100%;
+    font-size: 0.95em;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+    margin-top: auto;
+}
