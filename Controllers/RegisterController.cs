@@ -37,6 +37,9 @@ namespace SafePoint_IRS.Controllers
             {
                 Userid = Guid.NewGuid(),
                 Username = userDto.Username,
+                LastName = userDto.LastName,
+                MiddleName = userDto.MiddleName,
+                FirstName = userDto.FirstName,
                 Email = userDto.Email,
                 Contact = userDto.Contact,
                 Userpassword = hashedPassword,

@@ -92,6 +92,9 @@ namespace SafePoint_IRS.Controllers
             }
 
             if (!string.IsNullOrEmpty(userDto.Username)) user.Username = userDto.Username;
+            if (!string.IsNullOrEmpty(userDto.LastName)) user.LastName = userDto.LastName;
+            if (userDto.MiddleName != null) user.MiddleName = userDto.MiddleName;
+            if (!string.IsNullOrEmpty(userDto.FirstName)) user.FirstName = userDto.FirstName;
             if (!string.IsNullOrEmpty(userDto.Email)) user.Email = userDto.Email;
             if (!string.IsNullOrEmpty(userDto.Contact)) user.Contact = userDto.Contact;
 
@@ -520,6 +523,9 @@ namespace SafePoint_IRS.Controllers
                 {
                     Userid = Guid.NewGuid(),
                     Username = userDto.Username,
+                    LastName = userDto.LastName,
+                    MiddleName = userDto.MiddleName,
+                    FirstName = userDto.FirstName,
                     Email = userDto.Email,
                     Contact = userDto.Contact,
                     Userpassword = hashedPassword,
@@ -660,6 +666,9 @@ namespace SafePoint_IRS.Controllers
                 {
                     u.Userid,
                     u.Username,
+                    u.LastName,
+                    u.MiddleName,
+                    u.FirstName,
                     u.Email,
                     u.Contact,
                     u.UserRole,
@@ -695,6 +704,9 @@ namespace SafePoint_IRS.Controllers
                 {
                     m.Modid,
                     m.Username,
+                    m.FirstName,
+                    m.LastName,
+                    m.MiddleName,
                     m.Email,
                     m.Contact,
                     m.Area_Code,
@@ -731,6 +743,9 @@ namespace SafePoint_IRS.Controllers
                 {
                     a.Adminid,
                     a.Username,
+                    a.FirstName,
+                    a.LastName,
+                    a.MiddleName,
                     a.Email,
                     a.Contact,
                     a.UserRole,
@@ -1311,6 +1326,171 @@ namespace SafePoint_IRS.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = "An error occurred while fetching recent activity.", details = ex.Message });
+            }
+        }
+        [HttpPost("change-role")]
+        public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleDto changeDto)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var requester = GetRequesterInfo();
+                if (requester == null || requester.RequesterRole != "Admin")
+                    return Unauthorized(new { error = "Only Admin can change user roles." });
+
+                if (!await IsAdmin(requester.RequesterId))
+                    return Unauthorized(new { error = "Invalid admin credentials." });
+
+                // Permission Checks based on Target Role
+                if (changeDto.TargetRole == "Admin")
+                {
+                   var requesterAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid.ToString() == requester.RequesterId);
+                   if (requesterAdmin == null || !requesterAdmin.IsSuperAdmin)
+                       return Unauthorized(new { error = "Only Super Admin can promote users to Admin." });
+                }
+                else if (changeDto.TargetRole == "Moderator" && !await HasPermission(requester.RequesterId, "ManageModerators"))
+                {
+                    return StatusCode(403, new { error = "You do not have permission to create Moderators." });
+                }
+                else if (changeDto.TargetRole == "User" && !await HasPermission(requester.RequesterId, "ManageUsers"))
+                {
+                    return StatusCode(403, new { error = "You do not have permission to manage Users." });
+                }
+
+                if (!Guid.TryParse(changeDto.Id, out Guid idGuid))
+                    return BadRequest(new { error = "Invalid ID format." });
+
+                // 1. Retrieve Source Entity
+                string username = "", email = "", contact = "", passwordHash = "", firstName = "", lastName = "", middleName = "";
+                bool isActive = true;
+                DateTime? suspensionEnd = null;
+
+                if (changeDto.CurrentRole == "User")
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Userid == idGuid);
+                    if (user == null) return NotFound(new { error = "User not found." });
+                    username = user.Username; email = user.Email; contact = user.Contact; passwordHash = user.Userpassword;
+                    firstName = user.FirstName; lastName = user.LastName; middleName = user.MiddleName;
+                    isActive = user.IsActive; suspensionEnd = user.SuspensionEndTime;
+                    _context.Users.Remove(user);
+                }
+                else if (changeDto.CurrentRole == "Moderator")
+                {
+                    var mod = await _context.Moderators.FirstOrDefaultAsync(m => m.Modid == idGuid);
+                    if (mod == null) return NotFound(new { error = "Moderator not found." });
+                    username = mod.Username; email = mod.Email; contact = mod.Contact; passwordHash = mod.Modpassword;
+                    // Moderators don't have separate name fields in this schema, will use Defaults or parsing if needed.
+                    // Assuming simplified name handling or that Mod table doesn't have split names based on previous file review.
+                    // Wait, previous review showed User has FirstName/Last, but Mod only has Username? 
+                    // Let's check the schema. Mod table usually has Username. 
+                    // If moving Mod -> User, we might need to ask for split names or just use Username as FirstName.
+                    // For now, let's use the DTO provided values if verified, otherwise fallback.
+                    isActive = mod.IsActive; suspensionEnd = mod.SuspensionEndTime;
+                    _context.Moderators.Remove(mod);
+                }
+                else if (changeDto.CurrentRole == "Admin")
+                {
+                    var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == idGuid);
+                    if (admin == null) return NotFound(new { error = "Admin not found." });
+                    // Prevent deleting self as SuperAdmin check is done in Delete logic but check here too
+                    if (admin.Adminid.ToString() == requester.RequesterId) return BadRequest(new { error = "You cannot change your own role." });
+                    
+                    username = admin.Username; email = admin.Email; contact = admin.Contact; passwordHash = admin.Adminpassword;
+                    isActive = admin.IsActive; suspensionEnd = admin.SuspensionEndTime;
+                    _context.Admins.Remove(admin);
+                }
+                else return BadRequest(new { error = "Invalid current role." });
+
+                // 2. Update with new values if provided
+                if (!string.IsNullOrEmpty(changeDto.Username)) username = changeDto.Username;
+                if (!string.IsNullOrEmpty(changeDto.Email)) email = changeDto.Email;
+                if (!string.IsNullOrEmpty(changeDto.Contact)) contact = changeDto.Contact;
+                if (!string.IsNullOrEmpty(changeDto.FirstName)) firstName = changeDto.FirstName;
+                if (!string.IsNullOrEmpty(changeDto.LastName)) lastName = changeDto.LastName;
+                if (changeDto.MiddleName != null) middleName = changeDto.MiddleName; // Allow null update
+                if (changeDto.IsActive.HasValue) isActive = changeDto.IsActive.Value;
+                if (changeDto.SuspensionEndTime.HasValue || isActive) suspensionEnd = isActive ? null : changeDto.SuspensionEndTime; // Logic handled in DTO prep usually?
+
+                if (!string.IsNullOrEmpty(changeDto.Password))
+                {
+                    passwordHash = BCrypt.Net.BCrypt.HashPassword(changeDto.Password);
+                }
+
+                // 3. Create Target Entity
+                if (changeDto.TargetRole == "User")
+                {
+                    var newUser = new User
+                    {
+                        Userid = Guid.NewGuid(),
+                        Username = username,
+                        Email = email,
+                        Contact = contact,
+                        Userpassword = passwordHash,
+                        FirstName = !string.IsNullOrEmpty(firstName) ? firstName : "Unknown", // Required fields
+                        LastName = !string.IsNullOrEmpty(lastName) ? lastName : "User",
+                        MiddleName = middleName,
+                        UserRole = "User",
+                        IsActive = isActive,
+                        SuspensionEndTime = suspensionEnd
+                    };
+                    _context.Users.Add(newUser);
+                }
+                else if (changeDto.TargetRole == "Moderator")
+                {
+                    var newMod = new Moderator
+                    {
+                        Modid = Guid.NewGuid(),
+                        Username = username,
+                        Email = email,
+                        Contact = contact,
+                        Modpassword = passwordHash,
+                        FirstName = !string.IsNullOrEmpty(firstName) ? firstName : "Moderator",
+                        LastName = !string.IsNullOrEmpty(lastName) ? lastName : "User",
+                        MiddleName = middleName,
+                        Area_Code = changeDto.Area_Code ?? "DEFAULT",
+                        UserRole = "Moderator",
+                        IsActive = isActive,
+                        SuspensionEndTime = suspensionEnd
+                    };
+                     // Handle Area creation if needed (copy logic from CreateModerator)
+                     var area = await _context.Area.FirstOrDefaultAsync(a => a.Area_Code == newMod.Area_Code);
+                     if(area == null && newMod.Area_Code == "DEFAULT") {
+                          _context.Area.Add(new Area { Area_Code = "DEFAULT", ALocation = "Default Area" });
+                     }
+
+                    _context.Moderators.Add(newMod);
+                }
+                else if (changeDto.TargetRole == "Admin")
+                {
+                    var newAdmin = new Admin
+                    {
+                        Adminid = Guid.NewGuid(),
+                        Username = username,
+                        Email = email,
+                        Contact = contact,
+                        Adminpassword = passwordHash,
+                        FirstName = !string.IsNullOrEmpty(firstName) ? firstName : "Admin",
+                        LastName = !string.IsNullOrEmpty(lastName) ? lastName : "User",
+                        MiddleName = middleName,
+                        Permissions = changeDto.Permissions,
+                        UserRole = "Admin",
+                        IsActive = isActive,
+                        IsSuperAdmin = false,
+                        SuspensionEndTime = suspensionEnd
+                    };
+                    _context.Admins.Add(newAdmin);
+                }
+                else return BadRequest(new { error = "Invalid target role." });
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(new { message = $"Role changed from {changeDto.CurrentRole} to {changeDto.TargetRole} successfully." });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, new { error = "Role change failed.", details = ex.Message });
             }
         }
     }

@@ -154,12 +154,16 @@ async function createAccount(formData) {
             'X-Requester-Role': adminRole
         };
         const payload = {
-            username: formData.get('username'),
-            email: formData.get('email'),
-            contact: formData.get('contact'),
-            password: password,
-            userRole: role === 'user' ? 'User' : undefined,
-            area_Code: role === 'moderator' ? (formData.get('area') || 'DEFAULT') : undefined
+            FirstName: formData.get('firstname'),
+            LastName: formData.get('lastname'),
+            MiddleName: formData.get('middlename'),
+
+            Username: formData.get('username'),
+            Email: formData.get('email'),
+            Contact: formData.get('contact'),
+            Password: password,
+            UserRole: role === 'user' ? 'User' : undefined,
+            Area_Code: role === 'moderator' ? (formData.get('area') || 'DEFAULT') : undefined
         };
 
         let endpoint;
@@ -226,7 +230,7 @@ function editAccount(id, type) {
 
 function openEditModal(account) {
     const modal = document.getElementById('editUserModal');
-    console.log('Opening Edit Modal for account:', account); // DEBUG LOG
+    console.log('Opening Edit Modal for account:', account);
     if (!modal) {
         alert("Edit Modal structure not found in HTML.");
         return;
@@ -237,6 +241,11 @@ function openEditModal(account) {
 
     document.getElementById('edit-id').value = account.id;
     document.getElementById('edit-original-role').value = account.accountType.toLowerCase();
+
+    document.getElementById('edit-firstname').value = account.firstname || account.firstName || account.FirstName || '';
+    document.getElementById('edit-lastname').value = account.lastname || account.lastName || account.LastName || '';
+    document.getElementById('edit-middlename').value = account.middlename || account.middleName || account.MiddleName || '';
+
     document.getElementById('edit-username').value = account.username || '';
     document.getElementById('edit-email').value = account.email || '';
     document.getElementById('edit-contact').value = account.contact || '';
@@ -282,20 +291,18 @@ function openEditModal(account) {
         if (areaGroup) areaGroup.style.display = 'none';
     }
 
-    // Handle Admin Permissions Visibility and Status
     const permissionGroup = document.getElementById('edit-permissions-group');
     const permissionCheckboxes = document.querySelectorAll('#edit-permission-checkboxes input[name="permissions"]');
 
     if (account.accountType === 'Admin') {
         if (permissionGroup) permissionGroup.style.display = 'flex';
 
-        // FIX: Parse the comma-separated Permissions string into an array and check boxes
         const currentPermissions = (account.Permissions || "")
             .split(',')
             .map(p => p.trim())
             .filter(p => p);
 
-        console.log('Parsed Permissions:', currentPermissions); // DEBUG LOG
+        console.log('Parsed Permissions:', currentPermissions);
 
         permissionCheckboxes.forEach(checkbox => {
             checkbox.checked = currentPermissions.includes(checkbox.value);
@@ -339,23 +346,77 @@ async function updateAccount(formData) {
     }
 
     try {
-        let endpoint = '';
-        if (originalRole === 'admin') endpoint = `/Admin/update-admin/${id}`;
-        else if (originalRole === 'moderator') endpoint = `/Admin/update-moderator/${id}`;
-        else if (originalRole === 'user') endpoint = `/Admin/update-user/${id}`;
-        else return;
-
         const headers = {
             'Content-Type': 'application/json',
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole
         };
 
+        let endpoint = '';
+
+        // Check for role change
+        if (role !== originalRole) {
+            endpoint = '/Admin/change-role';
+
+            const payload = {
+                Id: id,
+                CurrentRole: originalRole.charAt(0).toUpperCase() + originalRole.slice(1), // Capitalize
+                TargetRole: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize
+
+                // Common fields update
+                FirstName: formData.get('firstname'),
+                LastName: formData.get('lastname'),
+                MiddleName: formData.get('middlename'),
+                Username: formData.get('username'),
+                Email: formData.get('email'),
+                Contact: formData.get('contact'),
+                IsActive: isActive,
+                SuspensionEndTime: (isActive === false && suspensionEnd) ? suspensionEnd : null
+            };
+
+            if (password) payload.Password = password;
+
+            if (role === 'moderator') {
+                payload.Area_Code = formData.get('area');
+            } else if (role === 'admin') {
+                const selectedPermissions = Array.from(document.querySelectorAll('#editUserModal input[name="permissions"]:checked'))
+                    .map(cb => cb.value)
+                    .join(',');
+                payload.Permissions = selectedPermissions;
+            }
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                method: 'POST', // ChangeRole is POST
+                headers: headers,
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || `Failed to change role from ${originalRole} to ${role}`);
+            }
+
+            alert(`Role changed successfully!`);
+            closeEditModal();
+            loadAllAccounts();
+            return; // Exit function after successful role change
+        }
+
+        // Standard Update (No Role Change)
+        if (originalRole === 'admin') endpoint = `/Admin/update-admin/${id}`;
+        else if (originalRole === 'moderator') endpoint = `/Admin/update-moderator/${id}`;
+        else if (originalRole === 'user') endpoint = `/Admin/update-user/${id}`;
+        else return;
+
         const payload = {
-            username: formData.get('username'),
-            email: formData.get('email'),
-            contact: formData.get('contact'),
-            isActive: isActive,
+            FirstName: formData.get('firstname'),
+            LastName: formData.get('lastname'),
+            MiddleName: formData.get('middlename'),
+
+            Username: formData.get('username'),
+            Email: formData.get('email'),
+            Contact: formData.get('contact'),
+            IsActive: isActive,
             SuspensionEndTime: (isActive === false && suspensionEnd) ? suspensionEnd : null
         };
 

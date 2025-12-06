@@ -9,7 +9,8 @@ body {
     padding: 0;
 }
 
-.btn-secondary, .btn-primary {
+.btn-secondary,
+.btn-primary {
     text-decoration: none;
     display: inline-flex;
     justify-content: center;
@@ -28,9 +29,9 @@ body {
     margin-right: 10px;
 }
 
-    .btn-secondary:hover {
-        background-color: #f0f5ff;
-    }
+.btn-secondary:hover {
+    background-color: #f0f5ff;
+}
 
 .btn-primary {
     background-color: #397DFA;
@@ -39,9 +40,9 @@ body {
     box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
 }
 
-    .btn-primary:hover {
-        background-color: #2f6be0;
-    }
+.btn-primary:hover {
+    background-color: #2f6be0;
+}
 
 .modal-backdrop {
     display: none;
@@ -53,9 +54,10 @@ body {
     height: 100%;
     overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.4);
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 20px 0;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 .modal-content {
@@ -107,14 +109,14 @@ body {
     margin-bottom: 20px;
 }
 
-    .search-title-bar input {
-        flex-grow: 0;
-        width: 400px;
-        padding: 10px 15px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-family: 'Poppins', sans-serif;
-    }
+.search-title-bar input {
+    flex-grow: 0;
+    width: 400px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+}
 
 .search-table-btn {
     padding: 10px 15px;
@@ -154,38 +156,38 @@ body {
     font-size: 0.95rem;
 }
 
-    .user-list-card thead th:nth-child(1),
-    .user-list-card tbody td:nth-child(1) {
-        width: 17%;
-    }
+.user-list-card thead th:nth-child(1),
+.user-list-card tbody td:nth-child(1) {
+    width: 17%;
+}
 
-    .user-list-card thead th:nth-child(2),
-    .user-list-card tbody td:nth-child(2) {
-        width: 25%;
-    }
+.user-list-card thead th:nth-child(2),
+.user-list-card tbody td:nth-child(2) {
+    width: 25%;
+}
 
-    .user-list-card thead th:nth-child(3),
-    .user-list-card tbody td:nth-child(3) {
-        width: 18%;
-    }
+.user-list-card thead th:nth-child(3),
+.user-list-card tbody td:nth-child(3) {
+    width: 18%;
+}
 
-    .user-list-card thead th:nth-child(4),
-    .user-list-card tbody td:nth-child(4) {
-        width: 10%;
-        text-align: center;
-    }
+.user-list-card thead th:nth-child(4),
+.user-list-card tbody td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
 
-    .user-list-card thead th:nth-child(5),
-    .user-list-card tbody td:nth-child(5) {
-        width: 10%;
-        text-align: center;
-    }
+.user-list-card thead th:nth-child(5),
+.user-list-card tbody td:nth-child(5) {
+    width: 10%;
+    text-align: center;
+}
 
-    .user-list-card thead th:nth-child(6),
-    .user-list-card tbody td:nth-child(6) {
-        width: 20%;
-        text-align: center;
-    }
+.user-list-card thead th:nth-child(6),
+.user-list-card tbody td:nth-child(6) {
+    width: 20%;
+    text-align: center;
+}
 
 
 .user-list-card tbody td {
@@ -214,17 +216,18 @@ body {
     line-height: 1;
 }
 
-    .badge.active-status {
-        background-color: #e8f5e9;
-        color: #4CAF50;
-    }
+.badge.active-status {
+    background-color: #e8f5e9;
+    color: #4CAF50;
+}
 
-    .badge.inactive-status {
-        background-color: #ffcdd2;
-        color: #D32F2F;
-    }
+.badge.inactive-status {
+    background-color: #ffcdd2;
+    color: #D32F2F;
+}
 
-.btn-edit, .btn-delete {
+.btn-edit,
+.btn-delete {
     padding: 6px 12px;
     border: 1px solid transparent;
     border-radius: 6px;
@@ -241,9 +244,9 @@ body {
     border-color: #dbe3ff;
 }
 
-    .btn-edit:hover {
-        background-color: #dbe3ff;
-    }
+.btn-edit:hover {
+    background-color: #dbe3ff;
+}
 
 .btn-delete {
     background-color: #ffcdd2;
@@ -251,9 +254,9 @@ body {
     border-color: #ffb3b3;
 }
 
-    .btn-delete:hover {
-        background-color: #ffb3b3;
-    }
+.btn-delete:hover {
+    background-color: #ffb3b3;
+}
 
 .create-user-wrapper h1 {
     font-size: 1.8rem;
@@ -268,6 +271,34 @@ body {
     margin-bottom: 30px;
 }
 
+/* FIX 1: Add internal padding to separate form fields from the modal title */
+.modal-content form {
+    margin-top: 20px;
+    padding-top: 0;
+}
+
+/* FIX 2: Stop Middle Name (3rd form-group) from spanning two columns (Fixes width) */
+.modal-content .form-grid .form-group:nth-child(3) {
+    grid-column: 1 / 2;
+    /* Changed from span 2 to span 1 */
+    margin-bottom: 0;
+    min-height: 38px;
+    padding-bottom: 0;
+}
+
+/* FIX 3: Ensure subsequent fields (Username/Email) start correctly */
+.modal-content .form-grid .form-group:nth-child(4) {
+    grid-column: 2 / 3;
+    /* Push Username to column 2 so it sits next to Middle Name */
+}
+
+/* FIX 4: Ensure Password fields are always side-by-side by forcing New Password to a new row */
+#edit-password-group,
+#create-password-group {
+    grid-column: 1 / 2;
+}
+
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -275,33 +306,33 @@ body {
     margin-bottom: 0;
 }
 
-    .form-group label {
-        font-size: 0.9rem;
-        color: #555;
-        font-weight: 600;
-        margin-bottom: 3px;
-        line-height: 1.2;
-    }
+.form-group label {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
 
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px 15px;
-        height: 40px;
-        flex-grow: 0;
-        margin: 0;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 1rem;
-        transition: border 0.3s;
-    }
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px 15px;
+    height: 40px;
+    flex-grow: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
 
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border: 1px solid #397DFA;
-        }
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border: 1px solid #397DFA;
+}
 
 #suspension-spacer {
     display: none;
@@ -339,23 +370,23 @@ body {
     height: auto;
 }
 
-    .permission-checkboxes label {
-        display: flex;
-        align-items: center;
-        font-weight: 400;
-        font-size: 0.9rem;
-        padding: 4px 10px;
-        color: #444;
-        line-height: 1.5;
-        margin-bottom: 0;
-    }
+.permission-checkboxes label {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 0.9rem;
+    padding: 4px 10px;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
 
-    .permission-checkboxes input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-        margin-right: 8px;
-        flex-shrink: 0;
-    }
+.permission-checkboxes input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
 
 @media (max-width: 768px) {
     .form-grid {
