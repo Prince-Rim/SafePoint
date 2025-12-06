@@ -21,6 +21,22 @@
   },
   {
     "ContainingType": "SafePoint_IRS.Controllers.AdminController",
+    "Method": "ChangeRole",
+    "RelativePath": "api/Admin/change-role",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "changeDto",
+        "Type": "SafePoint_IRS.DTOs.ChangeRoleDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.AdminController",
     "Method": "CreateAdmin",
     "RelativePath": "api/Admin/create-admin",
     "HttpMethod": "POST",
