@@ -5,10 +5,18 @@ const TEMPLATE_ID = "template_9we53op";
 emailjs.init(PUBLIC_KEY);
 
 let generatedOTP = null;
+let userDataStorage = {};
 
-const form = document.getElementById("registerForm");
-const otpGroup = document.getElementById("otp-group");
-const registerBtn = document.getElementById("registerBtn");
+const registerContainer = document.getElementById("registrationContainer");
+const otpContainer = document.getElementById("otpContainer");
+const registerForm = document.getElementById("registerForm");
+const otpForm = document.getElementById("otpForm");
+const resendOtpBtn = document.getElementById("resendOtpBtn");
+
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const strengthMsg = document.getElementById("passwordStrength");
+const requirementsMsg = document.getElementById("passwordRequirements");
 
 const modal = document.getElementById('termsModal');
 const termsLink = document.getElementById('termsLink');
@@ -17,16 +25,10 @@ const acceptBtn = document.getElementById('acceptTerms');
 const rejectBtn = document.getElementById('rejectTerms');
 const checkbox = document.getElementById('terms');
 
-const passwordInput = document.getElementById("password");
-const togglePassword = document.getElementById("togglePassword");
-const strengthMsg = document.getElementById("passwordStrength");
-const requirementsMsg = document.getElementById("passwordRequirements");
-
 togglePassword.addEventListener("click", () => {
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
         togglePassword.textContent = "visibility";
-
     } else {
         passwordInput.type = "password";
         togglePassword.textContent = "visibility_off";
@@ -84,16 +86,13 @@ passwordInput.addEventListener("input", () => {
     requirementsMsg.textContent = "Password must be at least 10 characters, include uppercase, lowercase, number, and special character.";
 });
 
-
 function checkPasswordStrength(password) {
     let score = 0;
-
     if (password.length >= 10) score++;
     if (/[a-z]/.test(password)) score++;
     if (/[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
-
     if (score <= 2) return "weak";
     if (score === 3 || score === 4) return "medium";
     if (score === 5) return "strong";
@@ -103,7 +102,21 @@ function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000);
 }
 
-form.addEventListener('submit', async function (event) {
+async function sendOtpEmail(email) {
+    generatedOTP = generateOTP();
+    try {
+        await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+            to_email: email,
+            passcode: generatedOTP,
+        });
+        return true;
+    } catch (error) {
+        console.error("Failed to send OTP:", error);
+        return false;
+    }
+}
+
+registerForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     if (modal.style.display === 'block') {
@@ -111,12 +124,8 @@ form.addEventListener('submit', async function (event) {
         return;
     }
 
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const contact = document.getElementById("contact").value;
-    const password = passwordInput.value;
+    const password = document.getElementById("password").value;
     const confirm = document.getElementById("confirmPassword").value;
-    const otpInput = document.getElementById("otp").value;
 
     if (password !== confirm) {
         alert("Passwords do not match!");
@@ -128,56 +137,92 @@ form.addEventListener('submit', async function (event) {
         return;
     }
 
-    if (otpGroup.style.display === "block") {
-        if (otpInput == generatedOTP) {
+    const firstname = document.getElementById("firstname").value;
+    const lastname = document.getElementById("lastname").value;
+    const middlename = document.getElementById("middlename").value;
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const contact = document.getElementById("contact").value;
 
-            const userData = {
-                username,
-                email,
-                contact,
-                userpassword: password,
-                isActive: true
-            };
+    userDataStorage = {
+        FirstName: firstname,
+        LastName: lastname,
+        MiddleName: middlename,
+        Username: username,
+        Email: email,
+        Contact: contact,
+        Password: password, // Note: DTO might expect 'Password' or 'Userpassword' depending on DTO
+        IsActive: true
+    };
 
-            try {
-                const response = await fetch("/api/Register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(userData)
-                });
+    if (await sendOtpEmail(email)) {
+        alert("OTP sent to your email. Please proceed to verification.");
+        registerContainer.style.display = "none";
+        otpContainer.style.display = "block";
+        document.getElementById("otp").focus();
+    } else {
+        alert("Failed to send OTP. Please check your email address and try again.");
+    }
+});
 
-                if (!response.ok) {
-                    const err = await response.json();
-                    throw err;
-                }
-
-                await response.json();
-                window.location.href = "login.html";
-
-            } catch (err) {
-                console.error("Server error:", err);
-                alert("Error saving to database: " + (err.error || JSON.stringify(err)));
-            }
-
-        } else {
-            alert("Incorrect OTP. Please try again.");
-        }
+resendOtpBtn.addEventListener('click', async function () {
+    if (!userDataStorage.email) {
+        alert("Please complete the registration form first.");
         return;
     }
 
-    generatedOTP = generateOTP();
-    try {
-        await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-            to_email: email,
-            passcode: generatedOTP,
-        });
+    resendOtpBtn.disabled = true;
+    let countdown = 60;
+    resendOtpBtn.textContent = `Resend in ${countdown}s`;
 
-        alert("OTP sent to your email. Please enter it below.");
-        otpGroup.style.display = "block";
-        registerBtn.textContent = "Verify OTP";
+    const timer = setInterval(() => {
+        countdown--;
+        resendOtpBtn.textContent = `Resend in ${countdown}s`;
 
-    } catch (error) {
-        alert("Failed to send OTP. Try again.");
-        console.error(error);
+        if (countdown <= 0) {
+            clearInterval(timer);
+            resendOtpBtn.disabled = false;
+            resendOtpBtn.textContent = "Resend OTP";
+        }
+    }, 1000);
+
+    if (await sendOtpEmail(userDataStorage.email)) {
+        alert("New OTP sent to your email.");
+    } else {
+        alert("Failed to resend OTP. Try again later.");
+        clearInterval(timer);
+        resendOtpBtn.disabled = false;
+        resendOtpBtn.textContent = "Resend OTP";
+    }
+});
+
+otpForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const otpInput = document.getElementById("otp").value;
+
+    if (otpInput == generatedOTP) {
+        try {
+            const response = await fetch("/api/Register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userDataStorage)
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw err;
+            }
+
+            await response.json();
+            alert("Registration successful! You can now log in.");
+            window.location.href = "login.html";
+
+        } catch (err) {
+            console.error("Server error:", err);
+            alert("Error saving to database: " + (err.error || JSON.stringify(err)));
+        }
+    } else {
+        alert("Incorrect OTP. Please try again.");
     }
 });

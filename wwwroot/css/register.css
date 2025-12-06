@@ -13,9 +13,9 @@ body {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding-top: 460px;
-    padding-bottom: 80px;
+    align-items: flex-start;
+    padding-bottom: 70px;
+    width: 100%;
 }
 
 .register-container {
@@ -33,14 +33,29 @@ body {
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
     }
 
+#registrationContainer {
+    margin-top: 650px;
+}
+
+#otpContainer {
+    margin-top: 100px;
+}
+
+@media (min-height: 850px) {
+    #registrationContainer {
+        margin-top: 400px;
+    }
+}
+
 .logo {
     width: 45px;
     height: 55px;
     object-fit: contain;
 }
+
 .input-group.terms {
     display: flex;
-    align-items: center; 
+    align-items: center;
     gap: 10px;
     margin-bottom: 20px;
     font-size: 0.95rem;
@@ -48,15 +63,15 @@ body {
 
     .input-group.terms input[type="checkbox"] {
         width: 18px;
-        height: 18px; 
+        height: 18px;
         margin: 0;
-        vertical-align: middle; 
+        vertical-align: middle;
     }
 
     .input-group.terms label {
         font-weight: 500;
         color: #333;
-        line-height: 1.2; 
+        line-height: 1.2;
     }
 
         .input-group.terms label a {
@@ -67,6 +82,7 @@ body {
             .input-group.terms label a:hover {
                 text-decoration: underline;
             }
+
 .modal {
     display: none;
     position: fixed;
@@ -94,10 +110,12 @@ body {
     .modal-content h3 {
         margin-top: 0;
     }
+
     .modal-content p {
         margin-bottom: 15px;
-        line-height: 1.5; 
+        line-height: 1.5;
     }
+
     .modal-content .close {
         position: absolute;
         top: 10px;
@@ -118,7 +136,7 @@ body {
         border-radius: 6px;
         cursor: pointer;
         font-weight: 500;
-        font-family: 'Poppins', sans-serif; 
+        font-family: 'Poppins', sans-serif;
     }
 
 
@@ -131,6 +149,7 @@ body {
     background-color: #ccc;
     color: #333;
 }
+
 .terms-popup-link {
     color: #397DFA;
     text-decoration: none;
@@ -140,9 +159,11 @@ body {
     .terms-popup-link:hover {
         text-decoration: underline;
     }
+
 .tf {
     margin-bottom: 15px;
 }
+
 .terms-label {
     display: flex;
     align-items: center;
@@ -157,6 +178,7 @@ body {
         height: 18px;
         margin: 0;
     }
+
 .strength-msg {
     display: block;
     margin-top: 5px;
@@ -178,6 +200,7 @@ body {
 .password-wrapper {
     position: relative;
 }
+
     .password-wrapper input {
         width: 100%;
         padding-right: 35px;
@@ -193,6 +216,16 @@ body {
     color: #555;
     user-select: none;
 }
+
     .toggle-password:hover {
-        color: #333; 
+        color: #333;
+    }
+
+.secondary-btn {
+    background-color: #6c757d !important;
+    margin-top: 10px;
+}
+
+    .secondary-btn:hover {
+        background-color: #5a6268 !important;
     }

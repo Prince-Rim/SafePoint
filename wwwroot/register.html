@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>SafePoint | Register</title>
     <link rel="stylesheet" href="css/register.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">1
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         emailjs.init("q_WaGpOvP6-Rea8xD");
@@ -23,12 +23,24 @@
         </div>
     </div>
     <div class="main-container">
-        <div class="register-container">
+        <div class="register-container" id="registrationContainer">
             <div class="logtext">
                 <h2>Create Account</h2>
                 <p class="subtitle">Join the community and start reporting safely.</p>
             </div>
             <form id="registerForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" id="firstname" name="firstname" placeholder="Enter your first name" required>
+                </div>
+                <div class="input-group">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" id="lastname" name="lastname" placeholder="Enter your last name" required>
+                </div>
+                <div class="input-group">
+                    <label for="middlename">Middle Name (Optional)</label>
+                    <input type="text" id="middlename" name="middlename" placeholder="Enter your middle name">
+                </div>
                 <div class="input-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -57,10 +69,6 @@
                     <label for="confirmPassword">Confirm Password</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
                 </div>
-                <div class="input-group" id="otp-group" style="display:none;">
-                    <label for="otp">Enter OTP</label>
-                    <input type="text" id="otp" name="otp" placeholder="Enter OTP">
-                </div>
                 <div class="input-group terms">
                     <label for="terms" class="terms-label">
                         <input type="checkbox" id="terms" name="terms" required>
@@ -75,50 +83,58 @@
                             <strong>1. Acceptance of Terms</strong><br>
                             By creating an account and using SafePoint, you agree to comply with these Terms and Conditions. If you do not agree, please do not use the platform.
                         </p>
-
                         <p>
                             <strong>2. User Responsibility</strong><br>
                             - You are responsible for the accuracy of the information you submit.<br>
                             - Do not submit false, misleading, or malicious reports.<br>
                             - Respect other users and the community. Harassment, threats, or abusive behavior will not be tolerated.
                         </p>
-
                         <p>
                             <strong>3. Privacy & Confidentiality</strong><br>
                             - Personal information submitted through the platform will be handled according to our Privacy Policy.<br>
                             - Do not share sensitive personal information about others without their consent.
                         </p>
-
                         <p>
                             <strong>4. Proper Use of the Platform</strong><br>
                             - SafePoint is intended solely for reporting safety incidents, hazards, or emergencies.<br>
                             - Users must not attempt to misuse, hack, or disrupt the platform in any way.
                         </p>
-
                         <p>
                             <strong>5. Content Ownership</strong><br>
                             - Reports submitted remain your responsibility, but SafePoint reserves the right to remove or moderate content that violates these Terms.
                         </p>
-
                         <p>
                             <strong>6. Liability Disclaimer</strong><br>
                             - SafePoint provides the platform to assist in reporting incidents, but we do not guarantee the accuracy, completeness, or timeliness of reports.<br>
                             - You acknowledge that SafePoint is not liable for any direct or indirect damages arising from the use or misuse of the system.
                         </p>
-
                         <p>
                             <strong>7. Termination of Account</strong><br>
                             - SafePoint may suspend or terminate accounts for violation of these Terms or illegal activity.
                         </p>
-
                         <div class="modal-buttons">
                             <button id="acceptTerms">Accept</button>
                             <button id="rejectTerms">Reject</button>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btnlogin" id="registerBtn">Register</button>
+                <button type="submit" class="btnlogin" id="registerBtn">Next: Send OTP</button>
                 <p class="register-text">Already have an account? <a href="login.html">Log in here</a></p>
+            </form>
+        </div>
+
+        <div class="register-container" id="otpContainer" style="display:none;">
+            <div class="logtext">
+                <h2>Verify Account</h2>
+                <p class="subtitle">An OTP has been sent to your email. Please check your inbox.</p>
+            </div>
+            <form id="otpForm" autocomplete="off">
+                <div class="input-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" name="otp" placeholder="Enter 6-digit OTP" required>
+                </div>
+                <button type="submit" class="btnlogin" id="verifyOtpBtn">Register</button>
+                <button type="button" class="btnlogin secondary-btn" id="resendOtpBtn">Resend OTP</button>
             </form>
         </div>
     </div>
