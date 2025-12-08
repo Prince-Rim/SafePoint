@@ -1246,6 +1246,58 @@
           }
         }
       }
+    },
+    "/api/User/CheckEmail": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User/ResetPassword": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1423,6 +1475,10 @@
         "additionalProperties": false
       },
       "CreateUserDto": {
+        "required": [
+          "contact",
+          "email"
+        ],
         "type": "object",
         "properties": {
           "username": {
@@ -1442,12 +1498,15 @@
             "nullable": true
           },
           "email": {
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
-            "nullable": true
+            "format": "email"
           },
           "contact": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "pattern": "^09\\d{9}$",
+            "type": "string"
           },
           "password": {
             "type": "string",
@@ -1474,6 +1533,25 @@
         },
         "additionalProperties": false
       },
+      "ResetPasswordRequest": {
+        "required": [
+          "email",
+          "newPassword"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "newPassword": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateAdminDto": {
         "type": "object",
         "properties": {
@@ -1494,10 +1572,13 @@
             "nullable": true
           },
           "email": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
+            "format": "email",
             "nullable": true
           },
           "contact": {
+            "pattern": "^09\\d{9}$",
             "type": "string",
             "nullable": true
           },
@@ -1577,10 +1658,13 @@
             "nullable": true
           },
           "email": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
+            "format": "email",
             "nullable": true
           },
           "contact": {
+            "pattern": "^09\\d{9}$",
             "type": "string",
             "nullable": true
           },
@@ -1646,10 +1730,13 @@
             "nullable": true
           },
           "email": {
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
             "type": "string",
+            "format": "email",
             "nullable": true
           },
           "contact": {
+            "pattern": "^09\\d{9}$",
             "type": "string",
             "nullable": true
           },

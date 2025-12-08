@@ -40,9 +40,9 @@ body {
     transition: transform 0.3s ease;
 }
 
-    .logo:hover {
-        transform: scale(1.1);
-    }
+.logo:hover {
+    transform: scale(1.1);
+}
 
 .brand h2 {
     font-weight: 700;
@@ -67,10 +67,10 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .login-container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    }
+.login-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
 
 .logtext h2 {
     color: #397DFA;
@@ -87,35 +87,35 @@ body {
     margin-bottom: 20px;
 }
 
-    .input-group label {
-        display: block;
-        font-weight: 500;
-        margin-bottom: 6px;
-        color: #333;
-    }
+.input-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+}
 
-    .input-group input {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-size: 1em;
-        outline: none;
-        transition: all 0.3s ease;
-    }
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1em;
+    outline: none;
+    transition: all 0.3s ease;
+}
 
-        .input-group input:focus {
-            border-color: #397DFA;
-            box-shadow: 0 0 6px rgba(57, 125, 250, 0.4);
-        }
+.input-group input:focus {
+    border-color: #397DFA;
+    box-shadow: 0 0 6px rgba(57, 125, 250, 0.4);
+}
 
 .password-wrapper {
     position: relative;
 }
 
-    .password-wrapper input {
-        padding-right: 40px;
-    }
+.password-wrapper input {
+    padding-right: 40px;
+}
 
 .toggle-password {
     position: absolute;
@@ -127,9 +127,11 @@ body {
     color: #777;
     user-select: none;
 }
-    .toggle-password:hover {
-        color: #333; 
-    }
+
+.toggle-password:hover {
+    color: #333;
+}
+
 .btnlogin {
     width: 100%;
     padding: 14px;
@@ -143,10 +145,10 @@ body {
     transition: 0.3s ease;
 }
 
-    .btnlogin:hover {
-        background: #2f6be0;
-        box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
-    }
+.btnlogin:hover {
+    background: #2f6be0;
+    box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
+}
 
 .register-text {
     margin-top: 18px;
@@ -154,15 +156,15 @@ body {
     text-align: center;
 }
 
-    .register-text a {
-        color: #397DFA;
-        text-decoration: none;
-        font-weight: 600;
-    }
+.register-text a {
+    color: #397DFA;
+    text-decoration: none;
+    font-weight: 600;
+}
 
-        .register-text a:hover {
-            text-decoration: underline;
-        }
+.register-text a:hover {
+    text-decoration: underline;
+}
 
 .footer {
     background-color: #397DFA;

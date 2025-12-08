@@ -1,5 +1,7 @@
 using System;
 
+using System.ComponentModel.DataAnnotations; // Added for validation attributes
+
 namespace SafePoint_IRS.DTOs
 {
     public class CreateUserDto
@@ -8,8 +10,16 @@ namespace SafePoint_IRS.DTOs
         public string LastName { get; set; } = string.Empty;
         public string? MiddleName { get; set; }
         public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email format.")]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [RegularExpression(@"^09\d{9}$", ErrorMessage = "Contact number must be 11 digits and start with '09'.")]
         public string Contact { get; set; } = string.Empty;
+
         public string Password { get; set; } = string.Empty;
         public string UserRole { get; set; } = "User";
     }
@@ -20,8 +30,14 @@ namespace SafePoint_IRS.DTOs
         public string? LastName { get; set; }
         public string? MiddleName { get; set; }
         public string? FirstName { get; set; }
+
+        [EmailAddress]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email format.")]
         public string? Email { get; set; }
+
+        [RegularExpression(@"^09\d{9}$", ErrorMessage = "Contact number must be 11 digits and start with '09'.")]
         public string? Contact { get; set; }
+
         public string? Password { get; set; } 
         public bool? IsActive { get; set; }
         public DateTime? SuspensionEndTime { get; set; }
@@ -59,5 +75,15 @@ namespace SafePoint_IRS.DTOs
         public bool? IsActive { get; set; }
         public DateTime? SuspensionEndTime { get; set; }
         public string? Password { get; set; } // Optional: New password if provided
+    }
+
+    public class ResetPasswordRequest
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        public string NewPassword { get; set; } = string.Empty;
     }
 }

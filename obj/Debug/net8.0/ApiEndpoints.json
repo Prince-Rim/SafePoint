@@ -774,6 +774,38 @@
   },
   {
     "ContainingType": "SafePoint_IRS.Controllers.UserController",
+    "Method": "CheckEmail",
+    "RelativePath": "api/User/CheckEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.UserController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/User/ResetPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SafePoint_IRS.DTOs.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SafePoint_IRS.Controllers.UserController",
     "Method": "UpdatePassword",
     "RelativePath": "api/User/UpdatePassword",
     "HttpMethod": "PUT",

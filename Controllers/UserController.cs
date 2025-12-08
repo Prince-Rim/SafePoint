@@ -72,6 +72,62 @@ namespace SafePoint_IRS.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Password updated successfully." });
         }
+
+        [HttpGet("CheckEmail")]
+        public async Task<IActionResult> CheckEmail([FromQuery] string email)
+        {
+            if (string.IsNullOrEmpty(email)) return BadRequest("Email is required.");
+
+            // Check if email exists in any table
+            var userExists = await _context.Users.AnyAsync(u => u.Email == email);
+            var adminExists = await _context.Admins.AnyAsync(a => a.Email == email);
+            var modExists = await _context.Moderators.AnyAsync(m => m.Email == email);
+
+            if (userExists || adminExists || modExists)
+            {
+                return Ok(new { exists = true });
+            }
+
+            return Ok(new { exists = false });
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid request.");
+
+            string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            // Check Users
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+            if (user != null)
+            {
+                user.Userpassword = newPasswordHash;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Password reset successfully." });
+            }
+
+            // Check Admins
+            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == request.Email);
+            if (admin != null)
+            {
+                admin.Adminpassword = newPasswordHash;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Password reset successfully." });
+            }
+
+            // Check Moderators
+            var moderator = await _context.Moderators.FirstOrDefaultAsync(m => m.Email == request.Email);
+            if (moderator != null)
+            {
+                moderator.Modpassword = newPasswordHash;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Password reset successfully." });
+            }
+
+            return NotFound(new { error = "Email not linked to any account." });
+        }
     }
 
 

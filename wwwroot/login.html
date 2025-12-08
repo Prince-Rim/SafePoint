@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafePoint | Login</title>
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="header">
         <div class="brand">
@@ -17,7 +19,8 @@
         </div>
     </div>
     <div class="main-container">
-        <div class="login-container">
+        <!-- Login Form Container -->
+        <div class="login-container" id="loginContainer">
             <div class="logtext">
                 <h2>Welcome Back!</h2>
                 <p class="subtitle">Sign in to continue reporting and exploring.</p>
@@ -36,13 +39,66 @@
                 </div>
                 <button type="submit" class="btnlogin">Log In</button>
                 <div id="loginError" style="color:red; margin-top:5px;"></div>
+                <div style="text-align: left; margin-top: 10px;">
+                    <a href="#" id="forgotPasswordLink"
+                        style="font-size: 0.9rem; color: #666; text-decoration: none;">Forgot Password?</a>
+                </div>
                 <p class="register-text">Don’t have an account? <a href="register.html">Register here</a></p>
             </form>
         </div>
+
+        <!-- Forgot Password Container (Initially Hidden) -->
+        <div class="login-container" id="forgotPasswordContainer" style="display: none;">
+            <div class="logtext">
+                <h2>Reset Password</h2>
+                <p class="subtitle">Follow the steps to recover your account.</p>
+            </div>
+
+            <div id="fp-step-1">
+                <p style="margin-bottom:10px;">Enter your email address to receive a verification code.</p>
+                <div class="input-group">
+                    <label for="fp-email">Email</label>
+                    <input type="email" id="fp-email" placeholder="Enter your email" required>
+                </div>
+                <button id="fp-btn-k1" class="btnlogin">Send Code</button>
+            </div>
+
+            <div id="fp-step-2" style="display:none;">
+                <p style="margin-bottom:10px;">Enter the code sent to <span id="fp-email-display"
+                        style="font-weight:bold;"></span></p>
+                <div class="input-group">
+                    <label for="fp-otp">One-Time Password</label>
+                    <input type="text" id="fp-otp" placeholder="Enter OTP" required>
+                </div>
+                <button id="fp-btn-k2" class="btnlogin">Verify</button>
+            </div>
+
+            <div id="fp-step-3" style="display:none;">
+                <p style="margin-bottom:10px;">Create a new password.</p>
+                <div class="input-group">
+                    <label for="fp-new-pass">New Password</label>
+                    <input type="password" id="fp-new-pass" placeholder="New Password" required>
+                    <div id="fp-password-strength" style="font-size: 0.8rem; height: 20px; margin-top: 5px;"></div>
+                </div>
+                <div class="input-group">
+                    <label for="fp-confirm-pass">Confirm Password</label>
+                    <input type="password" id="fp-confirm-pass" placeholder="Confirm Password" required>
+                </div>
+                <button id="fp-btn-k3" class="btnlogin">Reset Password</button>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="#" id="backToLoginLink" style="font-size: 0.9rem; color: #666; text-decoration: none;">Back to
+                    Login</a>
+            </div>
+        </div>
     </div>
+
     <footer class="footer">
         <p>&copy; 2025 SafePoint. All rights reserved.</p>
     </footer>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="js/login.js"></script>
 </body>
+
 </html>
