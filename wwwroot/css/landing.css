@@ -4,7 +4,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -46,9 +47,9 @@ body {
     transition: transform 0.3s ease;
 }
 
-    .logo:hover {
-        transform: scale(1.1);
-    }
+.logo:hover {
+    transform: scale(1.1);
+}
 
 .brand h2 {
     font-weight: 700;
@@ -61,7 +62,8 @@ body {
     gap: 10px;
 }
 
-.btnlogin, .btnregister {
+.btnlogin,
+.btnregister {
     padding: 10px 24px;
     border: none;
     border-radius: 8px;
@@ -78,10 +80,10 @@ body {
     color: #fff;
 }
 
-    .btnlogin:hover {
-        background-color: #2f6be0;
-        box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
-    }
+.btnlogin:hover {
+    background-color: #2f6be0;
+    box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
+}
 
 .btnregister {
     background-color: #f0f0f0;
@@ -90,9 +92,9 @@ body {
     line-height: 1.2;
 }
 
-    .btnregister:hover {
-        background-color: #e0e0e0;
-    }
+.btnregister:hover {
+    background-color: #e0e0e0;
+}
 
 .ltext {
     display: flex;
@@ -103,23 +105,36 @@ body {
     padding: 130px 20px 80px;
     gap: 60px;
     min-height: 90vh;
+    animation: fadeInUp 1.5s ease;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .stext {
     max-width: 500px;
 }
 
-    .stext h1 {
-        font-size: 2.2rem;
-        color: #1f3b73;
-        margin-bottom: 15px;
-    }
+.stext h1 {
+    font-size: 2.2rem;
+    color: #1f3b73;
+    margin-bottom: 15px;
+}
 
-    .stext p {
-        font-size: 1rem;
-        color: #555;
-        margin-bottom: 25px;
-    }
+.stext p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 25px;
+}
 
 .btnmap {
     padding: 14px 30px;
@@ -133,11 +148,11 @@ body {
     transition: all 0.3s ease;
 }
 
-    .btnmap:hover {
-        background-color: #2f6be0;
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(57, 125, 250, 0.25);
-    }
+.btnmap:hover {
+    background-color: #2f6be0;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(57, 125, 250, 0.25);
+}
 
 .limage img {
     max-width: 360px;
@@ -147,10 +162,10 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .limage img:hover {
-        transform: scale(1.03);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
+.limage img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
 
 
 .footer {

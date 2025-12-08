@@ -49,7 +49,7 @@
         </nav>
     </div>
     <main>
-        <section id="about-us" class="about-section">
+        <section id="about-us" class="about-section animate-on-scroll">
             <div class="about-container">
                 <h2>About Us</h2>
                 <div class="p-text">
@@ -89,7 +89,7 @@
             </div>
         </section>
         <hr />
-        <section id="how-it-works" class="how-section">
+        <section id="how-it-works" class="how-section animate-on-scroll">
             <h2>How It Works</h2>
             <p class="how-intro">
                 SafePoint makes reporting incidents simple. These four steps guide how reports move
@@ -130,7 +130,7 @@
             </div>
         </section>
         <hr />
-        <div id="safety-tips" class="safety-section">
+        <div id="safety-tips" class="safety-section animate-on-scroll">
             <h2>Safety Tips</h2>
             <ol>
                 <li>
@@ -161,7 +161,7 @@
         </div>
         <hr />
 
-        <section id="hotlines" class="hotlines-section">
+        <section id="hotlines" class="hotlines-section animate-on-scroll">
             <div class="hotlines-container">
                 <h2>Emergency Hotlines (Philippines)</h2>
                 <p>Save these numbers for immediate assistance during emergencies.</p>
@@ -210,7 +210,7 @@
 
         <section id="contact-us" class="contact-section">
             <div class="contact-container">
-                <div class="contact-form">
+                <div class="contact-form animate-on-scroll">
                     <h2>Contact Us</h2>
                     <form action="https://formspree.io/f/xyznrgpa" method="POST" id="contactForm" autocomplete="off">
                         <label>
@@ -232,7 +232,7 @@
                         <button type="submit" class="btnsend">Send Message</button>
                     </form>
                 </div>
-                <div class="contact-info">
+                <div class="contact-info animate-on-scroll">
                     <h2>General Location</h2>
                     <img src="image/info.png" alt="Map Info">
                     <div class="person">
@@ -366,6 +366,27 @@
                 }
             });
         }
+
+        // Scroll Animation Logic
+        document.addEventListener("DOMContentLoaded", function () {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 // Trigger when 15% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Only animate once
+                    }
+                });
+            }, observerOptions);
+
+            const scrollElements = document.querySelectorAll('.animate-on-scroll');
+            scrollElements.forEach(el => observer.observe(el));
+        });
     </script>
 </body>
 

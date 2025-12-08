@@ -4,6 +4,7 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
+
 main {
     padding-top: 40px;
     margin: 0;
@@ -83,11 +84,11 @@ select {
     transition: all 0.2s ease;
 }
 
-    .report-box:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(57, 125, 250, 0.15);
-        border-color: #397DFA;
-    }
+.report-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(57, 125, 250, 0.15);
+    border-color: #397DFA;
+}
 
 .report-icon-box {
     width: 40px;
@@ -99,9 +100,9 @@ select {
     flex-shrink: 0;
 }
 
-    .report-icon-box .material-icons {
-        font-size: 20px;
-    }
+.report-icon-box .material-icons {
+    font-size: 20px;
+}
 
 .severity-high {
     background-color: #ffebee;
@@ -125,14 +126,14 @@ select {
     flex: 1;
 }
 
-    .report-content strong {
-        font-size: 0.95rem;
-        color: #1f3b73;
-        margin-bottom: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.report-content strong {
+    font-size: 0.95rem;
+    color: #1f3b73;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .report-meta {
     font-size: 0.75rem;
@@ -172,9 +173,9 @@ select {
     box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
 }
 
-    .post-btn:hover {
-        background: #1d4ed8;
-    }
+.post-btn:hover {
+    background: #1d4ed8;
+}
 
 .map-container {
     position: relative;
@@ -210,9 +211,9 @@ select {
     font-weight: 500;
 }
 
-    .map-btn:hover {
-        background: #f0f0f0;
-    }
+.map-btn:hover {
+    background: #f0f0f0;
+}
 
 .map-legend {
     position: absolute;
@@ -228,12 +229,12 @@ select {
     border: 1px solid #ddd;
 }
 
-    .map-legend h4 {
-        margin: 0 0 10px 0;
-        color: #1f3b73;
-        font-size: 0.95rem;
-        font-weight: 600;
-    }
+.map-legend h4 {
+    margin: 0 0 10px 0;
+    color: #1f3b73;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
 
 .legend-item {
     display: flex;
@@ -251,21 +252,21 @@ select {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-    .color-dot.high {
-        background-color: #d32f2f;
-    }
+.color-dot.high {
+    background-color: #d32f2f;
+}
 
-    .color-dot.moderate {
-        background-color: #fbc02d;
-    }
+.color-dot.moderate {
+    background-color: #fbc02d;
+}
 
-    .color-dot.low {
-        background-color: #28a745;
-    }
+.color-dot.low {
+    background-color: #28a745;
+}
 
-    .color-dot.current {
-        background-color: #2563eb;
-    }
+.color-dot.current {
+    background-color: #2563eb;
+}
 
 .content {
     display: flex;
@@ -273,6 +274,19 @@ select {
     margin-top: 0;
     height: calc(100vh - 65px);
     overflow: hidden;
+    animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .user-dropdown {
@@ -311,9 +325,9 @@ select {
     transition: background-color 0.2s;
 }
 
-    .user-info-display:hover {
-        background-color: #ebebeb;
-    }
+.user-info-display:hover {
+    background-color: #ebebeb;
+}
 
 .user-display-name {
     font-weight: 600;
@@ -322,7 +336,8 @@ select {
     margin: 0;
 }
 
-.user-email, .user-role {
+.user-email,
+.user-role {
     font-size: 0.8rem;
     color: #666;
     margin: 0;
@@ -337,10 +352,10 @@ select {
     margin: 0 8px;
 }
 
-    .dropdown-content a:hover {
-        background-color: #f1f1f1;
-        border-radius: 8px;
-    }
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+    border-radius: 8px;
+}
 
 .user-dropdown.show .dropdown-content {
     display: block;
@@ -400,9 +415,9 @@ select {
     transition: color 0.2s;
 }
 
-    .close-modal:hover {
-        color: #333;
-    }
+.close-modal:hover {
+    color: #333;
+}
 
 .modal-body {
     padding: 0;
@@ -505,28 +520,28 @@ select {
     padding: 40px 0;
 }
 
-    .no-image-placeholder .material-icons {
-        font-size: 48px;
-        margin-bottom: 5px;
-        opacity: 0.5;
-    }
+.no-image-placeholder .material-icons {
+    font-size: 48px;
+    margin-bottom: 5px;
+    opacity: 0.5;
+}
 
 .description-box {
     padding: 20px 25px;
 }
 
-    .description-box h4 {
-        margin: 0 0 8px 0;
-        font-size: 1rem;
-        color: #444;
-    }
+.description-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    color: #444;
+}
 
-    .description-box p {
-        margin: 0;
-        color: #666;
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
+.description-box p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
 
 .location-box {
     display: flex;
@@ -637,16 +652,16 @@ select {
     padding: 5px 5px 5px 15px;
 }
 
-    .add-comment textarea {
-        flex-grow: 1;
-        border: none;
-        resize: none;
-        outline: none;
-        padding: 8px 0;
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.95rem;
-        max-height: 80px;
-    }
+.add-comment textarea {
+    flex-grow: 1;
+    border: none;
+    resize: none;
+    outline: none;
+    padding: 8px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    max-height: 80px;
+}
 
 .btn-comment {
     background-color: #397DFA;
@@ -662,14 +677,14 @@ select {
     transition: background 0.2s;
 }
 
-    .btn-comment:hover {
-        background-color: #2f6be0;
-    }
+.btn-comment:hover {
+    background-color: #2f6be0;
+}
 
-    .btn-comment .material-icons {
-        font-size: 18px;
-        margin-left: 2px;
-    }
+.btn-comment .material-icons {
+    font-size: 18px;
+    margin-left: 2px;
+}
 
 /* Profile Modal (Auxiliary styling) */
 
@@ -701,10 +716,10 @@ select {
     justify-content: center;
 }
 
-    .profile-avatar .profile-icon {
-        font-size: 60px;
-        color: #397DFA;
-    }
+.profile-avatar .profile-icon {
+    font-size: 60px;
+    color: #397DFA;
+}
 
 .profile-info-section {
     padding: 0 30px 20px;
@@ -756,9 +771,9 @@ select {
     flex-shrink: 0;
 }
 
-    .edit-btn:hover {
-        background: #2f6be0;
-    }
+.edit-btn:hover {
+    background: #2f6be0;
+}
 
 .modal-action-bar {
     padding: 15px 30px;
@@ -769,7 +784,8 @@ select {
     gap: 10px;
 }
 
-.save-btn, .cancel-btn {
+.save-btn,
+.cancel-btn {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -789,20 +805,23 @@ select {
     color: #fff;
 }
 
-    .save-btn:hover, .cancel-btn:hover {
-        opacity: 0.8;
-    }
+.save-btn:hover,
+.cancel-btn:hover {
+    opacity: 0.8;
+}
 
 .profile-modal-content .close-modal {
     color: #555;
     right: 25px;
 }
 
-    .profile-modal-content .close-modal:hover {
-        color: #333;
-    }
+.profile-modal-content .close-modal:hover {
+    color: #333;
+}
 
-.info-row input[type="text"], .info-row input[type="email"], .info-row input[type="password"] {
+.info-row input[type="text"],
+.info-row input[type="email"],
+.info-row input[type="password"] {
     background: #ffffff;
     border: 1px solid #ccc;
     color: #333;

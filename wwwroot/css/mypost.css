@@ -24,10 +24,19 @@ main {
     margin: 0 auto;
     padding: 0 20px;
     width: 100%;
+    animation: fadeInUp 1s ease;
 }
 
-.page-header {
-    margin-bottom: 30px;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .page-header h1 {
@@ -651,6 +660,7 @@ main {
 .strength-strong {
     color: #28a745;
 }
+
 .footer {
     background-color: #397DFA;
     color: white;
