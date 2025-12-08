@@ -4,6 +4,7 @@ using SafePoint_IRS.Data;
 using SafePoint_IRS.Models;
 using SafePoint_IRS.DTOs;
 using System.Security.Claims;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace SafePoint_IRS.Controllers
 {
@@ -19,6 +20,7 @@ namespace SafePoint_IRS.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("Fixed")]
         public async Task<IActionResult> PostIncident([FromForm] IncidentReportDto report)
         {
             try

@@ -71,22 +71,22 @@ body {
     padding: 0;
 }
 
-    .image-upload.drag-over {
-        border-color: #28a745;
-        background: #e6f7ea;
-    }
+.image-upload.drag-over {
+    border-color: #28a745;
+    background: #e6f7ea;
+}
 
-    .image-upload:hover {
-        background: #eaf0ff;
-        border-color: #397DFA;
-        color: #1f3b73;
-    }
+.image-upload:hover {
+    background: #eaf0ff;
+    border-color: #397DFA;
+    color: #1f3b73;
+}
 
-    .image-upload .material-icons {
-        font-size: 28px;
-        color: #397DFA;
-        margin-bottom: 8px;
-    }
+.image-upload .material-icons {
+    font-size: 28px;
+    color: #397DFA;
+    margin-bottom: 8px;
+}
 
 .form-row {
     display: flex;
@@ -119,13 +119,13 @@ textarea {
     transition: border-color 0.2s, background 0.2s;
 }
 
-    input:focus,
-    select:focus,
-    textarea:focus {
-        outline: none;
-        border-color: #397DFA;
-        background: #fff;
-    }
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #397DFA;
+    background: #fff;
+}
 
 textarea {
     resize: none;
@@ -154,9 +154,9 @@ button {
     border: 1.5px solid #ccc;
 }
 
-    .cancel:hover {
-        background: #f4f4f4;
-    }
+.cancel:hover {
+    background: #f4f4f4;
+}
 
 .submit {
     background: #397DFA;
@@ -164,9 +164,18 @@ button {
     box-shadow: 0 4px 10px rgba(57, 125, 250, 0.3);
 }
 
-    .submit:hover {
-        background: #2f6be0;
-    }
+.submit:hover {
+    background: #2f6be0;
+}
+
+button:disabled,
+button:disabled:hover {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
 
 .footer {
     background-color: #397DFA;
@@ -197,21 +206,21 @@ button {
     position: absolute;
     background-color: #fff;
     min-width: 100px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
     right: 0;
 }
 
-    .dropdown-content a {
-        color: #000;
-        padding: 8px 12px;
-        text-decoration: none;
-        display: block;
-    }
+.dropdown-content a {
+    color: #000;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+}
 
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
 
 .user-dropdown.show .dropdown-content {
     display: block;

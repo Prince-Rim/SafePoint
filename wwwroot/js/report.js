@@ -155,11 +155,6 @@ function fetchCurrentLocation() {
     );
 }
 
-reportForm.addEventListener("submit", () => {
-    localStorage.removeItem("incidentLocation");
-    sessionStorage.removeItem("incidentLocation");
-});
-
 if (cancelButton) {
     cancelButton.addEventListener("click", () => {
         localStorage.removeItem("incidentLocation");
@@ -169,10 +164,30 @@ if (cancelButton) {
 
 reportForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    console.log("Submit event fired");
+
+    // Clear storage immediately
+    localStorage.removeItem("incidentLocation");
+    sessionStorage.removeItem("incidentLocation");
+
+    const submitBtn = reportForm.querySelector('button[type="submit"]');
+    if (!submitBtn) {
+        console.error("Submit button not found");
+        return;
+    }
+
+    const originalBtnText = submitBtn.textContent;
+
+    // Disable button to prevent double-submit
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    console.log("Button disabled");
 
     const userId = localStorage.getItem("userId");
     if (!userId) {
         alert("Authentication error: User ID is missing. Please log in.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
         return;
     }
 
@@ -181,6 +196,8 @@ reportForm.addEventListener("submit", async function (e) {
 
     if (!datetimeValue) {
         alert("Please select a valid date and time.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
         return;
     }
 
@@ -189,6 +206,8 @@ reportForm.addEventListener("submit", async function (e) {
 
     if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(formattedDatetime)) {
         alert("The date/time value format is invalid. Please re-select.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
         return;
     }
 
@@ -214,6 +233,7 @@ reportForm.addEventListener("submit", async function (e) {
     }
 
     try {
+        console.log("Sending fetch request");
         const response = await fetch("https://localhost:44373/api/Incidents", {
             method: "POST",
             body: formData
@@ -221,7 +241,7 @@ reportForm.addEventListener("submit", async function (e) {
 
         if (!response.ok) {
             const errorBody = await response.text();
-            console.error("Server Response Error (400 Bad Request):", errorBody);
+            console.error("Server Response Error:", errorBody);
 
             let errorMessage = "Failed to submit incident.";
             try {
@@ -232,6 +252,8 @@ reportForm.addEventListener("submit", async function (e) {
             }
 
             alert(errorMessage);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
             return;
         }
 
@@ -241,6 +263,8 @@ reportForm.addEventListener("submit", async function (e) {
     } catch (error) {
         console.error("Submission error:", error);
         alert("Error submitting incident.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
     }
 });
 
