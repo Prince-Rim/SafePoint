@@ -429,7 +429,7 @@ function checkDashboardAccess() {
     const userId = localStorage.getItem('userId');
     const userRole = localStorage.getItem('userRole');
     const dashboardLink = document.getElementById('dashboardLink');
-    const myReportsLink = document.querySelector('a[href="mypost.html"]');
+    const myReportsLink = document.getElementById('myReportsLink');
 
     if (userId) {
         if (userRole === 'Admin' || userRole === 'Moderator') {
@@ -437,7 +437,7 @@ function checkDashboardAccess() {
             if (myReportsLink) myReportsLink.style.display = 'none';
         } else {
             if (dashboardLink) dashboardLink.style.display = 'none';
-            if (myReportsLink) myReportsLink.style.display = 'inline-block';
+            if (myReportsLink) myReportsLink.style.display = ''; // Revert to CSS default (block/inline)
         }
     } else {
         if (dashboardLink) dashboardLink.style.display = 'none';
