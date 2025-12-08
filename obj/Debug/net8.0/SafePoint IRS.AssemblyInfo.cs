@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SafePoint IRS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c151bbdfe23dc9c225a21733ed588e52eff8150")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5ea7fdd6341ec2bb6a0edf6f4aa8cafbaf08c3e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("SafePoint IRS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SafePoint IRS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
