@@ -1,5 +1,7 @@
 wwwroot\css\contact.css
 wwwroot\css\dashboard.css
+wwwroot\css\header.css
+wwwroot\css\index.css
 wwwroot\css\landing.css
 wwwroot\css\login.css
 wwwroot\css\mypost.css
@@ -14,7 +16,6 @@ wwwroot\favicon.ico
 wwwroot\image\info.png
 wwwroot\image\maps.jpg
 wwwroot\image\spicon.png
-wwwroot\index.html
 wwwroot\js\contact.js
 wwwroot\js\dashboard.js
 wwwroot\js\index.js
@@ -24,6 +25,7 @@ wwwroot\js\pending.js
 wwwroot\js\profanity-filter.js
 wwwroot\js\register.js
 wwwroot\js\report.js
+wwwroot\js\site.js
 wwwroot\js\user-accounts.js
 wwwroot\js\weather.js
 wwwroot\landing.html
@@ -91,7 +93,5 @@ wwwroot\register.html
 wwwroot\report.html
 wwwroot\user-accounts.html
 wwwroot\contact.html
-wwwroot\css\header.css
-wwwroot\css\index.css
-wwwroot\js\site.js
+wwwroot\index.html
 wwwroot\weather.html

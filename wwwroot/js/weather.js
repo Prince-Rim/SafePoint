@@ -69,27 +69,8 @@ function getUserLocation() {
     }
 }
 
-const userId = localStorage.getItem('userId');
-const userRole = localStorage.getItem('userRole');
-
-function checkDashboardAccess() {
-    const dashboardLink = document.getElementById('dashboardLink');
-    const myReportsLink = document.querySelector('a[href="mypost.html"]');
-
-    // Default: Hide both
-    if (dashboardLink) dashboardLink.style.display = 'none';
-    if (myReportsLink) myReportsLink.style.display = 'none';
-
-    if (userId) {
-        if (userRole === 'Admin' || userRole === 'Moderator') {
-            if (dashboardLink) dashboardLink.style.display = 'block';
-        } else {
-            if (myReportsLink) myReportsLink.style.display = 'inline-block';
-        }
-    }
-}
 
 document.addEventListener('DOMContentLoaded', () => {
-    checkDashboardAccess();
+    // checkDashboardAccess is handled by site.js
     getUserLocation();
 });
