@@ -414,6 +414,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navbar = document.querySelector('.navbar');
+
+    if (mobileMenu && navbar) {
+        mobileMenu.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+        });
+    }
 });
 
 function checkDashboardAccess() {
