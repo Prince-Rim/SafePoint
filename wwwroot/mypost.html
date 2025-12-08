@@ -103,6 +103,7 @@
             <div class="profile-avatar">
                 <span class="material-icons profile-icon">person_pin</span>
             </div>
+
             <div class="profile-info-section">
                 <div class="info-group">
                     <p class="label">User ID</p>
@@ -110,6 +111,14 @@
                         <p id="profileUserId" class="value"></p>
                     </div>
                 </div>
+
+                <div class="info-group">
+                    <p class="label">Full Name</p>
+                    <div class="info-row">
+                        <p id="profileFullName" class="value"></p>
+                    </div>
+                </div>
+
                 <div class="info-group">
                     <p class="label">Display Name</p>
                     <div class="info-row">
@@ -117,6 +126,7 @@
                         <button class="edit-btn" data-field="displayName">Edit</button>
                     </div>
                 </div>
+
                 <div class="info-group">
                     <p class="label">Email</p>
                     <div class="info-row">
@@ -124,23 +134,27 @@
                         <button class="edit-btn" data-field="email">Edit</button>
                     </div>
                 </div>
+
                 <div class="info-group">
                     <p class="label">Role</p>
                     <div class="info-row">
                         <p id="profileRole" class="value">User/Admin/Moderator</p>
                     </div>
                 </div>
+
                 <div class="info-group">
                     <p class="label">Password</p>
                     <div class="info-row" id="passwordInfoRow">
                         <p class="value" id="profilePasswordValue">**************</p>
                         <button class="edit-btn" data-field="password">Edit</button>
                     </div>
+
                     <div id="passwordEditFields" style="display: none;">
                         <input type="password" id="currentPasswordInput" placeholder="Current Password"
                             class="profile-edit-input" autocomplete="off">
                         <input type="password" id="newPasswordInput" placeholder="New Password"
                             class="profile-edit-input" autocomplete="off">
+
                         <div class="password-feedback">
                             <span class="strength-msg" id="passwordStrengthMsg"></span>
                             <p class="requirements-msg" id="passwordRequirementsMsg"></p>
@@ -148,6 +162,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal-action-bar" style="display: none;" id="profileActionBar">
                 <button class="cancel-btn" id="cancelProfileEdit">Cancel</button>
                 <button class="save-btn" id="saveProfileChanges">Save Changes</button>
@@ -200,7 +215,7 @@
             </form>
         </div>
     </div>
-    <script src="js/site.js"></script>
+    <script src="js/site.js?v=debug2"></script>
     <script src="js/mypost.js"></script>
 </body>
 

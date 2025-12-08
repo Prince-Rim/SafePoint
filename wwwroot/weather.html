@@ -60,8 +60,9 @@
                 </div>
             </div>
             <div class="map-container">
-                <iframe src="https://embed.windy.com/embed2.html?lat=14.5995&lon=120.9842&zoom=5&level=surface&overlay=rain&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=default&metricTemp=default"
-                        height="450" style="border:0; border-radius:12px; overflow:hidden;">
+                <iframe
+                    src="https://embed.windy.com/embed2.html?lat=14.5995&lon=120.9842&zoom=5&level=surface&overlay=rain&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=default&metricTemp=default"
+                    height="450" style="border:0; border-radius:12px; overflow:hidden;">
                 </iframe>
             </div>
         </section>
@@ -81,6 +82,13 @@
                     <p class="label">User ID</p>
                     <div class="info-row">
                         <p id="profileUserId" class="value"></p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Full Name</p>
+                    <div class="info-row">
+                        <p id="profileFullName" class="value"></p>
                     </div>
                 </div>
 
@@ -116,9 +124,9 @@
 
                     <div id="passwordEditFields" style="display: none;">
                         <input type="password" id="currentPasswordInput" placeholder="Current Password"
-                               class="profile-edit-input" autocomplete="off">
+                            class="profile-edit-input" autocomplete="off">
                         <input type="password" id="newPasswordInput" placeholder="New Password"
-                               class="profile-edit-input" autocomplete="off">
+                            class="profile-edit-input" autocomplete="off">
 
                         <div class="password-feedback">
                             <span class="strength-msg" id="passwordStrengthMsg"></span>
@@ -140,7 +148,7 @@
     <footer class="footer">
         <p>&copy; 2025 SafePoint. All rights reserved.</p>
     </footer>
-    <script src="js/site.js"></script>
+    <script src="js/site.js?v=debug2"></script>
     <script src="js/weather.js"></script>
 </body>
 

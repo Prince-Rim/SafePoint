@@ -1,5 +1,7 @@
 ﻿const API_BASE_URL = 'https://localhost:44373/api';
 
+console.log("site.js loaded"); // Use verbose logging
+
 const profileDisplayButton = document.getElementById("profileDisplayButton");
 const profileModal = document.getElementById("profileModal");
 const closeProfileModal = document.getElementById("closeProfileModal");
@@ -7,6 +9,9 @@ const profileActionBar = document.getElementById("profileActionBar");
 const saveProfileChangesBtn = document.getElementById("saveProfileChanges");
 const cancelProfileEditBtn = document.getElementById("cancelProfileEdit");
 const editButtons = document.querySelectorAll(".edit-btn");
+
+console.log(`Found ${editButtons.length} edit buttons`);
+
 const passwordEditFields = document.getElementById('passwordEditFields');
 const currentPasswordInput = document.getElementById('currentPasswordInput');
 const newPasswordInput = document.getElementById('newPasswordInput');
@@ -65,6 +70,13 @@ function loadProfileData() {
     const userIdentifier = localStorage.getItem("userId") || "N/A";
     const role = localStorage.getItem("userRole") || "User";
     const email = localStorage.getItem("userEmail") || "N/A";
+    const firstName = localStorage.getItem("firstName") || "";
+    const lastName = localStorage.getItem("lastName") || "";
+    const middleName = localStorage.getItem("middleName") || "";
+
+    const fullName = (firstName && lastName)
+        ? `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`
+        : displayName;
 
     const userBtn = document.getElementById("userBtn");
     if (userBtn) userBtn.textContent = `${displayName} ▾`;
@@ -77,6 +89,7 @@ function loadProfileData() {
         if (document.getElementById("profileUserId")) document.getElementById("profileUserId").textContent = userIdentifier;
         if (document.getElementById("profileDisplayName")) document.getElementById("profileDisplayName").textContent = displayName;
         if (document.getElementById("profileRole")) document.getElementById("profileRole").textContent = role;
+        if (document.getElementById("profileFullName")) document.getElementById("profileFullName").textContent = fullName;
 
         const obscuredEmail = email.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
         if (document.getElementById("profileEmail")) document.getElementById("profileEmail").textContent = obscuredEmail;
@@ -86,7 +99,9 @@ function loadProfileData() {
     }
 }
 
-function toggleEditField(button) {
+async function toggleEditField(button) {
+    console.log("toggleEditField called for:", button.dataset.field, "Text:", button.textContent);
+
     const infoRow = button.closest('.info-row');
     const valueElement = infoRow.querySelector('.value');
     const field = button.dataset.field;
@@ -109,6 +124,7 @@ function toggleEditField(button) {
 
     } else {
         if (button.textContent === 'Edit') {
+            console.log("Switching field to EDIT mode");
             const currentValue = profileModal.dataset[`full${fieldName}`] || valueElement.textContent;
 
             const input = document.createElement('input');
@@ -124,8 +140,15 @@ function toggleEditField(button) {
 
             if (profileActionBar) profileActionBar.style.display = 'flex';
         } else if (button.textContent === 'Save') {
+            console.log("Attempting to SAVE field:", field);
             const input = infoRow.querySelector('input');
             const newValue = input.value;
+
+            // Backend Update Logic
+            const userId = localStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole');
+            let currentDisplayName = profileModal.dataset.fullDisplayName;
+            let currentEmail = profileModal.dataset.fullEmail;
 
             if (field === 'email') {
                 const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -133,15 +156,62 @@ function toggleEditField(button) {
                     alert('Email must be a valid @gmail.com address.');
                     return;
                 }
-                const obscuredEmail = newValue.trim().replace(/^(.{3}).*(@.*)$/, "$1*******$2");
-                valueElement.textContent = obscuredEmail;
-                localStorage.setItem("userEmail", newValue.trim());
-                profileModal.dataset.fullEmail = newValue.trim();
+                currentEmail = newValue.trim();
             } else if (field === 'displayName') {
-                valueElement.textContent = newValue;
-                localStorage.setItem("username", newValue);
-                if (userBtn) userBtn.textContent = `${newValue} ▾`;
-                profileModal.dataset.fullDisplayName = newValue;
+                currentDisplayName = newValue.trim();
+            }
+
+            console.log("Sending UpdateProfile payload:", {
+                UserId: userId,
+                UserRole: userRole,
+                DisplayName: currentDisplayName,
+                Email: currentEmail
+            });
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/User/UpdateProfile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        UserId: userId,
+                        UserRole: userRole,
+                        DisplayName: currentDisplayName,
+                        Email: currentEmail
+                    })
+                });
+
+                console.log("UpdateProfile response status:", response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("UpdateProfile failed:", errorText);
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        alert(`Failed to update profile: ${errorJson.error || errorJson.title || errorText}`);
+                    } catch {
+                        alert(`Failed to update profile: ${errorText}`);
+                    }
+                    return false; // Stop here, do not update UI
+                }
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert("An error occurred while updating the profile. Check console for details.");
+                return false; // Stop here
+            }
+
+            // Success - Update UI and LocalStorage
+            if (field === 'email') {
+                const obscuredEmail = currentEmail.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
+                valueElement.textContent = obscuredEmail;
+                localStorage.setItem("userEmail", currentEmail);
+                profileModal.dataset.fullEmail = currentEmail;
+            } else if (field === 'displayName') {
+                valueElement.textContent = currentDisplayName;
+                localStorage.setItem("username", currentDisplayName);
+                if (userBtn) userBtn.textContent = `${currentDisplayName} ▾`;
+                profileModal.dataset.fullDisplayName = currentDisplayName;
             }
 
             infoRow.removeChild(input);
@@ -152,6 +222,9 @@ function toggleEditField(button) {
             if (!isAnyFieldEditing && passwordEditFields.style.display !== 'block') {
                 if (profileActionBar) profileActionBar.style.display = 'none';
             }
+            alert("Profile updated successfully.");
+            loadProfileData(); // Ensure UI sync.
+            return true;
         }
     }
 }
@@ -215,6 +288,7 @@ if (profileModal) {
 editButtons.forEach(button => {
     button.addEventListener('click', () => {
         const field = button.dataset.field;
+        console.log("Edit/Save button clicked for field:", field);
         if (field === 'username') return;
 
         toggleEditField(button);
@@ -223,14 +297,17 @@ editButtons.forEach(button => {
 
 if (saveProfileChangesBtn) {
     saveProfileChangesBtn.addEventListener('click', async () => {
+        console.log("Global Save Profile Changes clicked");
         let changesMade = false;
 
-        editButtons.forEach(button => {
+        for (const button of editButtons) {
             if (button.textContent === 'Save') {
-                toggleEditField(button);
+                console.log("Found a pending save button for field:", button.dataset.field);
+                const success = await toggleEditField(button);
+                if (!success) return;
                 changesMade = true;
             }
-        });
+        }
 
         if (passwordEditFields.style.display === 'block') {
             const currentPass = currentPasswordInput.value;
@@ -287,9 +364,8 @@ if (saveProfileChangesBtn) {
             }
         }
 
-        if (changesMade) {
-        } else if (passwordEditFields.style.display !== 'block') {
-            alert("No profile changes were made.");
+        if (!changesMade && passwordEditFields.style.display !== 'block') {
+            alert("No pending changes to save.");
         }
         resetEditFields();
         loadProfileData();

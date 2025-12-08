@@ -61,7 +61,10 @@ namespace SafePoint_IRS.Controllers
                         UserId = user.Userid,
                         UserRole = user.UserRole,
                         UserType = "User",
-                        Email = user.Email
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        MiddleName = user.MiddleName
                     });
                 }
             }
@@ -102,7 +105,10 @@ namespace SafePoint_IRS.Controllers
                         UserId = admin.Adminid,
                         UserRole = admin.UserRole,
                         UserType = "Admin",
-                        Email = admin.Email
+                        Email = admin.Email,
+                        FirstName = admin.FirstName,
+                        LastName = admin.LastName,
+                        MiddleName = admin.MiddleName
                     });
                 }
             }
@@ -144,7 +150,10 @@ namespace SafePoint_IRS.Controllers
                         UserRole = moderator.UserRole,
                         UserType = "Moderator",
                         AreaCode = moderator.Area_Code,
-                        Email = moderator.Email
+                        Email = moderator.Email,
+                        FirstName = moderator.FirstName,
+                        LastName = moderator.LastName,
+                        MiddleName = moderator.MiddleName
                     });
                 }
             }

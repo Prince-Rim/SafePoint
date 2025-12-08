@@ -28,12 +28,16 @@ loginForm.addEventListener("submit", async (e) => {
 
         if (response.ok) {
             const data = await response.json();
+            console.log("Login Response Data:", data); // DEBUG: Check what the server returns
 
             localStorage.setItem("username", username);
             localStorage.setItem("userId", data.userId);
             localStorage.setItem("userRole", data.userRole);
             localStorage.setItem("userType", data.userType);
             localStorage.setItem("userEmail", data.email);
+            localStorage.setItem("firstName", data.firstName);
+            localStorage.setItem("lastName", data.lastName);
+            localStorage.setItem("middleName", data.middleName || "");
 
             if (data.userType === 'Admin' || data.userType === 'Moderator') {
                 window.location.href = 'dashboard.html';

@@ -46,7 +46,7 @@
             <form id="reportForm" enctype="multipart/form-data" autocomplete="off">
                 <label for="image">Image/Evidence</label>
                 <div class="image-upload" id="imageUploadArea" draggable="true"
-                     onclick="document.getElementById('image').click()">
+                    onclick="document.getElementById('image').click()">
                     <div id="uploadContent">
                         <span class="material-icons">add_a_photo</span>
                         <p>Click to upload a photo or drag one here</p>
@@ -71,7 +71,7 @@
                             <option value="other">Others</option>
                         </select>
                         <input type="text" id="otherHazard" name="otherHazard" placeholder="Please specify"
-                               style="display:none;">
+                            style="display:none;">
                     </div>
                 </div>
 
@@ -102,7 +102,7 @@
                 <div class="form-group">
                     <label for="description">Description</label>
                     <textarea id="description" name="description" rows="4" placeholder="Describe what happened..."
-                              required></textarea>
+                        required></textarea>
                 </div>
 
                 <div class="buttons">
@@ -128,6 +128,13 @@
                     <p class="label">User ID</p>
                     <div class="info-row">
                         <p id="profileUserId" class="value"></p>
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <p class="label">Full Name</p>
+                    <div class="info-row">
+                        <p id="profileFullName" class="value"></p>
                     </div>
                 </div>
 
@@ -163,9 +170,9 @@
 
                     <div id="passwordEditFields" style="display: none;">
                         <input type="password" id="currentPasswordInput" placeholder="Current Password"
-                               class="profile-edit-input" autocomplete="off">
+                            class="profile-edit-input" autocomplete="off">
                         <input type="password" id="newPasswordInput" placeholder="New Password"
-                               class="profile-edit-input" autocomplete="off">
+                            class="profile-edit-input" autocomplete="off">
 
                         <div class="password-feedback">
                             <span class="strength-msg" id="passwordStrengthMsg"></span>
@@ -188,7 +195,7 @@
         <p>&copy; 2025 SafePoint. All rights reserved.</p>
     </footer>
 
-    <script src="js/site.js"></script>
+    <script src="js/site.js?v=debug2"></script>
     <script src="js/report.js"></script>
 </body>
 

@@ -86,4 +86,14 @@ namespace SafePoint_IRS.DTOs
         [Required]
         public string NewPassword { get; set; } = string.Empty;
     }
+
+    public class UpdateProfileRequest
+    {
+        public Guid UserId { get; set; }
+        public string UserRole { get; set; } = string.Empty;
+        public string? DisplayName { get; set; }
+        
+        [EmailAddress]
+        public string? Email { get; set; }
+    }
 }

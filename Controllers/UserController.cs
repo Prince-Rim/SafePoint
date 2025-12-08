@@ -73,6 +73,65 @@ namespace SafePoint_IRS.Controllers
             return Ok(new { message = "Password updated successfully." });
         }
 
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            if (string.IsNullOrEmpty(request.UserRole))
+                return BadRequest("User role is required.");
+
+            // Email Uniqueness Check
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                var emailExistsInUsers = await _context.Users.AnyAsync(u => u.Email == request.Email && u.Userid != request.UserId);
+                var emailExistsInAdmins = await _context.Admins.AnyAsync(a => a.Email == request.Email && a.Adminid != request.UserId);
+                var emailExistsInMods = await _context.Moderators.AnyAsync(m => m.Email == request.Email && m.Modid != request.UserId);
+
+                if (emailExistsInUsers || emailExistsInAdmins || emailExistsInMods)
+                {
+                    return Conflict(new { error = "Email is already in use by another account." });
+                }
+            }
+
+            if (string.Equals(request.UserRole, "User", StringComparison.OrdinalIgnoreCase))
+            {
+                var user = await _context.Users.FindAsync(request.UserId);
+                if (user == null) return NotFound(new { error = "User not found." });
+
+                if (!string.IsNullOrEmpty(request.DisplayName)) user.Username = request.DisplayName;
+                if (!string.IsNullOrEmpty(request.Email)) user.Email = request.Email;
+            }
+            else if (string.Equals(request.UserRole, "Admin", StringComparison.OrdinalIgnoreCase))
+            {
+                var admin = await _context.Admins.FindAsync(request.UserId);
+                if (admin == null) return NotFound(new { error = "Admin not found." });
+
+                if (!string.IsNullOrEmpty(request.DisplayName)) admin.Username = request.DisplayName;
+                if (!string.IsNullOrEmpty(request.Email)) admin.Email = request.Email;
+            }
+            else if (string.Equals(request.UserRole, "Moderator", StringComparison.OrdinalIgnoreCase))
+            {
+                var moderator = await _context.Moderators.FindAsync(request.UserId);
+                if (moderator == null) return NotFound(new { error = "Moderator not found." });
+
+                if (!string.IsNullOrEmpty(request.DisplayName)) moderator.Username = request.DisplayName;
+                if (!string.IsNullOrEmpty(request.Email)) moderator.Email = request.Email;
+            }
+            else
+            {
+                return BadRequest(new { error = $"Invalid user role: {request.UserRole}" });
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Profile updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while updating profile.", details = ex.Message });
+            }
+        }
+
         [HttpGet("CheckEmail")]
         public async Task<IActionResult> CheckEmail([FromQuery] string email)
         {

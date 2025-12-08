@@ -95,7 +95,16 @@ namespace SafePoint_IRS.Controllers
             if (!string.IsNullOrEmpty(userDto.LastName)) user.LastName = userDto.LastName;
             if (userDto.MiddleName != null) user.MiddleName = userDto.MiddleName;
             if (!string.IsNullOrEmpty(userDto.FirstName)) user.FirstName = userDto.FirstName;
-            if (!string.IsNullOrEmpty(userDto.Email)) user.Email = userDto.Email;
+            if (!string.IsNullOrEmpty(userDto.Email))
+            {
+                if (await _context.Users.AnyAsync(u => u.Email == userDto.Email && u.Userid != userIdGuid) ||
+                    await _context.Admins.AnyAsync(a => a.Email == userDto.Email) ||
+                    await _context.Moderators.AnyAsync(m => m.Email == userDto.Email))
+                {
+                    return Conflict(new { error = "Email is already in use." });
+                }
+                user.Email = userDto.Email;
+            }
             if (!string.IsNullOrEmpty(userDto.Contact)) user.Contact = userDto.Contact;
 
             if (!string.IsNullOrEmpty(userDto.Password))
@@ -162,7 +171,16 @@ namespace SafePoint_IRS.Controllers
             }
 
             if (!string.IsNullOrEmpty(modDto.Username)) moderator.Username = modDto.Username;
-            if (!string.IsNullOrEmpty(modDto.Email)) moderator.Email = modDto.Email;
+            if (!string.IsNullOrEmpty(modDto.Email))
+            {
+                if (await _context.Moderators.AnyAsync(m => m.Email == modDto.Email && m.Modid != modIdGuid) ||
+                    await _context.Admins.AnyAsync(a => a.Email == modDto.Email) ||
+                    await _context.Users.AnyAsync(u => u.Email == modDto.Email))
+                {
+                    return Conflict(new { error = "Email is already in use." });
+                }
+                moderator.Email = modDto.Email;
+            }
             if (!string.IsNullOrEmpty(modDto.Contact)) moderator.Contact = modDto.Contact;
 
             if (!string.IsNullOrEmpty(modDto.Area_Code))
@@ -234,7 +252,16 @@ namespace SafePoint_IRS.Controllers
             }
 
             if (!string.IsNullOrEmpty(adminDto.Username)) admin.Username = adminDto.Username;
-            if (!string.IsNullOrEmpty(adminDto.Email)) admin.Email = adminDto.Email;
+            if (!string.IsNullOrEmpty(adminDto.Email))
+            {
+                if (await _context.Admins.AnyAsync(a => a.Email == adminDto.Email && a.Adminid != adminIdGuid) ||
+                    await _context.Users.AnyAsync(u => u.Email == adminDto.Email) ||
+                    await _context.Moderators.AnyAsync(m => m.Email == adminDto.Email))
+                {
+                    return Conflict(new { error = "Email is already in use." });
+                }
+                admin.Email = adminDto.Email;
+            }
             if (!string.IsNullOrEmpty(adminDto.Contact)) admin.Contact = adminDto.Contact;
             if (adminDto.Permissions != null) admin.Permissions = adminDto.Permissions;
 
