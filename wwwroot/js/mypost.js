@@ -192,7 +192,7 @@ function renderIncidentDetails(incident, status) {
         <h3>Incident Details</h3>
         <div class="detail-group">
             <p>Status:</p> <span class="detail-value">${status}</span>
-            <p>Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
+            <p>Incident Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
             <p>Type:</p> <span class="detail-value">${typeDisplay}</span>
             <p>Severity:</p> <span class="detail-value">${(incident.severity && (incident.severity.toLowerCase() === 'medium' || incident.severity.toLowerCase() === 'moderate')) ? 'Moderate' : (incident.severity || 'N/A')}</span>
             <p>Date & Time:</p> <span class="detail-value">${formattedDate}</span>

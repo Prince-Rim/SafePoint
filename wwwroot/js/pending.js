@@ -236,7 +236,7 @@ function renderIncidentDetails(incident) {
         detailGroup.innerHTML = `
             <p>Reporter:</p> <span class="detail-value">${incident.user?.username || 'Unknown'}</span>
             <p>Status:</p> <span class="detail-value">${currentStatus}</span>
-            <p>Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
+            <p>Incident Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
             <p>Type:</p> <span class="detail-value">${typeDisplay}</span>
             <p>Severity:</p> <span class="detail-value">${(incident.severity && (incident.severity.toLowerCase() === 'moderate' || incident.severity.toLowerCase() === 'medium')) ? 'Moderate' : (incident.severity || 'N/A')}</span>
             <p>Date & Time:</p> <span class="detail-value">${formattedDate}</span>
