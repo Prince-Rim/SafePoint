@@ -20,7 +20,7 @@ loginForm.addEventListener("submit", async (e) => {
     if (errorMessage) errorMessage.textContent = "";
 
     try {
-        const response = await fetch("https://localhost:44373/api/Auth/Login", {
+        const response = await fetch("/api/Auth/Login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Username: username, Password: password })

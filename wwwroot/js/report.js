@@ -234,7 +234,7 @@ reportForm.addEventListener("submit", async function (e) {
 
     try {
         console.log("Sending fetch request");
-        const response = await fetch("https://localhost:44373/api/Incidents", {
+        const response = await fetch("/api/Incidents", {
             method: "POST",
             body: formData
         });

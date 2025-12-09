@@ -1,4 +1,4 @@
-﻿const API_BASE_URL = 'https://localhost:44373/api';
+﻿const API_BASE_URL = '/api';
 
 console.log("site.js loaded"); // Use verbose logging
 
