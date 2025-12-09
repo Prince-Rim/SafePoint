@@ -34,18 +34,13 @@ body {
 }
 
 #registrationContainer {
-    margin-top: 650px;
+    margin-top: 30px;
 }
 
 #otpContainer {
     margin-top: 100px;
 }
 
-@media (min-height: 850px) {
-    #registrationContainer {
-        margin-top: 400px;
-    }
-}
 
 .logo {
     width: 45px;
