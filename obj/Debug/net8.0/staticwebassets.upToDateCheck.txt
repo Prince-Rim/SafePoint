@@ -3,11 +3,8 @@ wwwroot\css\contact.css
 wwwroot\css\dashboard.css
 wwwroot\css\header.css
 wwwroot\css\index.css
-wwwroot\css\landing.css
-wwwroot\css\login.css
 wwwroot\css\mypost.css
 wwwroot\css\pending.css
-wwwroot\css\register.css
 wwwroot\css\report.css
 wwwroot\css\site.css
 wwwroot\css\user-accounts.css
@@ -95,3 +92,6 @@ wwwroot\register.html
 wwwroot\report.html
 wwwroot\user-accounts.html
 wwwroot\weather.html
+wwwroot\css\landing.css
+wwwroot\css\login.css
+wwwroot\css\register.css

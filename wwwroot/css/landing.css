@@ -4,12 +4,8 @@
     box-sizing: border-box;
 }
 
-html,
-body {
+html {
     height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
 }
 
 body {
@@ -19,6 +15,7 @@ body {
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
 }
 
 .header {
@@ -104,7 +101,8 @@ body {
     text-align: center;
     padding: 130px 20px 80px;
     gap: 60px;
-    min-height: 90vh;
+    flex: 1;
+    /* Allow content to grow and push footer down */
     animation: fadeInUp 1.5s ease;
 }
 
@@ -187,7 +185,12 @@ body {
 
     .ltext {
         flex-direction: column;
-        padding-top: 120px;
+        padding-top: 100px;
+        gap: 40px;
+    }
+
+    .stext {
+        padding: 0 20px;
     }
 
     .stext h1 {
@@ -195,6 +198,31 @@ body {
     }
 
     .limage img {
-        max-width: 300px;
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 15px;
+    }
+
+    .brand h2 {
+        display: block;
+        font-size: 1.1rem;
+    }
+
+    .auth-nav .btnlogin,
+    .auth-nav .btnregister {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .stext h1 {
+        font-size: 1.5rem;
+    }
+
+    .ltext {
+        gap: 30px;
     }
 }
