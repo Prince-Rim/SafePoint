@@ -1,3 +1,4 @@
+wwwroot\contact.html
 wwwroot\css\contact.css
 wwwroot\css\dashboard.css
 wwwroot\css\header.css
@@ -16,6 +17,7 @@ wwwroot\favicon.ico
 wwwroot\image\info.png
 wwwroot\image\maps.jpg
 wwwroot\image\spicon.png
+wwwroot\index.html
 wwwroot\js\contact.js
 wwwroot\js\dashboard.js
 wwwroot\js\index.js
@@ -92,6 +94,4 @@ wwwroot\pending.html
 wwwroot\register.html
 wwwroot\report.html
 wwwroot\user-accounts.html
-wwwroot\contact.html
-wwwroot\index.html
 wwwroot\weather.html

@@ -97,6 +97,17 @@ function loadProfileData() {
         profileModal.dataset.fullDisplayName = displayName;
         profileModal.dataset.fullEmail = email;
     }
+
+    const loggedInActions = document.getElementById("loggedInActions");
+    const guestActions = document.getElementById("guestActions");
+
+    if (userIdentifier !== "N/A") {
+        if (loggedInActions) loggedInActions.style.display = 'block';
+        if (guestActions) guestActions.style.display = 'none';
+    } else {
+        if (loggedInActions) loggedInActions.style.display = 'none';
+        if (guestActions) guestActions.style.display = 'block';
+    }
 }
 
 async function toggleEditField(button) {
@@ -387,8 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBtn && userDropdown) {
         userBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            const userId = localStorage.getItem('userId');
-            if (!userId) return; // Disable dropdown for guests
+            // Allow dropdown for everyone (Guest or User)
             userDropdown.classList.toggle("show");
         });
 

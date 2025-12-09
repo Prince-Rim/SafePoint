@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SafePoint | Discover</title>
-    <link rel="stylesheet" href="css/header.css?v=2" />
-    <link rel="stylesheet" href="css/contact.css?v=2" />
+    <link rel="stylesheet" href="css/header.css?v=guestFix6" />
+    <link rel="stylesheet" href="css/contact.css?v=guestFix6" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -29,26 +29,32 @@
             <a href="dashboard.html" class="dashboard-link" id="dashboardLink" style="display: none;">Dashboard</a>
 
             <a href="index.html">Map</a>
+            <a href="weather.html">Weather</a>
+            <a href="mypost.html" id="myReportsLink">My Reports</a>
             <div class="dropdown">
-                <a href="#" class="dropbtn" id="discoverBtn">Discover ▾</a>
+                <a href="contact.html" class="dropbtn" id="discoverBtn">Discover ▾</a>
                 <div class="dropdown-content1" id="discoverDropdown">
-                    <a href="#about-us">About Us</a>
-                    <a href="#how-it-works">How It Works</a>
-                    <a href="#safety-tips">Safety Tips</a>
-                    <a href="#hotlines">Hotlines</a> <a href="#contact-us">Contact Us</a>
+                    <a href="contact.html#about-us">About Us</a>
+                    <a href="contact.html#how-it-works">How It Works</a>
+                    <a href="contact.html#safety-tips">Safety Tips</a>
+                    <a href="contact.html#hotlines">Hotlines</a>
+                    <a href="contact.html#contact-us">Contact Us</a>
                 </div>
             </div>
-            <a href="mypost.html" id="myReportsLink">My Reports</a>
-            <a href="weather.html">Weather</a>
             <div class="user-dropdown" id="userDropdown">
                 <button class="user-btn" id="userBtn">Guest ▾</button>
                 <div class="dropdown-content" id="dropdownContent">
-                    <div class="user-info-display" id="profileDisplayButton">
-                        <p class="user-display-name" id="dropdownUsername">Username</p>
-                        <p class="user-email" id="dropdownEmail">email@example.com</p>
-                        <p class="user-role" id="dropdownRole">Role</p>
+                    <div id="loggedInActions" style="display: none;">
+                        <div class="user-info-display" id="profileDisplayButton">
+                            <p class="user-display-name" id="dropdownUsername">Username</p>
+                            <p class="user-email" id="dropdownEmail">email@example.com</p>
+                            <p class="user-role" id="dropdownRole">Role</p>
+                        </div>
+                        <a href="#" id="logoutBtn">Logout</a>
                     </div>
-                    <a href="#" id="logoutBtn">Logout</a>
+                    <div id="guestActions" style="display: none;">
+                        <a href="login.html" id="loginBtn">Login</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -353,7 +359,7 @@
             <p>&copy; 2025 SafePoint. All rights reserved.</p>
         </footer>
     </main>
-    <script src="js/site.js?v=debug2"></script>
+    <script src="js/site.js?v=guestFix1"></script>
     <script>
         const discoverBtn = document.getElementById('discoverBtn');
         const discoverDropdown = document.getElementById('discoverDropdown');
