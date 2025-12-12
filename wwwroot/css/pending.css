@@ -238,25 +238,25 @@
         }
 
 .action-btn-primary {
-    background-color: #397DFA; /* Primary blue for Approve/Restore */
+    background-color: #397DFA; 
     color: white;
     border: none;
 }
 
 .action-btn-secondary {
-    background-color: #6c757d; /* Gray for Edit */
-    color: white; /* Ensure text color is white */
+    background-color: #6c757d; 
+    color: white;
 }
 
 .action-btn-delete {
-    background-color: #dc3545; /* Red for Reject */
-    color: white; /* Ensure text color is white */
+    background-color: #dc3545;
+    color: white;
     border: none;
 }
 
 .action-btn-warning {
-    background-color: #ffc107; /* Yellow for Invalidate */
-    color: #212529; /* Dark text for warning */
+    background-color: #dc3545;
+    color: white;
     border: none;
 }
 
@@ -266,10 +266,9 @@
     border: none;
 }
 
-/* MODIFIED: Image Placeholder Styling */
 .media-placeholder {
     width: 100%;
-    height: 300px; /* Fixed height for image area */
+    height: 300px;
     min-height: 250px;
     max-height: 400px;
     overflow: hidden;
