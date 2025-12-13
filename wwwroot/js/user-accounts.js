@@ -42,6 +42,7 @@ async function loadAllAccounts() {
         populateAreaDropdown('edit-area');
 
         renderAccountsTable();
+        setupAccountFilters();
     } catch (error) {
         console.error('Error loading accounts:', error);
         alert('Failed to load accounts. Please check API connection.');
@@ -66,13 +67,8 @@ function populateAreaDropdown(selectId) {
     });
 }
 
-function renderAccountsTable() {
-    const tbody = document.querySelector('.user-table-wrapper tbody');
-    if (!tbody) return;
-
-    tbody.innerHTML = '';
-
-    const allAccounts = [
+function getAllAllAccountsCombined() {
+    return [
         ...allUsers.map(u => ({
             ...u,
             accountType: 'User',
@@ -97,13 +93,86 @@ function renderAccountsTable() {
             suspensionEndTime: a.SuspensionEndTime
         }))
     ];
+}
 
-    if (allAccounts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">No accounts found</td></tr>';
+let filterRole = '';
+let filterStatus = '';
+let filterSearch = '';
+
+function setupAccountFilters() {
+    const filterBtn = document.getElementById('filterBtn');
+    const filterMenu = document.getElementById('filterMenu');
+    const roleSelect = document.getElementById('filterRole');
+    const statusSelect = document.getElementById('filterStatus');
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    if (filterBtn && filterMenu) {
+        // Toggle dropdown
+        filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
+                filterMenu.classList.remove('show');
+            }
+        });
+    }
+
+    const apply = () => {
+        filterRole = roleSelect ? roleSelect.value : '';
+        filterStatus = statusSelect ? statusSelect.value : '';
+        filterSearch = searchInput ? searchInput.value.toLowerCase() : '';
+        renderAccountsTable();
+    };
+
+    if (roleSelect) roleSelect.addEventListener('change', apply);
+    if (statusSelect) statusSelect.addEventListener('change', apply);
+    if (searchInput) searchInput.addEventListener('input', apply);
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (roleSelect) roleSelect.value = '';
+            if (statusSelect) statusSelect.value = '';
+            if (searchInput) searchInput.value = '';
+            apply();
+        });
+    }
+}
+
+function renderAccountsTable() {
+    const tbody = document.querySelector('.user-table-wrapper tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    let accounts = getAllAllAccountsCombined();
+
+    accounts = accounts.filter(acc => {
+        const searchMatch = !filterSearch ||
+            (acc.username || '').toLowerCase().includes(filterSearch) ||
+            (acc.email || '').toLowerCase().includes(filterSearch) ||
+            (acc.contact || '').toLowerCase().includes(filterSearch);
+
+        const roleMatch = !filterRole || acc.accountType === filterRole;
+
+        const isActive = acc.isActive;
+        let statusMatch = true;
+        if (filterStatus === 'active') statusMatch = isActive === true;
+        if (filterStatus === 'inactive') statusMatch = isActive === false;
+
+        return searchMatch && roleMatch && statusMatch;
+    });
+
+    if (accounts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">No matching accounts found</td></tr>';
         return;
     }
 
-    allAccounts.forEach(account => {
+    accounts.forEach(account => {
         const isActive = account.isActive;
         const statusText = isActive ? 'Active' : 'Inactive';
         const statusClass = isActive ? 'active-status' : 'inactive-status';
@@ -142,8 +211,8 @@ async function createAccount(formData) {
     }
 
     const contact = formData.get('contact');
-    if (!/^\d{10,11}$/.test(contact)) {
-        alert('Contact number must be 10 or 11 digits.');
+    if (!/^09\d{9}$/.test(contact)) {
+        alert("Contact number must be a valid number: 11 digits and start with '09'.");
         return;
     }
 
@@ -340,8 +409,8 @@ async function updateAccount(formData) {
     }
 
     const contact = formData.get('contact');
-    if (!/^\d{10,11}$/.test(contact)) {
-        alert('Contact number must be 10 or 11 digits.');
+    if (!/^09\d{9}$/.test(contact)) {
+        alert("Contact number must be 11 digits and start with '09'.");
         return;
     }
 
@@ -402,7 +471,6 @@ async function updateAccount(formData) {
             return; // Exit function after successful role change
         }
 
-        // Standard Update (No Role Change)
         if (originalRole === 'admin') endpoint = `/Admin/update-admin/${id}`;
         else if (originalRole === 'moderator') endpoint = `/Admin/update-moderator/${id}`;
         else if (originalRole === 'user') endpoint = `/Admin/update-user/${id}`;
@@ -575,23 +643,6 @@ function setupEditModalListeners() {
     }
 }
 
-function setupSearch() {
-    const searchInput = document.getElementById('searchInput');
-    if (!searchInput) return;
-
-    const performSearch = () => {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = document.querySelectorAll('.user-table-wrapper tbody tr');
-
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(searchTerm) ? '' : 'none';
-        });
-    };
-
-    searchInput.addEventListener('input', performSearch);
-}
-
 function setupRoleChange() {
     const roleSelect = document.getElementById('role');
     const areaGroup = document.querySelector('.form-group:has(#area)');
@@ -640,7 +691,7 @@ function setupLogout() {
 document.addEventListener('DOMContentLoaded', () => {
     loadAllAccounts();
     setupForm();
-    setupSearch();
+    // setupSearch - integrated into setupAccountFilters
     setupRoleChange();
     setupEditModalListeners();
     setupLogout();

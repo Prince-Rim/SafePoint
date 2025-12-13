@@ -59,8 +59,33 @@
 
             <section class="user-list-card card">
                 <div class="search-title-bar">
-                    <input type="text" id="searchInput" placeholder="Search">
-                    <button id="searchTableBtn" class="btn-secondary search-table-btn">Filter</button>
+                    <div class="search-bar-container">
+                        <input type="text" id="searchInput" placeholder="Search by name, email or contact">
+                        <div class="filter-dropdown-container">
+                            <button id="filterBtn" class="btn-secondary search-table-btn">Filter <span
+                                    class="material-icons">filter_list</span></button>
+                            <div class="filter-menu" id="filterMenu">
+                                <div class="filter-group">
+                                    <label>Role</label>
+                                    <select id="filterRole">
+                                        <option value="">All Roles</option>
+                                        <option value="User">User</option>
+                                        <option value="Moderator">Moderator</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Status</label>
+                                    <select id="filterStatus">
+                                        <option value="">All Statuses</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                                <button id="clearFiltersBtn" class="clear-filters-btn">Clear Filters</button>
+                            </div>
+                        </div>
+                    </div>
                     <button id="openModalBtn" class="btn-primary create-btn">Create New Account</button>
                 </div>
                 <div class="user-table-wrapper">
@@ -153,7 +178,7 @@
                         <label for="confirm-password">Confirm Password</label>
                         <input type="password" id="confirm-password" name="confirm-password" required minlength="8">
                     </div>
-                    <div class="form-group"></div>
+
                 </div>
 
                 <div class="form-actions">
