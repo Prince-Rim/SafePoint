@@ -69,7 +69,33 @@
 
                     <div class="search-bar" autocomplete="off">
                         <input type="text" id="searchInput" placeholder="Search">
-                        <button id="searchBtn" class="filter-action-btn">Filter</button>
+                        <div class="filter-dropdown-container">
+                            <button id="searchBtn" class="filter-action-btn">Filter <span
+                                    class="material-icons">filter_list</span></button>
+                            <div class="filter-menu" id="filterMenu">
+                                <div class="filter-group">
+                                    <label>Incident Type</label>
+                                    <select id="filterType">
+                                        <option value="">All Types</option>
+                                        <option value="fire">Fire</option>
+                                        <option value="flood">Flood</option>
+                                        <option value="road">Accident</option>
+                                        <option value="earthquake">Environmental/Nature</option>
+                                        <option value="other">Others</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Severity</label>
+                                    <select id="filterSeverity">
+                                        <option value="">All Severities</option>
+                                        <option value="low">Low</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                                <button id="clearFiltersBtn" class="clear-filters-btn">Clear Filters</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="incident-queue-list">

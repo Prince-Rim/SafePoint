@@ -410,6 +410,11 @@ async function handleFilterClick(targetBtn, status) {
         allIncidents = await fetchIncidentsByStatus(status);
         filteredIncidents = [...allIncidents];
 
+        // Reset filters when changing tabs
+        if (window.resetAdvancedFilters) {
+            window.resetAdvancedFilters();
+        }
+
         const searchInput = document.querySelector('.search-bar input');
         if (searchInput) searchInput.value = '';
 
@@ -428,51 +433,125 @@ async function handleFilterClick(targetBtn, status) {
     }
 }
 
+
+// State variables for advanced filters
+let filterType = '';
+let filterSeverity = '';
+
+function setupAdvancedFilters() {
+    const filterBtn = document.getElementById('searchBtn');
+    const filterMenu = document.getElementById('filterMenu');
+    const typeSelect = document.getElementById('filterType');
+    const severitySelect = document.getElementById('filterSeverity');
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    if (filterBtn && filterMenu) {
+        // Toggle dropdown
+        filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
+                filterMenu.classList.remove('show');
+            }
+        });
+    }
+
+    const applyFilters = () => {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        filterType = typeSelect ? typeSelect.value : '';
+        filterSeverity = severitySelect ? severitySelect.value : '';
+
+        // Filter Logic
+        filteredIncidents = allIncidents.filter(i => {
+            // 1. Text Search
+            const matchesSearch = !searchTerm ||
+                (i.title || '').toLowerCase().includes(searchTerm) ||
+                (i.descr || '').toLowerCase().includes(searchTerm) ||
+                (i.incidentID.toString() === searchTerm) ||
+                (i.user?.username || '').toLowerCase().includes(searchTerm) ||
+                (i.area?.ALocation || i.area?.aLocation || '').toLowerCase().includes(searchTerm) ||
+                (i.locationAddress || '').toLowerCase().includes(searchTerm) ||
+                (i.incident_Code || i.IncidentType || '').toLowerCase().includes(searchTerm) ||
+                (i.severity || '').toLowerCase().includes(searchTerm) ||
+                (i.otherHazard || '').toLowerCase().includes(searchTerm);
+
+            // 2. Type Filter
+            const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
+            const matchesType = !filterType || incidentType.includes(filterType.toLowerCase());
+
+            // 3. Severity Filter
+            const severity = (i.severity || '').toLowerCase();
+            let normalizedSeverity = severity === 'medium' ? 'moderate' : severity;
+            const matchesSeverity = !filterSeverity || normalizedSeverity === filterSeverity.toLowerCase();
+
+            return matchesSearch && matchesType && matchesSeverity;
+        });
+
+        renderIncidentList();
+
+        if (filteredIncidents.length > 0) {
+            // Try to keep selection if valid, else select first
+            if (selectedIncident && filteredIncidents.find(i => i.incidentID === selectedIncident.incidentID)) {
+                selectIncident(selectedIncident); // Re-render details just in case
+            } else {
+                selectIncident(filteredIncidents[0]);
+            }
+        } else {
+            clearDetailPanel();
+        }
+    };
+
+    if (typeSelect) typeSelect.addEventListener('change', applyFilters);
+    if (severitySelect) severitySelect.addEventListener('change', applyFilters);
+
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (typeSelect) typeSelect.value = '';
+            if (severitySelect) severitySelect.value = '';
+            if (searchInput) searchInput.value = '';
+            applyFilters();
+            // Optional: Close menu on clear
+            // filterMenu.classList.remove('show'); 
+        });
+    }
+
+    // Expose for handleFilterClick to reset
+    window.resetAdvancedFilters = () => {
+        if (typeSelect) typeSelect.value = '';
+        if (severitySelect) severitySelect.value = '';
+        if (searchInput) searchInput.value = '';
+        filterType = '';
+        filterSeverity = '';
+    };
+}
+
+// Updated search setup - now integrated into setupAdvancedFilters, so this function can be empty or removed
+// But for compatibility with existing calls in document.ready, we'll leave it empty or just alias it.
+function setupSearch() {
+    // Deprecated in favor of setupAdvancedFilters logic
+}
+
 function setupFilters() {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', e => {
-            const status = e.currentTarget.textContent.trim();
-            handleFilterClick(e.currentTarget, status);
+            const status = e.currentTarget.getAttribute('data-status');
+            console.log('Filter clicked:', status); // Debug log
+            if (status) {
+                handleFilterClick(e.currentTarget, status);
+            }
         });
     });
 }
 
-function setupSearch() {
-    const input = document.getElementById('searchInput');
-
-    if (input) {
-        const performSearch = () => {
-            const term = input.value.toLowerCase();
-
-            filteredIncidents = allIncidents.filter(i =>
-                (i.title || '').toLowerCase().includes(term) ||
-                (i.descr || '').toLowerCase().includes(term) ||
-                (i.incidentID.toString() === term) ||
-                (i.user?.username || '').toLowerCase().includes(term) ||
-                (i.area?.ALocation || i.area?.aLocation || '').toLowerCase().includes(term) ||
-                (i.locationAddress || '').toLowerCase().includes(term) ||
-                (i.incident_Code || i.IncidentType || '').toLowerCase().includes(term) ||
-                (i.severity || '').toLowerCase().includes(term) ||
-                (i.otherHazard || '').toLowerCase().includes(term)
-            );
-
-            renderIncidentList();
-
-            if (filteredIncidents.length > 0) {
-                selectIncident(filteredIncidents[0]);
-            } else {
-                clearDetailPanel();
-            }
-        };
-
-        input.addEventListener('input', performSearch);
-
-        const button = document.getElementById('searchBtn');
-        if (button) {
-            button.removeEventListener('click', performSearch);
-        }
-    }
-}
 
 async function validateIncident(incidentId, isAccepted) {
     if (!confirm(`Are you sure you want to ${isAccepted ? 'approve' : 'reject'} this report?`)) return;
@@ -600,7 +679,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!checkAuthorization()) return;
     loadInitialIncidents();
     setupFilters();
-    setupSearch();
+    // setupSearch(); // Replaced by advanced filters
+    setupAdvancedFilters();
     setupEditModal();
     setupLogout();
 

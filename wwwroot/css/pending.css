@@ -6,11 +6,11 @@
     margin-bottom: 20px;
 }
 
-    .reports-header .back-link .material-icons {
-        font-size: 1.5rem;
-        margin-right: 10px;
-        color: #397DFA;
-    }
+.reports-header .back-link .material-icons {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: #397DFA;
+}
 
 .reports-header h1 {
     margin: 0;
@@ -52,11 +52,11 @@
     transition: all 0.2s;
 }
 
-    .filter-btn.active {
-        background-color: #397DFA;
-        color: white;
-        border-color: #397DFA;
-    }
+.filter-btn.active {
+    background-color: #397DFA;
+    color: white;
+    border-color: #397DFA;
+}
 
 .search-bar {
     display: flex;
@@ -64,13 +64,13 @@
     margin-bottom: 20px;
 }
 
-    .search-bar input {
-        flex-grow: 1;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-family: 'Poppins', sans-serif;
-    }
+.search-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+}
 
 .filter-action-btn {
     padding: 10px 15px;
@@ -80,6 +80,97 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.filter-action-btn .material-icons {
+    font-size: 1.2rem;
+}
+
+.filter-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background-color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 20px;
+    width: 250px;
+    z-index: 1000;
+    border: 1px solid #e0e0e0;
+}
+
+.filter-menu.show {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1f3b73;
+    font-size: 0.9rem;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #397DFA;
+    background-color: white;
+}
+
+.clear-filters-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #f0f0f0;
+    color: #666;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.clear-filters-btn:hover {
+    background-color: #e0e0e0;
+    color: #333;
 }
 
 .incident-queue-list {
@@ -97,15 +188,15 @@
     transition: background-color 0.2s;
 }
 
-    .report-item:hover {
-        background-color: #f8faff;
-    }
+.report-item:hover {
+    background-color: #f8faff;
+}
 
-    .report-item.selected {
-        background-color: #eef3ff;
-        border-left: 4px solid #397DFA;
-        padding-left: 6px;
-    }
+.report-item.selected {
+    background-color: #eef3ff;
+    border-left: 4px solid #397DFA;
+    padding-left: 6px;
+}
 
 .report-thumbnail {
     width: 50px;
@@ -118,11 +209,11 @@
     align-items: center;
 }
 
-    .report-thumbnail img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.report-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 .report-info h4 {
     font-size: 1rem;
@@ -144,20 +235,20 @@
     margin-left: auto;
 }
 
-    .report-item .badge.pending {
-        background-color: #fff3cd;
-        color: #856404;
-    }
+.report-item .badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
 
-    .report-item .badge.validated {
-        background-color: #d4edda;
-        color: #155724;
-    }
+.report-item .badge.validated {
+    background-color: #d4edda;
+    color: #155724;
+}
 
-    .report-item .badge.rejected {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
+.report-item .badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
 
 .view-btn {
     display: none;
@@ -172,14 +263,16 @@
     /* MODIFIED: Set to display flex column to handle scrollable content */
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Prevent detail panel from scrolling whole page */
+    overflow: hidden;
+    /* Prevent detail panel from scrolling whole page */
 }
 
 /* NEW: Style for the scrollable area inside the detail panel */
 .scrollable-detail-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding-bottom: 30px; /* Space at the bottom of the scroll */
+    padding-bottom: 30px;
+    /* Space at the bottom of the scroll */
 }
 
 /* FIX: Ensure the header elements stack vertically */
@@ -187,22 +280,25 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 5px; /* Reduced gap before ID */
+    margin-bottom: 5px;
+    /* Reduced gap before ID */
 }
 
-    .detail-header h2 {
-        font-size: 1.6rem;
-        color: #1f3b73;
-        margin: 0;
-    }
+.detail-header h2 {
+    font-size: 1.6rem;
+    color: #1f3b73;
+    margin: 0;
+}
 
 /* STYLE: Position ID right below the title and adjust its size */
 .report-id-text {
     font-size: 0.9rem;
     font-weight: 500;
     color: #a0a0a0;
-    margin-top: 0; /* Remove gap */
-    margin-bottom: 20px; /* Space before action bar, matching mypost.css */
+    margin-top: 0;
+    /* Remove gap */
+    margin-bottom: 20px;
+    /* Space before action bar, matching mypost.css */
 }
 
 
@@ -216,35 +312,41 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 25px; /* Slightly increased margin */
-    flex-shrink: 0; /* Prevent action bar from shrinking */
+    margin-bottom: 25px;
+    /* Slightly increased margin */
+    flex-shrink: 0;
+    /* Prevent action bar from shrinking */
 }
 
-    .action-bar button {
-        padding: 10px 18px; /* Slightly larger padding */
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        font-size: 0.95rem; /* Slightly larger font */
-        border: none;
-        color: white; /* Ensure text color is white for most buttons */
-    }
+.action-bar button {
+    padding: 10px 18px;
+    /* Slightly larger padding */
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    /* Slightly larger font */
+    border: none;
+    color: white;
+    /* Ensure text color is white for most buttons */
+}
 
-        .action-bar button .material-icons {
-            font-size: 18px;
-            margin-right: 8px; /* Increased margin */
-        }
+.action-bar button .material-icons {
+    font-size: 18px;
+    margin-right: 8px;
+    /* Increased margin */
+}
 
 .action-btn-primary {
-    background-color: #397DFA; 
+    background-color: #397DFA;
     color: white;
     border: none;
 }
 
 .action-btn-secondary {
-    background-color: #6c757d; 
+    background-color: #6c757d;
     color: white;
 }
 
@@ -277,19 +379,23 @@
     align-items: center;
     background: #f4f6fc;
     border-radius: 12px;
-    margin-bottom: 25px; /* Standardized margin */
-    border: 1px solid #eee; /* Added border */
-    padding: 0; /* Removed padding */
+    margin-bottom: 25px;
+    /* Standardized margin */
+    border: 1px solid #eee;
+    /* Added border */
+    padding: 0;
+    /* Removed padding */
 }
 
-    .media-placeholder img {
-        width: 100%;
-        max-width: 100%;
-        height: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        display: block;
-    }
+.media-placeholder img {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 /* END MODIFIED */
 
 .details-section {
@@ -300,7 +406,8 @@
     margin-bottom: 25px;
 }
 
-.incident-details h3, .location-details h3 {
+.incident-details h3,
+.location-details h3 {
     font-size: 1.1rem;
     color: #1f3b73;
     margin-bottom: 10px;
@@ -310,25 +417,27 @@
     display: grid;
     /* MODIFIED: Use 80px label width for consistency */
     grid-template-columns: 80px 1fr;
-    gap: 10px; /* Increased row gap */
+    gap: 10px;
+    /* Increased row gap */
     margin-bottom: 20px;
 }
 
-    .detail-group p {
-        /* MODIFIED: Ensure label width is 80px */
-        width: 80px;
-        font-weight: 600;
-        color: #555;
-        margin: 0;
-        padding: 0;
-    }
+.detail-group p {
+    /* MODIFIED: Ensure label width is 80px */
+    width: 80px;
+    font-weight: 600;
+    color: #555;
+    margin: 0;
+    padding: 0;
+}
 
-    .detail-group .detail-value {
-        color: #333;
-        /* MODIFIED: Set font weight to 500 for consistency */
-        font-weight: 500;
-        word-break: break-word; /* Ensure long text wraps */
-    }
+.detail-group .detail-value {
+    color: #333;
+    /* MODIFIED: Set font weight to 500 for consistency */
+    font-weight: 500;
+    word-break: break-word;
+    /* Ensure long text wraps */
+}
 
 .location-details p {
     word-break: break-word;
@@ -383,12 +492,12 @@
     cursor: pointer;
 }
 
-    .close-modal:hover,
-    .close-modal:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
 
 .modal-content h2 {
     margin-top: 0;
@@ -425,9 +534,9 @@
     margin-bottom: 15px;
 }
 
-    .modal-grid-container .grid-item {
-        width: 100%;
-    }
+.modal-grid-container .grid-item {
+    width: 100%;
+}
 
 .full-width-field {
     margin-bottom: 15px;
@@ -449,9 +558,9 @@
     transition: background-color 0.2s;
 }
 
-    .modal-content button[type="submit"]:hover {
-        background-color: #194389;
-    }
+.modal-content button[type="submit"]:hover {
+    background-color: #194389;
+}
 
 @media (max-width: 1200px) {
     .reports-grid {
@@ -473,9 +582,9 @@
         flex-direction: column;
     }
 
-        .action-bar button {
-            width: 100%;
-        }
+    .action-bar button {
+        width: 100%;
+    }
 
     .modal-content {
         width: 90%;
