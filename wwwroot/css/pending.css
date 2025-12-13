@@ -106,7 +106,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     padding: 20px;
-    width: 250px;
+    width: 320px;
     z-index: 1000;
     border: 1px solid #e0e0e0;
 }
@@ -140,7 +140,8 @@
     font-size: 0.9rem;
 }
 
-.filter-group select {
+.filter-group select,
+.filter-group input[type="date"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -150,7 +151,28 @@
     cursor: pointer;
 }
 
-.filter-group select:focus {
+.date-range-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-range-container input[type="date"] {
+    flex: 1;
+    min-width: 0;
+    /* Allow shrinking if needed */
+    font-size: 0.85rem;
+    /* Slightly smaller font for dates */
+}
+
+.date-separator {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.filter-group select:focus,
+.filter-group input[type="date"]:focus {
     outline: none;
     border-color: #397DFA;
     background-color: white;

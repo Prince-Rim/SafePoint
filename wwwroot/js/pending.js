@@ -437,12 +437,16 @@ async function handleFilterClick(targetBtn, status) {
 // State variables for advanced filters
 let filterType = '';
 let filterSeverity = '';
+let filterDateFrom = '';
+let filterDateTo = '';
 
 function setupAdvancedFilters() {
     const filterBtn = document.getElementById('searchBtn');
     const filterMenu = document.getElementById('filterMenu');
     const typeSelect = document.getElementById('filterType');
     const severitySelect = document.getElementById('filterSeverity');
+    const dateFromInput = document.getElementById('filterDateFrom');
+    const dateToInput = document.getElementById('filterDateTo');
     const clearBtn = document.getElementById('clearFiltersBtn');
     const searchInput = document.getElementById('searchInput');
 
@@ -465,6 +469,8 @@ function setupAdvancedFilters() {
         const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
         filterType = typeSelect ? typeSelect.value : '';
         filterSeverity = severitySelect ? severitySelect.value : '';
+        filterDateFrom = dateFromInput ? dateFromInput.value : '';
+        filterDateTo = dateToInput ? dateToInput.value : '';
 
         // Filter Logic
         filteredIncidents = allIncidents.filter(i => {
@@ -489,7 +495,31 @@ function setupAdvancedFilters() {
             let normalizedSeverity = severity === 'medium' ? 'moderate' : severity;
             const matchesSeverity = !filterSeverity || normalizedSeverity === filterSeverity.toLowerCase();
 
-            return matchesSearch && matchesType && matchesSeverity;
+            // 4. Date Range Filter
+            let matchesDate = true;
+            if (filterDateFrom || filterDateTo) {
+                const iDate = i.incidentDateTime ? new Date(i.incidentDateTime) : null;
+                if (iDate) {
+                    if (filterDateFrom) {
+                        const fromDate = new Date(filterDateFrom);
+                        // Reset time to start of day for accurate comparison
+                        fromDate.setHours(0, 0, 0, 0);
+                        if (iDate < fromDate) matchesDate = false;
+                    }
+                    if (matchesDate && filterDateTo) {
+                        const toDate = new Date(filterDateTo);
+                        // Set time to end of day to include the selected end date
+                        toDate.setHours(23, 59, 59, 999);
+                        if (iDate > toDate) matchesDate = false;
+                    }
+                } else {
+                    // If record has no date, filtering by date should probably exclude it?
+                    // Or include? Let's exclude to be safe if a filter is set.
+                    matchesDate = false;
+                }
+            }
+
+            return matchesSearch && matchesType && matchesSeverity && matchesDate;
         });
 
         renderIncidentList();
@@ -508,6 +538,8 @@ function setupAdvancedFilters() {
 
     if (typeSelect) typeSelect.addEventListener('change', applyFilters);
     if (severitySelect) severitySelect.addEventListener('change', applyFilters);
+    if (dateFromInput) dateFromInput.addEventListener('change', applyFilters);
+    if (dateToInput) dateToInput.addEventListener('change', applyFilters);
 
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
@@ -517,10 +549,10 @@ function setupAdvancedFilters() {
         clearBtn.addEventListener('click', () => {
             if (typeSelect) typeSelect.value = '';
             if (severitySelect) severitySelect.value = '';
+            if (dateFromInput) dateFromInput.value = '';
+            if (dateToInput) dateToInput.value = '';
             if (searchInput) searchInput.value = '';
             applyFilters();
-            // Optional: Close menu on clear
-            // filterMenu.classList.remove('show'); 
         });
     }
 
@@ -528,9 +560,13 @@ function setupAdvancedFilters() {
     window.resetAdvancedFilters = () => {
         if (typeSelect) typeSelect.value = '';
         if (severitySelect) severitySelect.value = '';
+        if (dateFromInput) dateFromInput.value = '';
+        if (dateToInput) dateToInput.value = '';
         if (searchInput) searchInput.value = '';
         filterType = '';
         filterSeverity = '';
+        filterDateFrom = '';
+        filterDateTo = '';
     };
 }
 
