@@ -88,6 +88,8 @@ async function handleFilterClick(targetBtn, status) {
         allIncidents = await fetchIncidentsByStatus(status);
         filteredIncidents = [...allIncidents];
 
+        if (window.resetAdvancedFilters) window.resetAdvancedFilters();
+
         const searchInput = document.querySelector('.search-bar input');
         if (searchInput) searchInput.value = '';
 
@@ -352,21 +354,93 @@ function setupFilters() {
     });
 }
 
-function performFiltering(term) {
-    const activeStatus = document.querySelector('.filter-btn.active')?.textContent.trim() || 'Pending';
 
-    if (term === '') {
-        filteredIncidents = [...allIncidents];
-    } else {
-        filteredIncidents = allIncidents.filter(i =>
+// State variables for advanced filters
+let filterType = '';
+let filterSeverity = '';
+
+function setupAdvancedFilters() {
+    const filterBtn = document.getElementById('searchBtn');
+    const filterMenu = document.getElementById('filterMenu');
+    const typeSelect = document.getElementById('filterType');
+    const severitySelect = document.getElementById('filterSeverity');
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    const searchInput = document.getElementById('searchInput');
+
+    if (filterBtn && filterMenu) {
+        // Toggle dropdown
+        filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            filterMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
+                filterMenu.classList.remove('show');
+            }
+        });
+    }
+
+    const applyFilters = () => {
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        filterType = typeSelect ? typeSelect.value : '';
+        filterSeverity = severitySelect ? severitySelect.value : '';
+
+        performFiltering(searchTerm);
+    };
+
+    if (typeSelect) typeSelect.addEventListener('change', applyFilters);
+    if (severitySelect) severitySelect.addEventListener('change', applyFilters);
+
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (typeSelect) typeSelect.value = '';
+            if (severitySelect) severitySelect.value = '';
+            if (searchInput) searchInput.value = '';
+            applyFilters();
+        });
+    }
+
+    // Expose reset for handleFilterClick
+    window.resetAdvancedFilters = () => {
+        if (typeSelect) typeSelect.value = '';
+        if (severitySelect) severitySelect.value = '';
+        if (searchInput) searchInput.value = '';
+        filterType = '';
+        filterSeverity = '';
+    }
+}
+
+
+function performFiltering(term) {
+    const activeStatus = document.querySelector('.filter-btn.active')?.dataset.filter || 'Pending';
+
+    filteredIncidents = allIncidents.filter(i => {
+        // 1. Text Search
+        const matchesSearch = !term ||
             (i.title || '').toLowerCase().includes(term) ||
             (i.descr || '').toLowerCase().includes(term) ||
             (i.incident_Code || '').toLowerCase().includes(term) ||
             (i.severity || '').toLowerCase().includes(term) ||
             (i.locationAddress || '').toLowerCase().includes(term) ||
-            (i.otherHazard || '').toLowerCase().includes(term)
-        );
-    }
+            (i.otherHazard || '').toLowerCase().includes(term);
+
+        // 2. Type Filter
+        const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
+        const matchesType = !filterType || incidentType.includes(filterType.toLowerCase());
+
+        // 3. Severity Filter
+        const severity = (i.severity || '').toLowerCase();
+        let normalizedSeverity = severity === 'medium' ? 'moderate' : severity;
+        const matchesSeverity = !filterSeverity || normalizedSeverity === filterSeverity.toLowerCase();
+
+        return matchesSearch && matchesType && matchesSeverity;
+    });
 
     renderIncidentList(activeStatus);
 
@@ -377,28 +451,13 @@ function performFiltering(term) {
     }
 }
 
+// Deprecated setupSearch
 function setupSearch() {
-    const input = document.querySelector('.search-bar input');
-    const button = document.querySelector('.filter-action-btn');
-
-    if (!input) return;
-    input.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        performFiltering(term);
-    });
-
-    if (button) {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const term = input.value.toLowerCase();
-            performFiltering(term);
-        });
-    }
+    // Logic moved to setupAdvancedFilters
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     loadInitialIncidents();
     setupFilters();
-    setupSearch();
+    setupAdvancedFilters();
 });
