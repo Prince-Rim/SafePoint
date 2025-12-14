@@ -184,7 +184,16 @@ function renderIncidentDetails(incident, status) {
     const date = incident.incidentDateTime ? new Date(incident.incidentDateTime) : null;
     const formattedDate = date ? date.toLocaleString() : 'N/A';
 
-    let typeDisplay = incident.IncidentType || incident.incident_Code || 'N/A';
+    let typeCode = incident.IncidentType || incident.incident_Code || 'N/A';
+    const typeMapping = {
+        'fire': 'Fire',
+        'flood': 'Flood',
+        'road': 'Accident',
+        'accident': 'Accident',
+        'earthquake': 'Environmental/Nature',
+        'other': 'Others'
+    };
+    let typeDisplay = typeMapping[typeCode.toLowerCase()] || typeCode;
     const otherText = incident.otherHazard || incident.OtherHazard;
     if (typeDisplay.toLowerCase().includes('other') && otherText) {
         typeDisplay += ` (${otherText})`;
@@ -196,7 +205,7 @@ function renderIncidentDetails(incident, status) {
             <p>Status:</p> <span class="detail-value">${status}</span>
             <p>Incident Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
             <p>Type:</p> <span class="detail-value">${typeDisplay}</span>
-            <p>Severity:</p> <span class="detail-value">${(incident.severity && (incident.severity.toLowerCase() === 'medium' || incident.severity.toLowerCase() === 'moderate')) ? 'Moderate' : (incident.severity || 'N/A')}</span>
+            <p>Severity:</p> <span class="detail-value">${(incident.severity ? incident.severity.charAt(0).toUpperCase() + incident.severity.slice(1).toLowerCase() : 'N/A')}</span>
             <p>Date & Time:</p> <span class="detail-value">${formattedDate}</span>
         </div>
         <div class="full-width-field" style="margin-top: 15px;">
@@ -446,7 +455,20 @@ function performFiltering(term) {
 
         // 2. Type Filter
         const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
-        const matchesType = !filterType || incidentType.includes(filterType.toLowerCase());
+        let filterTypeVal = filterType ? filterType.toLowerCase() : '';
+
+        // Alias checking
+        if (filterTypeVal === 'accident' || filterTypeVal === 'road') {
+            const isAccident = incidentType === 'accident' || incidentType === 'road';
+            if (!isAccident && filterTypeVal) return false;
+        } else {
+            const matchesType = !filterTypeVal || incidentType.includes(filterTypeVal);
+            if (!matchesType) return false;
+        }
+
+        // Since we did explicit return false above, we can set matchesType to true here if we reached this point
+        // But to keep structure:
+        const matchesType = true;
 
         // 3. Severity Filter
         const severity = (i.severity || '').toLowerCase();

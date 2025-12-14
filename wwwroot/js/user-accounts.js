@@ -1,7 +1,5 @@
 const API_BASE_URL = '/api';
 
-const adminId = localStorage.getItem('userId');
-const adminRole = localStorage.getItem('userRole');
 
 let allUsers = [];
 let allModerators = [];
@@ -9,18 +7,29 @@ let allAdmins = [];
 let allAreas = [];
 
 function checkAuthorization() {
+    const adminId = localStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole');
+
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
-        alert("Access denied. You must be an Admin or Moderator.");
-        window.location.href = "index.html";
+        document.body.style.display = 'none';
+        window.location.href = "landing.html";
         return false;
     }
     return true;
 }
 
+window.addEventListener('pageshow', function (event) {
+    checkAuthorization();
+});
+
+checkAuthorization();
+
 async function loadAllAccounts() {
     if (!checkAuthorization()) return;
 
     try {
+        const adminId = localStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole
@@ -217,6 +226,8 @@ async function createAccount(formData) {
     }
 
     try {
+        const adminId = localStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole');
         const headers = {
             'Content-Type': 'application/json',
             'X-Requester-Id': adminId,
@@ -415,6 +426,8 @@ async function updateAccount(formData) {
     }
 
     try {
+        const adminId = localStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole');
         const headers = {
             'Content-Type': 'application/json',
             'X-Requester-Id': adminId,
@@ -455,7 +468,7 @@ async function updateAccount(formData) {
             }
 
             const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                method: 'POST', // ChangeRole is POST
+                method: 'POST',
                 headers: headers,
                 body: JSON.stringify(payload)
             });
@@ -468,7 +481,7 @@ async function updateAccount(formData) {
             alert(`Role changed successfully!`);
             closeEditModal();
             loadAllAccounts();
-            return; // Exit function after successful role change
+            return;
         }
 
         if (originalRole === 'admin') endpoint = `/Admin/update-admin/${id}`;
@@ -538,6 +551,8 @@ async function deleteAccount(id, type) {
     }
 
     try {
+        const adminId = localStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole
@@ -691,7 +706,6 @@ function setupLogout() {
 document.addEventListener('DOMContentLoaded', () => {
     loadAllAccounts();
     setupForm();
-    // setupSearch - integrated into setupAccountFilters
     setupRoleChange();
     setupEditModalListeners();
     setupLogout();

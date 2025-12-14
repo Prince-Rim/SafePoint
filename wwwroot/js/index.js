@@ -161,6 +161,7 @@ function renderIncidents(incidentsToRender) {
         'fire': 'local_fire_department',
         'flood': 'water_drop',
         'road': 'car_crash',
+        'accident': 'emergency',
         'earthquake': 'public',
         'other': 'warning'
     };
@@ -169,6 +170,7 @@ function renderIncidents(incidentsToRender) {
         'fire': 'Fire',
         'flood': 'Flood',
         'road': 'Accident',
+        'accident': 'Accident',
         'earthquake': 'Environmental/Nature',
         'other': 'Others'
     };
@@ -266,6 +268,7 @@ function openViewModal(incident) {
         'fire': 'Fire',
         'flood': 'Flood',
         'road': 'Accident',
+        'accident': 'Accident',
         'earthquake': 'Environmental/Nature',
         'other': 'Others'
     };
@@ -280,6 +283,7 @@ function openViewModal(incident) {
 
     let severity = incident.severity || 'N/A';
     if (severity.toLowerCase() === 'moderate' || severity.toLowerCase() === 'medium') severity = 'Moderate';
+    else severity = severity.charAt(0).toUpperCase() + severity.slice(1).toLowerCase();
 
     const badge = document.getElementById('modalSeverityBadge');
     badge.textContent = severity;
@@ -552,6 +556,7 @@ function filterAndRenderIncidents(searchTerm) {
             'fire': 'fire',
             'flood': 'flood',
             'road': 'accident',
+            'accident': 'accident',
             'earthquake': 'environmental',
             'other': 'others'
         };

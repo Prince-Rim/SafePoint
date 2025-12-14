@@ -1,17 +1,23 @@
 const API_BASE_URL = '/api';
 
-const adminId = localStorage.getItem('userId');
-const adminRole = localStorage.getItem('userRole');
+
 let selectedIncident = null;
 
 function checkAuthorization() {
+    const adminId = localStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole');
+
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
-        alert("Access denied. You must be an Admin or Moderator.");
-        window.location.href = "index.html";
+        document.body.style.display = 'none';
+        window.location.href = "landing.html";
         return false;
     }
     return true;
 }
+
+window.addEventListener('pageshow', function (event) {
+    checkAuthorization();
+});
 
 let pendingIncidents = [];
 let validatedIncidents = [];
@@ -38,8 +44,8 @@ async function fetchIncidentsByStatus(status) {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             }
         });
         if (!response.ok) {
@@ -54,6 +60,7 @@ async function fetchIncidentsByStatus(status) {
 }
 
 async function loadInitialIncidents() {
+    const adminId = localStorage.getItem('userId');
     if (!adminId) {
         alert("Authorization required. Redirecting to login.");
         window.location.href = "login.html";
@@ -226,7 +233,16 @@ function renderIncidentDetails(incident) {
 
     const detailGroup = detailPanel.querySelector('.detail-group');
     if (detailGroup) {
-        let typeDisplay = incident.IncidentType || incident.incident_Code || 'N/A';
+        let typeCode = incident.IncidentType || incident.incident_Code || 'N/A';
+        const typeMapping = {
+            'fire': 'Fire',
+            'flood': 'Flood',
+            'road': 'Accident',
+            'accident': 'Accident',
+            'earthquake': 'Environmental/Nature',
+            'other': 'Others'
+        };
+        let typeDisplay = typeMapping[typeCode.toLowerCase()] || typeCode;
 
         const otherText = incident.otherHazard || incident.OtherHazard;
         if (typeDisplay.toLowerCase().includes('other') && otherText) {
@@ -238,7 +254,7 @@ function renderIncidentDetails(incident) {
             <p>Status:</p> <span class="detail-value">${currentStatus}</span>
             <p>Incident Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
             <p>Type:</p> <span class="detail-value">${typeDisplay}</span>
-            <p>Severity:</p> <span class="detail-value">${(incident.severity && (incident.severity.toLowerCase() === 'moderate' || incident.severity.toLowerCase() === 'medium')) ? 'Moderate' : (incident.severity || 'N/A')}</span>
+            <p>Severity:</p> <span class="detail-value">${(incident.severity ? incident.severity.charAt(0).toUpperCase() + incident.severity.slice(1).toLowerCase() : 'N/A')}</span>
             <p>Date & Time:</p> <span class="detail-value">${formattedDate}</span>
             <p>Description:</p> <span class="detail-value" style="grid-column: 1 / 3;">${incident.descr || 'No description'}</span>
         `;
@@ -344,8 +360,8 @@ async function saveIncidentChanges(e) {
         const response = await fetch(`${API_BASE_URL}/Incidents/${id}`, {
             method: 'PUT',
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             },
             body: formData
         });
@@ -410,7 +426,6 @@ async function handleFilterClick(targetBtn, status) {
         allIncidents = await fetchIncidentsByStatus(status);
         filteredIncidents = [...allIncidents];
 
-        // Reset filters when changing tabs
         if (window.resetAdvancedFilters) {
             window.resetAdvancedFilters();
         }
@@ -451,13 +466,11 @@ function setupAdvancedFilters() {
     const searchInput = document.getElementById('searchInput');
 
     if (filterBtn && filterMenu) {
-        // Toggle dropdown
         filterBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             filterMenu.classList.toggle('show');
         });
 
-        // Close dropdown when clicking outside
         window.addEventListener('click', (e) => {
             if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
                 filterMenu.classList.remove('show');
@@ -472,9 +485,7 @@ function setupAdvancedFilters() {
         filterDateFrom = dateFromInput ? dateFromInput.value : '';
         filterDateTo = dateToInput ? dateToInput.value : '';
 
-        // Filter Logic
         filteredIncidents = allIncidents.filter(i => {
-            // 1. Text Search
             const matchesSearch = !searchTerm ||
                 (i.title || '').toLowerCase().includes(searchTerm) ||
                 (i.descr || '').toLowerCase().includes(searchTerm) ||
@@ -488,7 +499,18 @@ function setupAdvancedFilters() {
 
             // 2. Type Filter
             const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
-            const matchesType = !filterType || incidentType.includes(filterType.toLowerCase());
+            let filterTypeVal = filterType ? filterType.toLowerCase() : '';
+
+            // Alias checking
+            if (filterTypeVal === 'accident' || filterTypeVal === 'road') {
+                const isAccident = incidentType === 'accident' || incidentType === 'road';
+                if (!isAccident && filterTypeVal) return false;
+            } else {
+                const matchesType = !filterType || incidentType.includes(filterTypeVal);
+                if (!matchesType) return false;
+            }
+
+            const matchesType = true;
 
             // 3. Severity Filter
             const severity = (i.severity || '').toLowerCase();
@@ -596,8 +618,8 @@ async function validateIncident(incidentId, isAccepted) {
         const response = await fetch(`${API_BASE_URL}/Admin/validate/${incidentId}?isAccepted=${isAccepted}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             }
         });
 
@@ -622,8 +644,8 @@ async function unvalidateIncident(incidentId) {
         const response = await fetch(`${API_BASE_URL}/Admin/unvalidate/${incidentId}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             }
         });
 
@@ -650,8 +672,8 @@ async function restoreIncident(id) {
         const response = await fetch(`${API_BASE_URL}/Admin/recover/${id}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             }
         });
 
@@ -678,8 +700,8 @@ async function deleteIncidentPermanently(id) {
         const response = await fetch(`${API_BASE_URL}/Admin/delete-permanent/${id}`, {
             method: 'DELETE',
             headers: {
-                'X-Requester-Id': adminId,
-                'X-Requester-Role': adminRole
+                'X-Requester-Id': localStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole')
             }
         });
 

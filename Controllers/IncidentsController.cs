@@ -195,7 +195,16 @@ namespace SafePoint_IRS.Controllers
 
 
             if (!string.IsNullOrEmpty(type))
-                query = query.Where(i => i.IType != null && i.IType.Incident_Code == type);
+            {
+                if (type.Equals("accident", StringComparison.OrdinalIgnoreCase) || type.Equals("road", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(i => i.IType != null && (i.IType.Incident_Code == "accident" || i.IType.Incident_Code == "road"));
+                }
+                else
+                {
+                    query = query.Where(i => i.IType != null && i.IType.Incident_Code == type);
+                }
+            }
 
             if (!string.IsNullOrEmpty(severity))
                 query = query.Where(i => i.Severity == severity);

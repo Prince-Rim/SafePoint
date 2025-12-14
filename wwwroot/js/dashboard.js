@@ -1,19 +1,29 @@
 const API_BASE_URL = '/api';
 
-const adminId = localStorage.getItem('adminId');
-const adminRole = localStorage.getItem('adminRole');
-
 function checkAuthorization() {
+    const adminId = localStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole');
+
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
-        alert("Access denied. You must be an Admin or Moderator.");
-        window.location.href = "index.html";
+        document.body.style.display = 'none';
+        window.location.href = "landing.html";
         return false;
     }
     return true;
 }
 
+// Check on page load and back/forward navigation
+window.addEventListener('pageshow', function (event) {
+    checkAuthorization();
+});
+
+// Initial check
+checkAuthorization();
+
 async function loadDashboardStats() {
     try {
+        const adminId = localStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole
@@ -175,7 +185,7 @@ function loadTypeChart(incidents) {
     incidents.forEach(incident => {
         let type = incident.incident_Code || incident.IncidentType || 'Unknown';
 
-        if (type.toLowerCase() === 'road') type = 'Vehicle Accident';
+        if (type.toLowerCase() === 'road' || type.toLowerCase() === 'accident') type = 'Accident';
         else if (type.toLowerCase().includes('earthquake')) type = 'Natural Hazard';
         else if (type.toLowerCase() === 'flood') type = 'Flood';
         else if (type.toLowerCase() === 'fire') type = 'Fire';
@@ -295,3 +305,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDashboardStats();
     setupLogout();
 });
+
