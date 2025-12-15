@@ -139,7 +139,7 @@ textarea {
     margin-top: 10px;
 }
 
-button {
+.report-card button {
     border: none;
     border-radius: 25px;
     padding: 10px 20px;
@@ -169,8 +169,8 @@ button {
     background: #2f6be0;
 }
 
-button:disabled,
-button:disabled:hover {
+.report-card button:disabled,
+.report-card button:disabled:hover {
     background-color: #ccc;
     color: #666;
     cursor: not-allowed;
