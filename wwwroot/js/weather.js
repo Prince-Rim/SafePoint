@@ -71,6 +71,6 @@ function getUserLocation() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // checkDashboardAccess is handled by site.js
+
     getUserLocation();
 });

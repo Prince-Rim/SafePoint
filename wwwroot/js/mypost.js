@@ -364,7 +364,7 @@ function setupFilters() {
 }
 
 
-// State variables for advanced filters
+
 let filterType = '';
 let filterSeverity = '';
 let filterDateFrom = '';
@@ -444,7 +444,7 @@ function performFiltering(term) {
     const activeStatus = document.querySelector('.filter-btn.active')?.dataset.filter || 'Pending';
 
     filteredIncidents = allIncidents.filter(i => {
-        // 1. Text Search
+
         const matchesSearch = !term ||
             (i.title || '').toLowerCase().includes(term) ||
             (i.descr || '').toLowerCase().includes(term) ||
@@ -453,11 +453,11 @@ function performFiltering(term) {
             (i.locationAddress || '').toLowerCase().includes(term) ||
             (i.otherHazard || '').toLowerCase().includes(term);
 
-        // 2. Type Filter
+
         const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
         let filterTypeVal = filterType ? filterType.toLowerCase() : '';
 
-        // Alias checking
+
         if (filterTypeVal === 'accident' || filterTypeVal === 'road') {
             const isAccident = incidentType === 'accident' || incidentType === 'road';
             if (!isAccident && filterTypeVal) return false;
@@ -466,16 +466,15 @@ function performFiltering(term) {
             if (!matchesType) return false;
         }
 
-        // Since we did explicit return false above, we can set matchesType to true here if we reached this point
-        // But to keep structure:
+
         const matchesType = true;
 
-        // 3. Severity Filter
+
         const severity = (i.severity || '').toLowerCase();
         let normalizedSeverity = severity === 'medium' ? 'moderate' : severity;
         const matchesSeverity = !filterSeverity || normalizedSeverity === filterSeverity.toLowerCase();
 
-        // 4. Date Range Filter
+
         let matchesDate = true;
         if (filterDateFrom || filterDateTo) {
             const iDate = i.incidentDateTime ? new Date(i.incidentDateTime) : null;
@@ -507,9 +506,9 @@ function performFiltering(term) {
     }
 }
 
-// Deprecated setupSearch
+
 function setupSearch() {
-    // Logic moved to setupAdvancedFilters
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {

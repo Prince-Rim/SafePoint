@@ -117,13 +117,13 @@ function setupAccountFilters() {
     const searchInput = document.getElementById('searchInput');
 
     if (filterBtn && filterMenu) {
-        // Toggle dropdown
+
         filterBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             filterMenu.classList.toggle('show');
         });
 
-        // Close dropdown when clicking outside
+
         window.addEventListener('click', (e) => {
             if (!filterMenu.contains(e.target) && !filterBtn.contains(e.target)) {
                 filterMenu.classList.remove('show');
@@ -436,16 +436,16 @@ async function updateAccount(formData) {
 
         let endpoint = '';
 
-        // Check for role change
+
         if (role !== originalRole) {
             endpoint = '/Admin/change-role';
 
             const payload = {
                 Id: id,
-                CurrentRole: originalRole.charAt(0).toUpperCase() + originalRole.slice(1), // Capitalize
-                TargetRole: role.charAt(0).toUpperCase() + role.slice(1), // Capitalize
+                CurrentRole: originalRole.charAt(0).toUpperCase() + originalRole.slice(1),
+                TargetRole: role.charAt(0).toUpperCase() + role.slice(1),
 
-                // Common fields update
+
                 FirstName: formData.get('firstname'),
                 LastName: formData.get('lastname'),
                 MiddleName: formData.get('middlename'),

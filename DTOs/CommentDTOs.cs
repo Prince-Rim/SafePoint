@@ -14,7 +14,7 @@ namespace SafePoint_IRS.DTOs
         public int IncidentID { get; set; }
         public string Comment { get; set; } = string.Empty;
         public DateTime Dttm { get; set; }
-        public string? Userid { get; set; } // String to hold any Guid
+        public string? Userid { get; set; }
         public UserDto? User { get; set; }
     }
 }

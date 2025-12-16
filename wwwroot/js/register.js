@@ -144,7 +144,7 @@ registerForm.addEventListener('submit', async function (event) {
     const email = document.getElementById("email").value;
     const contact = document.getElementById("contact").value;
 
-    // --- NEW VALIDATION START ---
+
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
         alert("Please enter a valid email address (e.g., user@example.com).");
@@ -156,7 +156,7 @@ registerForm.addEventListener('submit', async function (event) {
         alert("Please enter a valid mobile number (must be 11 digits and start with '09').");
         return;
     }
-    // --- NEW VALIDATION END ---
+
 
     userDataStorage = {
         FirstName: firstname,
@@ -165,7 +165,7 @@ registerForm.addEventListener('submit', async function (event) {
         Username: username,
         Email: email,
         Contact: contact,
-        Password: password, // Note: DTO might expect 'Password' or 'Userpassword' depending on DTO
+        Password: password,
         IsActive: true
     };
 

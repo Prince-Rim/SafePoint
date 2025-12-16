@@ -328,7 +328,7 @@ namespace SafePoint_IRS.Controllers
                 return NotFound(new { error = "User not found." });
             }
 
-            // Archive the user
+
             var userArchive = new UserArchive
             {
                 Userid = user.Userid,
@@ -485,7 +485,7 @@ namespace SafePoint_IRS.Controllers
                     Adminpassword = hashedPassword,
                     UserRole = "Admin",
                     IsActive = true,
-                    IsSuperAdmin = false, // Always false for created admins
+                    IsSuperAdmin = false,
                     Permissions = adminDto.Permissions
                 };
 
@@ -673,7 +673,7 @@ namespace SafePoint_IRS.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers()
         {
-            // Auto-reactivate suspended users if time has passed
+
             var suspendedUsers = await _context.Users
                 .Where(u => !u.IsActive && u.SuspensionEndTime != null && u.SuspensionEndTime <= DateTime.Now)
                 .ToListAsync();
@@ -710,7 +710,7 @@ namespace SafePoint_IRS.Controllers
         [HttpGet("moderators")]
         public async Task<IActionResult> GetAllModerators()
         {
-            // Auto-reactivate suspended moderators if time has passed
+
             var suspendedMods = await _context.Moderators
                 .Where(m => !m.IsActive && m.SuspensionEndTime != null && m.SuspensionEndTime <= DateTime.Now)
                 .ToListAsync();
@@ -941,14 +941,14 @@ namespace SafePoint_IRS.Controllers
             {
                 if (incident.ValidStatus == null)
                 {
-                     // Should exist if created correctly, but handle just in case
+                     
                      incident.ValidStatus = new Valid { IncidentID = incident.IncidentID };
                 }
                 incident.ValidStatus.Validation_Status = true;
                 incident.ValidStatus.Validation_Date = DateTime.UtcNow;
                 
                 
-                // var requester = GetRequesterInfo(); // Already defined at top
+                
 
                 if (requester != null && Guid.TryParse(requester.RequesterId, out Guid validatorId))
                 {
@@ -960,7 +960,7 @@ namespace SafePoint_IRS.Controllers
             }
             else
             {
-                // Reject: Move to RejectedIncidents
+                
                 var rejected = new RejectedIncident
                 {
                     OriginalIncidentID = incident.IncidentID,
@@ -980,7 +980,7 @@ namespace SafePoint_IRS.Controllers
                     RejectionDate = DateTime.UtcNow
                 };
 
-                // var requester = GetRequesterInfo(); // Already defined at top
+                
 
                 if (requester != null && Guid.TryParse(requester.RequesterId, out Guid rejectorId))
                 {
@@ -1071,7 +1071,7 @@ namespace SafePoint_IRS.Controllers
                 return NotFound(new { error = "Rejected incident not found." });
             }
 
-            // Archive the rejected incident before permanent deletion
+
             var incidentArchive = new IncidentArchive
             {
                 OriginalIncidentID = rejected.OriginalIncidentID,
@@ -1368,7 +1368,7 @@ namespace SafePoint_IRS.Controllers
                 if (!await IsAdmin(requester.RequesterId))
                     return Unauthorized(new { error = "Invalid admin credentials." });
 
-                // Permission Checks based on Target Role
+                
                 if (changeDto.TargetRole == "Admin")
                 {
                    var requesterAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid.ToString() == requester.RequesterId);
@@ -1387,7 +1387,7 @@ namespace SafePoint_IRS.Controllers
                 if (!Guid.TryParse(changeDto.Id, out Guid idGuid))
                     return BadRequest(new { error = "Invalid ID format." });
 
-                // 1. Retrieve Source Entity
+                
                 string username = "", email = "", contact = "", passwordHash = "", firstName = "", lastName = "", middleName = "";
                 bool isActive = true;
                 DateTime? suspensionEnd = null;
@@ -1406,12 +1406,7 @@ namespace SafePoint_IRS.Controllers
                     var mod = await _context.Moderators.FirstOrDefaultAsync(m => m.Modid == idGuid);
                     if (mod == null) return NotFound(new { error = "Moderator not found." });
                     username = mod.Username; email = mod.Email; contact = mod.Contact; passwordHash = mod.Modpassword;
-                    // Moderators don't have separate name fields in this schema, will use Defaults or parsing if needed.
-                    // Assuming simplified name handling or that Mod table doesn't have split names based on previous file review.
-                    // Wait, previous review showed User has FirstName/Last, but Mod only has Username? 
-                    // Let's check the schema. Mod table usually has Username. 
-                    // If moving Mod -> User, we might need to ask for split names or just use Username as FirstName.
-                    // For now, let's use the DTO provided values if verified, otherwise fallback.
+                    
                     isActive = mod.IsActive; suspensionEnd = mod.SuspensionEndTime;
                     _context.Moderators.Remove(mod);
                 }
@@ -1419,7 +1414,6 @@ namespace SafePoint_IRS.Controllers
                 {
                     var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == idGuid);
                     if (admin == null) return NotFound(new { error = "Admin not found." });
-                    // Prevent deleting self as SuperAdmin check is done in Delete logic but check here too
                     if (admin.Adminid.ToString() == requester.RequesterId) return BadRequest(new { error = "You cannot change your own role." });
                     
                     username = admin.Username; email = admin.Email; contact = admin.Contact; passwordHash = admin.Adminpassword;
@@ -1428,22 +1422,22 @@ namespace SafePoint_IRS.Controllers
                 }
                 else return BadRequest(new { error = "Invalid current role." });
 
-                // 2. Update with new values if provided
+                
                 if (!string.IsNullOrEmpty(changeDto.Username)) username = changeDto.Username;
                 if (!string.IsNullOrEmpty(changeDto.Email)) email = changeDto.Email;
                 if (!string.IsNullOrEmpty(changeDto.Contact)) contact = changeDto.Contact;
                 if (!string.IsNullOrEmpty(changeDto.FirstName)) firstName = changeDto.FirstName;
                 if (!string.IsNullOrEmpty(changeDto.LastName)) lastName = changeDto.LastName;
-                if (changeDto.MiddleName != null) middleName = changeDto.MiddleName; // Allow null update
+                if (changeDto.MiddleName != null) middleName = changeDto.MiddleName;
                 if (changeDto.IsActive.HasValue) isActive = changeDto.IsActive.Value;
-                if (changeDto.SuspensionEndTime.HasValue || isActive) suspensionEnd = isActive ? null : changeDto.SuspensionEndTime; // Logic handled in DTO prep usually?
+                if (changeDto.SuspensionEndTime.HasValue || isActive) suspensionEnd = isActive ? null : changeDto.SuspensionEndTime;
 
                 if (!string.IsNullOrEmpty(changeDto.Password))
                 {
                     passwordHash = BCrypt.Net.BCrypt.HashPassword(changeDto.Password);
                 }
 
-                // 3. Create Target Entity
+                
                 if (changeDto.TargetRole == "User")
                 {
                     var newUser = new User
@@ -1453,7 +1447,7 @@ namespace SafePoint_IRS.Controllers
                         Email = email,
                         Contact = contact,
                         Userpassword = passwordHash,
-                        FirstName = !string.IsNullOrEmpty(firstName) ? firstName : "Unknown", // Required fields
+                        FirstName = !string.IsNullOrEmpty(firstName) ? firstName : "Unknown",
                         LastName = !string.IsNullOrEmpty(lastName) ? lastName : "User",
                         MiddleName = middleName,
                         UserRole = "User",
@@ -1479,7 +1473,7 @@ namespace SafePoint_IRS.Controllers
                         IsActive = isActive,
                         SuspensionEndTime = suspensionEnd
                     };
-                     // Handle Area creation if needed (copy logic from CreateModerator)
+                     
                      var area = await _context.Area.FirstOrDefaultAsync(a => a.Area_Code == newMod.Area_Code);
                      if(area == null && newMod.Area_Code == "DEFAULT") {
                           _context.Area.Add(new Area { Area_Code = "DEFAULT", ALocation = "Default Area" });

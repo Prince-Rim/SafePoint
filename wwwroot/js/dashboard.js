@@ -12,12 +12,12 @@ function checkAuthorization() {
     return true;
 }
 
-// Check on page load and back/forward navigation
+
 window.addEventListener('pageshow', function (event) {
     checkAuthorization();
 });
 
-// Initial check
+
 checkAuthorization();
 
 async function loadDashboardStats() {

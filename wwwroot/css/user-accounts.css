@@ -134,7 +134,7 @@ body {
     max-width: 400px;
 }
 
-/* Filter Dropdown Styles */
+
 .filter-dropdown-container {
     position: relative;
     display: inline-block;
@@ -160,7 +160,7 @@ body {
     z-index: 1000;
     border: 1px solid #e0e0e0;
     text-align: left;
-    /* Reset text align */
+
 }
 
 .filter-menu.show {
@@ -378,28 +378,28 @@ body {
     margin-bottom: 10px;
 }
 
-/* FIX 1: Add internal padding to separate form fields from the modal title */
+
 .modal-content form {
     margin-top: 20px;
     padding-top: 0;
 }
 
-/* FIX 2: Stop Middle Name (3rd form-group) from spanning two columns (Fixes width) */
+
 .modal-content .form-grid .form-group:nth-child(3) {
     grid-column: 1 / 2;
-    /* Changed from span 2 to span 1 */
+
     margin-bottom: 0;
     min-height: 38px;
     padding-bottom: 0;
 }
 
-/* FIX 3: Ensure subsequent fields (Username/Email) start correctly */
+
 .modal-content .form-grid .form-group:nth-child(4) {
     grid-column: 2 / 3;
-    /* Push Username to column 2 so it sits next to Middle Name */
+
 }
 
-/* FIX 4: Ensure Password fields are always side-by-side by forcing New Password to a new row */
+
 #edit-password-group,
 #create-password-group {
     grid-column: 1 / 2;

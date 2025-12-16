@@ -1,6 +1,6 @@
 ﻿const API_BASE_URL = '/api';
 
-console.log("site.js loaded"); // Use verbose logging
+
 
 const profileDisplayButton = document.getElementById("profileDisplayButton");
 const profileModal = document.getElementById("profileModal");
@@ -155,7 +155,7 @@ async function toggleEditField(button) {
             const input = infoRow.querySelector('input');
             const newValue = input.value;
 
-            // Backend Update Logic
+
             const userId = localStorage.getItem('userId');
             const userRole = localStorage.getItem('userRole');
             let currentDisplayName = profileModal.dataset.fullDisplayName;
@@ -204,15 +204,15 @@ async function toggleEditField(button) {
                     } catch {
                         alert(`Failed to update profile: ${errorText}`);
                     }
-                    return false; // Stop here, do not update UI
+                    return false;
                 }
             } catch (error) {
                 console.error("Error updating profile:", error);
                 alert("An error occurred while updating the profile. Check console for details.");
-                return false; // Stop here
+                return false;
             }
 
-            // Success - Update UI and LocalStorage
+
             if (field === 'email') {
                 const obscuredEmail = currentEmail.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
                 valueElement.textContent = obscuredEmail;
@@ -234,7 +234,7 @@ async function toggleEditField(button) {
                 if (profileActionBar) profileActionBar.style.display = 'none';
             }
             alert("Profile updated successfully.");
-            loadProfileData(); // Ensure UI sync.
+            loadProfileData();
             return true;
         }
     }
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBtn && userDropdown) {
         userBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            // Allow dropdown for everyone (Guest or User)
+
             userDropdown.classList.toggle("show");
         });
 
@@ -447,7 +447,7 @@ function checkDashboardAccess() {
             if (myReportsLink) myReportsLink.style.display = 'none';
         } else {
             if (dashboardLink) dashboardLink.style.display = 'none';
-            if (myReportsLink) myReportsLink.style.display = ''; // Revert to CSS default (block/inline)
+            if (myReportsLink) myReportsLink.style.display = '';
         }
     } else {
         if (dashboardLink) dashboardLink.style.display = 'none';

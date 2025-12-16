@@ -34,14 +34,14 @@ namespace SafePoint_IRS.Controllers
                     {
                         if (user.SuspensionEndTime.Value <= DateTime.Now)
                         {
-                            // Suspension expired, reactivate
+
                             user.IsActive = true;
                             user.SuspensionEndTime = null;
                             await _context.SaveChangesAsync();
                         }
                         else
                         {
-                            // Still suspended
+
                             var localTime = user.SuspensionEndTime.Value;
                             return Unauthorized(new { error = $"Account is suspended until {localTime}." });
                         }

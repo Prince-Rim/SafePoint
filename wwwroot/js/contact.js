@@ -36,7 +36,7 @@ function checkDashboardAccess() {
     const dashboardLink = document.getElementById('dashboardLink');
     const myReportsLink = document.querySelector('a[href="mypost.html"]');
 
-    // Default: Hide both
+
     if (dashboardLink) dashboardLink.style.display = 'none';
     if (myReportsLink) myReportsLink.style.display = 'none';
 

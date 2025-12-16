@@ -449,7 +449,7 @@ async function handleFilterClick(targetBtn, status) {
 }
 
 
-// State variables for advanced filters
+
 let filterType = '';
 let filterSeverity = '';
 let filterDateFrom = '';
@@ -497,11 +497,11 @@ function setupAdvancedFilters() {
                 (i.severity || '').toLowerCase().includes(searchTerm) ||
                 (i.otherHazard || '').toLowerCase().includes(searchTerm);
 
-            // 2. Type Filter
+
             const incidentType = (i.incident_Code || i.IncidentType || '').toLowerCase();
             let filterTypeVal = filterType ? filterType.toLowerCase() : '';
 
-            // Alias checking
+
             if (filterTypeVal === 'accident' || filterTypeVal === 'road') {
                 const isAccident = incidentType === 'accident' || incidentType === 'road';
                 if (!isAccident && filterTypeVal) return false;
@@ -512,31 +512,30 @@ function setupAdvancedFilters() {
 
             const matchesType = true;
 
-            // 3. Severity Filter
+
             const severity = (i.severity || '').toLowerCase();
             let normalizedSeverity = severity === 'medium' ? 'moderate' : severity;
             const matchesSeverity = !filterSeverity || normalizedSeverity === filterSeverity.toLowerCase();
 
-            // 4. Date Range Filter
+
             let matchesDate = true;
             if (filterDateFrom || filterDateTo) {
                 const iDate = i.incidentDateTime ? new Date(i.incidentDateTime) : null;
                 if (iDate) {
                     if (filterDateFrom) {
                         const fromDate = new Date(filterDateFrom);
-                        // Reset time to start of day for accurate comparison
+
                         fromDate.setHours(0, 0, 0, 0);
                         if (iDate < fromDate) matchesDate = false;
                     }
                     if (matchesDate && filterDateTo) {
                         const toDate = new Date(filterDateTo);
-                        // Set time to end of day to include the selected end date
+
                         toDate.setHours(23, 59, 59, 999);
                         if (iDate > toDate) matchesDate = false;
                     }
                 } else {
-                    // If record has no date, filtering by date should probably exclude it?
-                    // Or include? Let's exclude to be safe if a filter is set.
+                    matchesDate = false;
                     matchesDate = false;
                 }
             }
@@ -547,9 +546,9 @@ function setupAdvancedFilters() {
         renderIncidentList();
 
         if (filteredIncidents.length > 0) {
-            // Try to keep selection if valid, else select first
+
             if (selectedIncident && filteredIncidents.find(i => i.incidentID === selectedIncident.incidentID)) {
-                selectIncident(selectedIncident); // Re-render details just in case
+                selectIncident(selectedIncident);
             } else {
                 selectIncident(filteredIncidents[0]);
             }
@@ -578,7 +577,7 @@ function setupAdvancedFilters() {
         });
     }
 
-    // Expose for handleFilterClick to reset
+
     window.resetAdvancedFilters = () => {
         if (typeSelect) typeSelect.value = '';
         if (severitySelect) severitySelect.value = '';
@@ -592,17 +591,13 @@ function setupAdvancedFilters() {
     };
 }
 
-// Updated search setup - now integrated into setupAdvancedFilters, so this function can be empty or removed
-// But for compatibility with existing calls in document.ready, we'll leave it empty or just alias it.
-function setupSearch() {
-    // Deprecated in favor of setupAdvancedFilters logic
-}
+
 
 function setupFilters() {
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', e => {
             const status = e.currentTarget.getAttribute('data-status');
-            console.log('Filter clicked:', status); // Debug log
+            console.log('Filter clicked:', status);
             if (status) {
                 handleFilterClick(e.currentTarget, status);
             }
@@ -737,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!checkAuthorization()) return;
     loadInitialIncidents();
     setupFilters();
-    // setupSearch(); // Replaced by advanced filters
+
     setupAdvancedFilters();
     setupEditModal();
     setupLogout();

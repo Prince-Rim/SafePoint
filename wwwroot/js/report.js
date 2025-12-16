@@ -166,7 +166,7 @@ reportForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     console.log("Submit event fired");
 
-    // Clear storage immediately
+
     localStorage.removeItem("incidentLocation");
     sessionStorage.removeItem("incidentLocation");
 
@@ -178,7 +178,7 @@ reportForm.addEventListener("submit", async function (e) {
 
     const originalBtnText = submitBtn.textContent;
 
-    // Disable button to prevent double-submit
+
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting...";
     console.log("Button disabled");

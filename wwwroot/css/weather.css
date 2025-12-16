@@ -170,7 +170,7 @@ body {
     .map-container iframe {
         width: 100%;
         height: 300px;
-        /* Smaller height for mobile */
+
     }
 
     .weather-header h3 {

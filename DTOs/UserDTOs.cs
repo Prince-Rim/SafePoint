@@ -1,6 +1,6 @@
 using System;
 
-using System.ComponentModel.DataAnnotations; // Added for validation attributes
+using System.ComponentModel.DataAnnotations;
 
 namespace SafePoint_IRS.DTOs
 {
@@ -62,10 +62,10 @@ namespace SafePoint_IRS.DTOs
         public string Id { get; set; } = string.Empty;
         public string CurrentRole { get; set; } = string.Empty;
         public string TargetRole { get; set; } = string.Empty;
-        public string? Area_Code { get; set; } // For Moderator
-        public string? Permissions { get; set; } // For Admin, comma-separated
+        public string? Area_Code { get; set; }
+        public string? Permissions { get; set; }
         
-        // Fields to update during transfer
+
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? MiddleName { get; set; }
@@ -74,7 +74,7 @@ namespace SafePoint_IRS.DTOs
         public string? Contact { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? SuspensionEndTime { get; set; }
-        public string? Password { get; set; } // Optional: New password if provided
+        public string? Password { get; set; }
     }
 
     public class ResetPasswordRequest

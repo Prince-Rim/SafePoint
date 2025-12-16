@@ -686,8 +686,6 @@ select {
     margin-left: 2px;
 }
 
-/* Profile Modal (Auxiliary styling) */
-
 .profile-modal-content {
     max-width: 650px;
     background-color: #ffffff;
@@ -832,7 +830,6 @@ select {
     white-space: nowrap;
 }
 
-/* Mobile Responsiveness for Map Layout */
 @media (max-width: 768px) {
     .content {
         flex-direction: column;
@@ -844,19 +841,15 @@ select {
         width: 100%;
         height: auto;
         max-height: 40vh;
-        /* Allow scrolling within sidebar if needed */
         border-right: none;
         border-bottom: 1px solid #ddd;
         order: 2;
-        /* Put sidebar below map */
     }
 
     .map-container {
         width: 100%;
         height: 50vh;
-        /* Fixed height for map on mobile */
         order: 1;
-        /* Map on top */
     }
 
     .map-legend {

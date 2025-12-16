@@ -94,7 +94,7 @@ namespace SafePoint_IRS.Controllers
                 dttm = DateTime.UtcNow
             };
 
-            // Determine who is posting
+
             var user = await _context.Users.FindAsync(requesterId);
             if (user != null)
             {
@@ -154,7 +154,7 @@ namespace SafePoint_IRS.Controllers
                 return NotFound();
             }
 
-            // Check authorization
+
             bool isAuthorized = false;
             if (comment.Userid == requesterId) isAuthorized = true;
             else if (comment.AdminId == requesterId) isAuthorized = true;
@@ -205,7 +205,7 @@ namespace SafePoint_IRS.Controllers
                 return NotFound();
             }
 
-            // Check authorization
+
             bool isAuthorized = false;
             if (comment.Userid == requesterId) isAuthorized = true;
             else if (comment.AdminId == requesterId) isAuthorized = true;

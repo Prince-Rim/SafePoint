@@ -41,7 +41,6 @@
 .navbar {
     display: flex;
     gap: 30px;
-    /* Reduced from 90px/1000px for better fit */
     align-items: center;
 }
 
@@ -101,7 +100,6 @@
     pointer-events: none;
 }
 
-/* Mobile Menu Toggle */
 .menu-toggle {
     display: none;
     flex-direction: column;
@@ -118,7 +116,6 @@
     transition: all 0.3s ease;
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .header {
         padding: 10px 20px;
@@ -129,20 +126,16 @@
         top: 65px;
         right: -100%;
         width: 300px;
-        /* Increased from 250px */
         height: calc(100vh - 65px);
         background-color: #fff;
-        /* Ensure white background */
         flex-direction: column;
         gap: 10px;
-        /* Reduced gap since we have padding/borders */
         padding: 20px;
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
         transition: right 0.3s ease;
         align-items: flex-start;
         overflow-y: auto;
         z-index: 2000;
-        /* Ensure on top of everything */
     }
 
     .navbar.active {
@@ -151,9 +144,7 @@
 
     .navbar a {
         color: #333;
-        /* Explicitly set dark color */
         display: block;
-        /* Make links block for easier clicking */
     }
 
     .search-container {
@@ -177,7 +168,6 @@
     .navbar a {
         width: 100%;
         padding: 15px 10px;
-        /* Increased padding */
         border-bottom: 1px solid #f0f0f0;
     }
 
@@ -203,8 +193,6 @@
     }
 }
 
-
-/* Profile Dropdown Styles */
 .user-dropdown {
     position: relative;
     display: inline-block;
@@ -234,7 +222,6 @@
     border-radius: 8px;
     padding: 8px 0;
     margin-top: -2px;
-    /* Prevent hover gap */
 }
 
 .user-info-display {
@@ -283,7 +270,6 @@
     display: block;
 }
 
-/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -347,7 +333,6 @@
     overflow-y: auto;
 }
 
-/* Profile Modal Specifics */
 .profile-modal-content {
     max-width: 650px;
     background-color: #ffffff;
@@ -497,7 +482,6 @@
     margin-right: 10px;
 }
 
-/* Password Edit Styles */
 .profile-edit-input {
     width: 100%;
     padding: 10px;
@@ -537,7 +521,6 @@
     margin: 0;
 }
 
-/* Global Discover Dropdown Styles */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -572,7 +555,6 @@
     top: 100%;
     left: 0;
     margin-top: -2px;
-    /* Prevent hover gap */
 }
 
 .dropdown-content1 a {

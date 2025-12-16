@@ -28,7 +28,7 @@ loginForm.addEventListener("submit", async (e) => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("Login Response Data:", data); // DEBUG: Check what the server returns
+            console.log("Login Response Data:", data);
 
             localStorage.setItem("username", username);
             localStorage.setItem("userId", data.userId);
@@ -58,42 +58,42 @@ loginForm.addEventListener("submit", async (e) => {
     }
 });
 
-// --- Forgot Password Logic ---
-(function () {
-    const PUBLIC_KEY = "q_WaGpOvP6-Rea8xD"; // From register.js
-    const SERVICE_ID = "service_0yfgbor";   // From register.js
-    const TEMPLATE_ID = "template_i7i1bux"; // Updated Template ID provided by user
 
-    // Initialize EmailJS
+(function () {
+    const PUBLIC_KEY = "q_WaGpOvP6-Rea8xD";
+    const SERVICE_ID = "service_0yfgbor";
+    const TEMPLATE_ID = "template_i7i1bux";
+
+
     if (typeof emailjs !== 'undefined') {
         emailjs.init(PUBLIC_KEY);
     }
 
-    // Containers
+
     const loginContainer = document.getElementById("loginContainer");
     const fpContainer = document.getElementById("forgotPasswordContainer");
     const fpLink = document.getElementById("forgotPasswordLink");
     const backToLoginLink = document.getElementById("backToLoginLink");
 
-    // Steps
+
     const step1 = document.getElementById("fp-step-1");
     const step2 = document.getElementById("fp-step-2");
     const step3 = document.getElementById("fp-step-3");
 
-    // Inputs & Buttons
+
     const emailInput = document.getElementById("fp-email");
     const otpInput = document.getElementById("fp-otp");
     const newPassInput = document.getElementById("fp-new-pass");
     const confirmPassInput = document.getElementById("fp-confirm-pass");
 
-    const btnK1 = document.getElementById("fp-btn-k1"); // Send Code
-    const btnK2 = document.getElementById("fp-btn-k2"); // Verify
-    const btnK3 = document.getElementById("fp-btn-k3"); // Reset
+    const btnK1 = document.getElementById("fp-btn-k1");
+    const btnK2 = document.getElementById("fp-btn-k2");
+    const btnK3 = document.getElementById("fp-btn-k3");
 
     let generatedOTP = null;
     let targetEmail = "";
 
-    // Show Forgot Password Form (Hide Login)
+
     if (fpLink) {
         fpLink.onclick = function (e) {
             e.preventDefault();
@@ -103,7 +103,7 @@ loginForm.addEventListener("submit", async (e) => {
         }
     }
 
-    // Back to Login (Hide FP, Show Login)
+
     if (backToLoginLink) {
         backToLoginLink.onclick = function (e) {
             e.preventDefault();
@@ -123,13 +123,13 @@ loginForm.addEventListener("submit", async (e) => {
         targetEmail = "";
     }
 
-    // Step 1: Check Email & Send OTP
+
     if (btnK1) {
         btnK1.onclick = async function () {
             const email = emailInput.value.trim();
             if (!email) { alert("Please enter your email."); return; }
 
-            // 1. API Check if email exists
+
             try {
                 const res = await fetch(`/api/User/CheckEmail?email=${encodeURIComponent(email)}`);
                 if (res.ok) {
@@ -147,7 +147,7 @@ loginForm.addEventListener("submit", async (e) => {
                 return;
             }
 
-            // 2. Generate OTP & Send
+
             generatedOTP = Math.floor(100000 + Math.random() * 900000);
 
             btnK1.textContent = "Sending...";
@@ -162,7 +162,7 @@ loginForm.addEventListener("submit", async (e) => {
                 targetEmail = email;
                 document.getElementById("fp-email-display").textContent = email;
 
-                // Move to Step 2
+
                 step1.style.display = "none";
                 step2.style.display = "block";
 
@@ -176,7 +176,7 @@ loginForm.addEventListener("submit", async (e) => {
         };
     }
 
-    // Step 2: Verify OTP
+
     if (btnK2) {
         btnK2.onclick = function () {
             if (otpInput.value == generatedOTP) {
@@ -188,9 +188,9 @@ loginForm.addEventListener("submit", async (e) => {
         };
     }
 
-    // Step 3: Reset Password
+
     if (btnK3) {
-        // Real-time Strength Check
+
         if (newPassInput) {
             const strengthDiv = document.getElementById("fp-password-strength");
 
@@ -224,7 +224,7 @@ loginForm.addEventListener("submit", async (e) => {
             if (!p1 || !p2) { alert("Please enter password."); return; }
             if (p1 !== p2) { alert("Passwords do not match."); return; }
 
-            // Strong Password Validation
+
             const strength = checkPasswordStrength(p1);
             if (strength !== "strong") {
                 alert("Password is too weak. Please meet the requirements.");

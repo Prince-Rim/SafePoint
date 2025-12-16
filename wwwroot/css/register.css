@@ -225,7 +225,7 @@ body {
     background-color: #5a6268 !important;
 }
 
-/* Override strictly to prevent cutoff */
+
 body {
     height: auto !important;
     overflow-y: auto;
@@ -234,15 +234,15 @@ body {
 @media (max-width: 768px) {
     .main-container {
         padding-top: 120px !important;
-        /* Adjusted to be just right */
+
         padding-bottom: 50px;
         align-items: flex-start;
         display: block;
-        /* Ensure normal flow */
+
         min-height: auto;
     }
 
-    /* Remove the extra margin now that padding is sufficient */
+
     #registrationContainer,
     #otpContainer {
         margin-top: 0 !important;

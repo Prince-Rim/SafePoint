@@ -102,7 +102,6 @@ body {
     padding: 130px 20px 80px;
     gap: 60px;
     flex: 1;
-    /* Allow content to grow and push footer down */
     animation: fadeInUp 1.5s ease;
 }
 

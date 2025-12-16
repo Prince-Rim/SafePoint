@@ -305,7 +305,7 @@ namespace SafePoint_IRS.Controllers
                 return NotFound(new { message = "Incident not found." });
             }
 
-            // Archive the incident
+
             var incidentArchive = new IncidentArchive
             {
                 OriginalIncidentID = incident.IncidentID,

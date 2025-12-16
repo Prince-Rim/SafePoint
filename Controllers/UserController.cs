@@ -79,7 +79,7 @@ namespace SafePoint_IRS.Controllers
             if (string.IsNullOrEmpty(request.UserRole))
                 return BadRequest("User role is required.");
 
-            // Email Uniqueness Check
+
             if (!string.IsNullOrEmpty(request.Email))
             {
                 var emailExistsInUsers = await _context.Users.AnyAsync(u => u.Email == request.Email && u.Userid != request.UserId);
@@ -137,7 +137,7 @@ namespace SafePoint_IRS.Controllers
         {
             if (string.IsNullOrEmpty(email)) return BadRequest("Email is required.");
 
-            // Check if email exists in any table
+
             var userExists = await _context.Users.AnyAsync(u => u.Email == email);
             var adminExists = await _context.Admins.AnyAsync(a => a.Email == email);
             var modExists = await _context.Moderators.AnyAsync(m => m.Email == email);
@@ -158,7 +158,7 @@ namespace SafePoint_IRS.Controllers
 
             string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
-            // Check Users
+
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user != null)
             {
@@ -167,7 +167,7 @@ namespace SafePoint_IRS.Controllers
                 return Ok(new { message = "Password reset successfully." });
             }
 
-            // Check Admins
+
             var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == request.Email);
             if (admin != null)
             {
@@ -176,7 +176,7 @@ namespace SafePoint_IRS.Controllers
                 return Ok(new { message = "Password reset successfully." });
             }
 
-            // Check Moderators
+
             var moderator = await _context.Moderators.FirstOrDefaultAsync(m => m.Email == request.Email);
             if (moderator != null)
             {
