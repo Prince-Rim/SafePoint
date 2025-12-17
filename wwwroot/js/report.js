@@ -17,6 +17,11 @@ const uploadContent = document.getElementById("uploadContent");
 const imageUploadArea = document.getElementById("imageUploadArea");
 
 let selectedImageFile = null;
+let locationWatchId = null;
+let lastGeocodedPos = { lat: 0, lng: 0 };
+let map = null;
+let marker = null;
+let userManuallySetLocation = false;
 
 if (userRole === 'Admin' || userRole === 'Moderator') {
     if (dashboardLink) dashboardLink.style.display = 'inline-block';
@@ -116,6 +121,10 @@ function loadLocation() {
             if (storedLocation.address) locationInput.value = storedLocation.address;
             if (storedLocation.lat) latitudeInput.value = storedLocation.lat;
             if (storedLocation.lng) longitudeInput.value = storedLocation.lng;
+
+            // If we have stored location, init map there and stop auto-watching
+            userManuallySetLocation = true;
+            initMap(storedLocation.lat, storedLocation.lng);
             return;
         } catch (e) {
             console.error("Error parsing stored location:", e);
@@ -125,33 +134,109 @@ function loadLocation() {
     fetchCurrentLocation();
 }
 
+function initMap(lat, lng) {
+    if (!map) {
+        map = L.map('map').setView([lat, lng], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+        marker.on('dragstart', () => {
+            userManuallySetLocation = true;
+            if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
+        });
+
+        marker.on('dragend', function (e) {
+            const position = marker.getLatLng();
+            updateLocationFields(position.lat, position.lng);
+        });
+    } else {
+        map.setView([lat, lng], 15);
+        if (marker) marker.setLatLng([lat, lng]);
+    }
+}
+
+function updateLocationFields(lat, lng) {
+    latitudeInput.value = lat;
+    longitudeInput.value = lng;
+
+    // Loading indicator
+    locationInput.placeholder = "Fetching address...";
+
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
+        .then((response) => response.json())
+        .then((data) => {
+            const address = data.display_name || "Unknown location";
+            locationInput.value = address;
+        })
+        .catch(() => {
+            locationInput.value = "Unable to fetch address. Please type manually.";
+        });
+}
+
 function fetchCurrentLocation() {
     if (!navigator.geolocation) {
         alert("Geolocation not supported by your browser.");
+        // Fallback to default map view if no geo
+        initMap(0, 0);
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(
+    if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
+
+    locationInput.placeholder = "Locating...";
+
+    locationWatchId = navigator.geolocation.watchPosition(
         (position) => {
+            // STOP if user took control
+            if (userManuallySetLocation) return;
+
             const { latitude, longitude } = position.coords;
+
+            // Initialize map on first valid fix
+            if (!map) {
+                initMap(latitude, longitude);
+            } else {
+                // If map exists and user hasn't taken control, update pin
+                if (marker) marker.setLatLng([latitude, longitude]);
+                map.setView([latitude, longitude], 15);
+            }
 
             latitudeInput.value = latitude;
             longitudeInput.value = longitude;
 
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const address = data.display_name || "Unknown location";
-                    locationInput.value = address;
-                })
-                .catch(() => {
-                    locationInput.value = "Unable to fetch address.";
-                });
+            // Throttle address lookup
+            if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
+                lastGeocodedPos = { lat: latitude, lng: longitude };
+
+                // Only auto-fill text if empty or contains "Locating..." to respect manual typing
+                // Actually, let's just always update it IF the user hasn't dragged the pin.
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (!userManuallySetLocation) {
+                            locationInput.value = data.display_name || "Unknown location";
+                        }
+                    })
+                    .catch(() => {
+                        if (!userManuallySetLocation) {
+                            locationInput.value = "Location found (Address lookup failed)";
+                        }
+                    });
+            }
         },
         (error) => {
             console.warn("Could not get location: " + error.message);
+            if (!map) initMap(0, 0); // Init map anyway so they can drag to find themselves
+            if (!latitudeInput.value) {
+                locationInput.value = "";
+                locationInput.placeholder = "Location Error. Please select on map.";
+            }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
 }
 

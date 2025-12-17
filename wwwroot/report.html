@@ -7,6 +7,7 @@
     <title>SafePoint | Report</title>
     <link rel="stylesheet" href="css/header.css?v=guestFix6" />
     <link rel="stylesheet" href="css/report.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -102,6 +103,8 @@
 
                 <div class="form-group">
                     <label for="location">Location</label>
+                    <div id="map"
+                        style="height: 250px; width: 100%; border-radius: 8px; margin-bottom: 10px; z-index: 1;"></div>
                     <input type="text" id="location" name="location" placeholder="Enter location" required>
                 </div>
 
@@ -205,6 +208,7 @@
     </footer>
 
     <script src="js/site.js?v=guestFix5"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="js/report.js"></script>
 </body>
 
