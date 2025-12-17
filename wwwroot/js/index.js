@@ -12,6 +12,9 @@ let userMarker = null;
 let incidentMarker = null;
 let currentIncidentId = null;
 let allIncidents = [];
+let locationWatchId = null;
+let accuracyCircle = null;
+let lastGeocodedPos = { lat: 0, lng: 0 };
 
 const icons = {
     high: new L.Icon({
@@ -63,32 +66,54 @@ function locateUser() {
         return;
     }
 
-    navigator.geolocation.getCurrentPosition(
+    if (locationWatchId) {
+        navigator.geolocation.clearWatch(locationWatchId);
+    }
+
+    locationWatchId = navigator.geolocation.watchPosition(
         pos => {
-            const { latitude, longitude } = pos.coords;
-            map.setView([latitude, longitude], 17);
+            const { latitude, longitude, accuracy } = pos.coords;
+            const latLng = [latitude, longitude];
 
-            getAddress(latitude, longitude, (address) => {
-                const popupContent = `
-                    <b>Your Location</b><br>
-                    📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>
-                    🏠 <b>Address:</b> ${address}
-                `;
+            if (!userMarker) {
+                map.setView(latLng, 17);
+                userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
+            } else {
+                userMarker.setLatLng(latLng);
+            }
 
-                if (!userMarker) {
-                    userMarker = L.marker([latitude, longitude], { title: "Your Location" })
-                        .addTo(map)
-                        .bindPopup(popupContent)
-                        .openPopup();
-                } else {
-                    userMarker.setLatLng([latitude, longitude]);
-                    userMarker.setPopupContent(popupContent).openPopup();
-                }
+            if (!accuracyCircle) {
+                accuracyCircle = L.circle(latLng, {
+                    radius: accuracy,
+                    color: '#136AEC',
+                    fillColor: '#136AEC',
+                    fillOpacity: 0.15
+                }).addTo(map);
+            } else {
+                accuracyCircle.setLatLng(latLng);
+                accuracyCircle.setRadius(accuracy);
+            }
 
-                localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude, address: address }));
-            });
+            // Only reverse geocode if moved significantly (> ~10m) to save API calls
+            if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
+                lastGeocodedPos = { lat: latitude, lng: longitude };
+
+                getAddress(latitude, longitude, (address) => {
+                    const popupContent = `
+                        <b>Your Location</b><br>
+                        📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>
+                        🎯 <b>Accuracy:</b> ±${Math.round(accuracy)}m<br>
+                        🏠 <b>Address:</b> ${address}
+                    `;
+
+                    userMarker.bindPopup(popupContent);
+                    if (userMarker.isPopupOpen()) userMarker.setPopupContent(popupContent);
+
+                    localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude, address: address }));
+                });
+            }
         },
-        err => alert("Could not get location: " + err.message),
+        err => console.warn("Location update error: " + err.message),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
 }
@@ -99,6 +124,9 @@ function resetMap() {
         map.removeLayer(incidentMarker);
         incidentMarker = null;
     }
+    // Also clear the stored location so it doesn't persist to the report page
+    localStorage.removeItem("incidentLocation");
+    sessionStorage.removeItem("incidentLocation");
 }
 
 map.on("click", (e) => {
@@ -476,6 +504,13 @@ window.addEventListener('click', (event) => {
 });
 
 function handlePostIncident() {
+    // If user hasn't selected a specific point (no Red Marker), clear the stored incident location
+    // This ensures the Report page uses the current GPS location, not an old click
+    if (!incidentMarker) {
+        localStorage.removeItem("incidentLocation");
+        sessionStorage.removeItem("incidentLocation");
+    }
+
     if (userId) {
         window.location.href = 'report.html';
     } else {
