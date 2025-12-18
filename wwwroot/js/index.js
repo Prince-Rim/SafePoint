@@ -292,9 +292,18 @@ function renderIncidents(incidentsToRender) {
 
             let severityKey = incident.severity ? incident.severity.toLowerCase() : 'default';
             if (severityKey === 'medium') severityKey = 'moderate';
-            const icon = icons[severityKey] || icons.default;
 
-            L.marker([incident.latitude, incident.longitude], { icon: icon })
+            // NEW: Use custom DivIcon for markers
+            const iconName = iconMapping[incident.incident_Code] || 'place';
+            const customIcon = L.divIcon({
+                className: `custom-map-marker map-severity-${severityKey}`,
+                html: `<span class="material-icons">${iconName}</span>`,
+                iconSize: [32, 32], // Adjust size as needed
+                iconAnchor: [16, 16], // Center of the icon
+                popupAnchor: [0, -18] // Popup opens above
+            });
+
+            L.marker([incident.latitude, incident.longitude], { icon: customIcon })
                 .bindPopup(popupContent)
                 .addTo(incidentLayerGroup);
 
