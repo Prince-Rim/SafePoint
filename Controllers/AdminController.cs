@@ -1000,7 +1000,6 @@ namespace SafePoint_IRS.Controllers
                 _context.Incident.Remove(incident);
                 await _context.SaveChangesAsync();
 
-                // Notify only the reporter (client-side filter) about rejection
                 await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Rejected", incident.Userid);
 
                 return Ok(new { message = $"Incident ID {incidentId} rejected and moved to archive." });

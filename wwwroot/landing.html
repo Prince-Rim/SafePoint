@@ -39,8 +39,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const userId = localStorage.getItem('userId');
-            const userRole = localStorage.getItem('userRole');
+            const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
             const loginBtn = document.getElementById('loginBtn');
             const registerLink = document.getElementById('registerLink');
