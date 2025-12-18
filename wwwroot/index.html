@@ -96,8 +96,23 @@
             </div>
             <div class="map-container">
                 <div class="top-controls">
-                    <button class="map-btn" id="locateBtn">My Location</button>
-                    <button class="map-btn" id="resetBtn">Reset</button>
+                    <button class="map-btn" id="locateBtn" title="My Location">My Location</button>
+                    <button class="map-btn" id="resetBtn" title="Reset View">Reset</button>
+                    <div class="notification-wrapper">
+                        <button class="map-btn" id="notificationBtn" title="Notifications">
+                            <span class="material-icons">notifications</span>
+                            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <span>Notifications</span>
+                                <button id="clearNotifications" style="display:none;">Clear All</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <div class="empty-state">No new notifications</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="map-legend">
@@ -261,6 +276,8 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="js/profanity-filter.js"></script>
     <script src="js/site.js?v=guestFix1"></script>
+    <script src="lib/signalr/signalr.min.js"></script>
+    <script src="js/notification.js"></script>
     <script src="js/index.js"></script>
 </body>
 

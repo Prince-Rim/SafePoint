@@ -6,6 +6,9 @@ using SafePoint_IRS.DTOs;
 using System.Security.Claims;
 using Microsoft.AspNetCore.RateLimiting;
 
+using Microsoft.AspNetCore.SignalR;
+using SafePoint_IRS.Hubs;
+
 namespace SafePoint_IRS.Controllers
 {
     [Route("api/[controller]")]
@@ -13,10 +16,12 @@ namespace SafePoint_IRS.Controllers
     public class IncidentsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public IncidentsController(AppDbContext context)
+        public IncidentsController(AppDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -162,7 +167,7 @@ namespace SafePoint_IRS.Controllers
                     .Where(m => m.Area_Code == newIncident.Area_Code)
                     .Select(m => new { m.Modid, m.Username, m.Email })
                     .ToListAsync();
-
+                
                 return CreatedAtAction(nameof(GetIncidentById), new { id = newIncident.IncidentID }, new
                 {
                     incident = newIncident,

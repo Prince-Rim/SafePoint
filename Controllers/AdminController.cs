@@ -7,6 +7,9 @@ using BCrypt.Net;
 using System.Threading.Tasks;
 using System;
 
+using Microsoft.AspNetCore.SignalR;
+using SafePoint_IRS.Hubs;
+
 namespace SafePoint_IRS.Controllers
 {
     [Route("api/[controller]")]
@@ -14,10 +17,12 @@ namespace SafePoint_IRS.Controllers
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public AdminController(AppDbContext context)
+        public AdminController(AppDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
         private RequesterInfo? GetRequesterInfo()
         {
@@ -956,6 +961,10 @@ namespace SafePoint_IRS.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+                
+                 // Notify all clients about the approved incident
+                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Validated", incident.Userid);
+
                 return Ok(new { message = $"Incident ID {incidentId} accepted." });
             }
             else
@@ -988,8 +997,11 @@ namespace SafePoint_IRS.Controllers
                 }
 
                 _context.RejectedIncidents.Add(rejected);
-                _context.Incident.Remove(incident); 
+                _context.Incident.Remove(incident);
                 await _context.SaveChangesAsync();
+
+                // Notify only the reporter (client-side filter) about rejection
+                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Rejected", incident.Userid);
 
                 return Ok(new { message = $"Incident ID {incidentId} rejected and moved to archive." });
             }
