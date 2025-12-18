@@ -153,6 +153,17 @@ function initMap(lat, lng) {
             const position = marker.getLatLng();
             updateLocationFields(position.lat, position.lng);
         });
+
+        // Add Click Listener: Move marker to where user clicks
+        map.on('click', function (e) {
+            const { lat, lng } = e.latlng;
+            userManuallySetLocation = true; // Mark as manual so GPS doesn't override
+
+            if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
+
+            marker.setLatLng([lat, lng]);
+            updateLocationFields(lat, lng);
+        });
     } else {
         map.setView([lat, lng], 15);
         if (marker) marker.setLatLng([lat, lng]);
@@ -187,6 +198,8 @@ function fetchCurrentLocation() {
 
     if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
 
+    if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
+
     locationInput.placeholder = "Locating...";
 
     locationWatchId = navigator.geolocation.watchPosition(
@@ -194,7 +207,7 @@ function fetchCurrentLocation() {
             // STOP if user took control
             if (userManuallySetLocation) return;
 
-            const { latitude, longitude } = position.coords;
+            const { latitude, longitude, accuracy } = position.coords;
 
             // Initialize map on first valid fix
             if (!map) {
@@ -202,23 +215,36 @@ function fetchCurrentLocation() {
             } else {
                 // If map exists and user hasn't taken control, update pin
                 if (marker) marker.setLatLng([latitude, longitude]);
-                map.setView([latitude, longitude], 15);
+
+                const zoomLevel = accuracy > 100 ? 15 : 17;
+                map.setView([latitude, longitude], zoomLevel);
             }
 
             latitudeInput.value = latitude;
             longitudeInput.value = longitude;
 
+            // Visual warning if accuracy is low
+            if (accuracy > 100) {
+                locationInput.style.borderColor = '#ff9800'; // Orange border
+            } else {
+                locationInput.style.borderColor = ''; // Reset
+            }
+
             // Throttle address lookup
             if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
                 lastGeocodedPos = { lat: latitude, lng: longitude };
 
-                // Only auto-fill text if empty or contains "Locating..." to respect manual typing
-                // Actually, let's just always update it IF the user hasn't dragged the pin.
+                locationInput.placeholder = "Fetching address...";
+
                 fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
                     .then((response) => response.json())
                     .then((data) => {
                         if (!userManuallySetLocation) {
-                            locationInput.value = data.display_name || "Unknown location";
+                            let address = data.display_name || "Unknown location";
+                            if (accuracy > 100) {
+                                address = `(Approx) ${address}`;
+                            }
+                            locationInput.value = address;
                         }
                     })
                     .catch(() => {

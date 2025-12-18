@@ -70,13 +70,32 @@ function locateUser() {
         navigator.geolocation.clearWatch(locationWatchId);
     }
 
+    // UX: Show searching state
+    const locateBtn = document.getElementById("locateBtn");
+    const originalBtnText = locateBtn ? locateBtn.textContent : "Locate Me";
+    if (locateBtn) {
+        locateBtn.textContent = "Locating...";
+        locateBtn.disabled = true;
+    }
+
     locationWatchId = navigator.geolocation.watchPosition(
         pos => {
             const { latitude, longitude, accuracy } = pos.coords;
             const latLng = [latitude, longitude];
 
+            // UI Reset
+            if (locateBtn) {
+                locateBtn.textContent = originalBtnText;
+                locateBtn.disabled = false;
+            }
+
+            // Determine zoom level and color based on accuracy
+            const zoomLevel = accuracy > 100 ? 15 : 17;
+            let circleColor = '#136AEC';
+            if (accuracy > 100) circleColor = '#ff9800'; // Orange warning
+
             if (!userMarker) {
-                map.setView(latLng, 17);
+                map.setView(latLng, zoomLevel);
                 userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
             } else {
                 userMarker.setLatLng(latLng);
@@ -85,13 +104,14 @@ function locateUser() {
             if (!accuracyCircle) {
                 accuracyCircle = L.circle(latLng, {
                     radius: accuracy,
-                    color: '#136AEC',
-                    fillColor: '#136AEC',
+                    color: circleColor,
+                    fillColor: circleColor,
                     fillOpacity: 0.15
                 }).addTo(map);
             } else {
                 accuracyCircle.setLatLng(latLng);
                 accuracyCircle.setRadius(accuracy);
+                accuracyCircle.setStyle({ color: circleColor, fillColor: circleColor });
             }
 
             // Only reverse geocode if moved significantly (> ~10m) to save API calls
@@ -99,21 +119,39 @@ function locateUser() {
                 lastGeocodedPos = { lat: latitude, lng: longitude };
 
                 getAddress(latitude, longitude, (address) => {
+                    let accuracyWarning = "";
+                    if (accuracy > 100) {
+                        accuracyWarning = `<br><b style="color: #e65100;">⚠️ Low Accuracy (±${Math.round(accuracy)}m)</b>`;
+                    }
+
                     const popupContent = `
                         <b>Your Location</b><br>
                         📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>
-                        🎯 <b>Accuracy:</b> ±${Math.round(accuracy)}m<br>
+                        🎯 <b>Accuracy:</b> ±${Math.round(accuracy)}m${accuracyWarning}<br>
                         🏠 <b>Address:</b> ${address}
                     `;
 
                     userMarker.bindPopup(popupContent);
                     if (userMarker.isPopupOpen()) userMarker.setPopupContent(popupContent);
 
+                    // If extremely bad accuracy (>500m), auto-open popup to warn user
+                    if (accuracy > 500 && !userMarker.isPopupOpen()) {
+                        userMarker.openPopup();
+                    }
+
                     localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude, address: address }));
                 });
             }
         },
-        err => console.warn("Location update error: " + err.message),
+        err => {
+            console.warn("Location update error: " + err.message);
+            if (locateBtn) {
+                locateBtn.textContent = originalBtnText;
+                locateBtn.disabled = false;
+            }
+            if (err.code === 1) alert("Location permission denied.");
+            else alert("Could not determine location.");
+        },
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
 }
@@ -140,12 +178,31 @@ map.on("click", (e) => {
         `;
 
         if (incidentMarker) map.removeLayer(incidentMarker);
-        incidentMarker = L.marker([lat, lng])
+
+        // Create draggable marker
+        incidentMarker = L.marker([lat, lng], { draggable: true })
             .addTo(map)
             .bindPopup(popupContent)
             .openPopup();
 
         localStorage.setItem("incidentLocation", JSON.stringify({ lat, lng, address }));
+
+        // Handle Drag Event
+        incidentMarker.on('dragend', function (event) {
+            const position = event.target.getLatLng();
+            const newLat = position.lat;
+            const newLng = position.lng;
+
+            getAddress(newLat, newLng, (newAddress) => {
+                const newPopupContent = `
+                    <b>Incident Location</b><br>
+                    📍 <b>Coords:</b> ${newLat.toFixed(5)}, ${newLng.toFixed(5)}<br>
+                    🏠 <b>Address:</b> ${newAddress}
+                `;
+                incidentMarker.setPopupContent(newPopupContent).openPopup();
+                localStorage.setItem("incidentLocation", JSON.stringify({ lat: newLat, lng: newLng, address: newAddress }));
+            });
+        });
     });
 });
 
