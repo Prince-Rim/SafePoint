@@ -4,8 +4,8 @@ const API_BASE_URL = '/api';
 let selectedIncident = null;
 
 function checkAuthorization() {
-    const adminId = localStorage.getItem('userId');
-    const adminRole = localStorage.getItem('userRole');
+    const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
         document.body.style.display = 'none';
@@ -44,8 +44,8 @@ async function fetchIncidentsByStatus(status) {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             }
         });
         if (!response.ok) {
@@ -60,7 +60,7 @@ async function fetchIncidentsByStatus(status) {
 }
 
 async function loadInitialIncidents() {
-    const adminId = localStorage.getItem('userId');
+    const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
     if (!adminId) {
         alert("Authorization required. Redirecting to login.");
         window.location.href = "login.html";
@@ -360,8 +360,8 @@ async function saveIncidentChanges(e) {
         const response = await fetch(`${API_BASE_URL}/Incidents/${id}`, {
             method: 'PUT',
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             },
             body: formData
         });
@@ -613,8 +613,8 @@ async function validateIncident(incidentId, isAccepted) {
         const response = await fetch(`${API_BASE_URL}/Admin/validate/${incidentId}?isAccepted=${isAccepted}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             }
         });
 
@@ -639,8 +639,8 @@ async function unvalidateIncident(incidentId) {
         const response = await fetch(`${API_BASE_URL}/Admin/unvalidate/${incidentId}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             }
         });
 
@@ -667,8 +667,8 @@ async function restoreIncident(id) {
         const response = await fetch(`${API_BASE_URL}/Admin/recover/${id}`, {
             method: 'POST',
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             }
         });
 
@@ -695,8 +695,8 @@ async function deleteIncidentPermanently(id) {
         const response = await fetch(`${API_BASE_URL}/Admin/delete-permanent/${id}`, {
             method: 'DELETE',
             headers: {
-                'X-Requester-Id': localStorage.getItem('userId'),
-                'X-Requester-Role': localStorage.getItem('userRole')
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
             }
         });
 

@@ -1,6 +1,6 @@
-const userId = localStorage.getItem('userId');
-const userRole = localStorage.getItem('userRole');
-const username = localStorage.getItem('username');
+const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+const username = localStorage.getItem('username') || sessionStorage.getItem('username');
 
 let selectedIncident = null;
 let allIncidents = [];

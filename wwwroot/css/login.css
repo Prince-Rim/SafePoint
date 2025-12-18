@@ -54,7 +54,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 100px;
+    padding-top: 150px;
+    padding-bottom: 20px;
 }
 
 .login-container {
@@ -62,7 +63,7 @@ body {
     padding: 50px 60px;
     border-radius: 20px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    width: 450px;
+    width: 500px;
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

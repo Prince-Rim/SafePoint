@@ -30,14 +30,28 @@ loginForm.addEventListener("submit", async (e) => {
             const data = await response.json();
             console.log("Login Response Data:", data);
 
-            localStorage.setItem("username", username);
-            localStorage.setItem("userId", data.userId);
-            localStorage.setItem("userRole", data.userRole);
-            localStorage.setItem("userType", data.userType);
-            localStorage.setItem("userEmail", data.email);
-            localStorage.setItem("firstName", data.firstName);
-            localStorage.setItem("lastName", data.lastName);
-            localStorage.setItem("middleName", data.middleName || "");
+            const rememberMe = document.getElementById("rememberMe").checked;
+            const storage = rememberMe ? localStorage : sessionStorage;
+            const otherStorage = rememberMe ? sessionStorage : localStorage;
+
+            // Clear other storage to avoid conflicts
+            otherStorage.removeItem("username");
+            otherStorage.removeItem("userId");
+            otherStorage.removeItem("userRole");
+            otherStorage.removeItem("userType");
+            otherStorage.removeItem("userEmail");
+            otherStorage.removeItem("firstName");
+            otherStorage.removeItem("lastName");
+            otherStorage.removeItem("middleName");
+
+            storage.setItem("username", username);
+            storage.setItem("userId", data.userId);
+            storage.setItem("userRole", data.userRole);
+            storage.setItem("userType", data.userType);
+            storage.setItem("userEmail", data.email);
+            storage.setItem("firstName", data.firstName);
+            storage.setItem("lastName", data.lastName);
+            storage.setItem("middleName", data.middleName || "");
 
             if (data.userType === 'Admin' || data.userType === 'Moderator') {
                 window.location.href = 'dashboard.html';

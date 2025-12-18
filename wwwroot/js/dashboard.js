@@ -1,8 +1,8 @@
 const API_BASE_URL = '/api';
 
 function checkAuthorization() {
-    const adminId = localStorage.getItem('userId');
-    const adminRole = localStorage.getItem('userRole');
+    const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
         document.body.style.display = 'none';
@@ -22,8 +22,8 @@ checkAuthorization();
 
 async function loadDashboardStats() {
     try {
-        const adminId = localStorage.getItem('userId');
-        const adminRole = localStorage.getItem('userRole');
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole

@@ -1,5 +1,5 @@
-﻿const username = localStorage.getItem("username");
-const userRole = localStorage.getItem("userRole");
+﻿const username = localStorage.getItem("username") || sessionStorage.getItem("username");
+const userRole = localStorage.getItem("userRole") || sessionStorage.getItem("userRole");
 const userBtn = document.getElementById("userBtn");
 const userDropdown = document.querySelector(".user-dropdown");
 const dashboardLink = document.getElementById("dashboardLink");
@@ -294,7 +294,7 @@ reportForm.addEventListener("submit", async function (e) {
     submitBtn.textContent = "Submitting...";
     console.log("Button disabled");
 
-    const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
     if (!userId) {
         alert("Authentication error: User ID is missing. Please log in.");
         submitBtn.disabled = false;

@@ -1,5 +1,5 @@
-﻿const userId = localStorage.getItem('userId');
-const userRole = localStorage.getItem('userRole');
+﻿const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
 const map = L.map('map').setView([0, 0], 2);
 
@@ -610,7 +610,7 @@ function checkDashboardAccess() {
 document.getElementById("locateBtn").addEventListener("click", locateUser);
 document.getElementById("resetBtn").addEventListener("click", resetMap);
 
-const username = localStorage.getItem("username");
+const username = localStorage.getItem("username") || sessionStorage.getItem("username");
 const userBtn = document.getElementById("userBtn");
 if (username && userBtn) {
     userBtn.textContent = username + " ▾";

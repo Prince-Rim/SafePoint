@@ -7,8 +7,8 @@ let allAdmins = [];
 let allAreas = [];
 
 function checkAuthorization() {
-    const adminId = localStorage.getItem('userId');
-    const adminRole = localStorage.getItem('userRole');
+    const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
     if (!adminId || (adminRole !== 'Admin' && adminRole !== 'Moderator')) {
         document.body.style.display = 'none';
@@ -28,8 +28,8 @@ async function loadAllAccounts() {
     if (!checkAuthorization()) return;
 
     try {
-        const adminId = localStorage.getItem('userId');
-        const adminRole = localStorage.getItem('userRole');
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole
@@ -226,8 +226,8 @@ async function createAccount(formData) {
     }
 
     try {
-        const adminId = localStorage.getItem('userId');
-        const adminRole = localStorage.getItem('userRole');
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
         const headers = {
             'Content-Type': 'application/json',
             'X-Requester-Id': adminId,
@@ -426,8 +426,8 @@ async function updateAccount(formData) {
     }
 
     try {
-        const adminId = localStorage.getItem('userId');
-        const adminRole = localStorage.getItem('userRole');
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
         const headers = {
             'Content-Type': 'application/json',
             'X-Requester-Id': adminId,
@@ -551,8 +551,8 @@ async function deleteAccount(id, type) {
     }
 
     try {
-        const adminId = localStorage.getItem('userId');
-        const adminRole = localStorage.getItem('userRole');
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
         const headers = {
             'X-Requester-Id': adminId,
             'X-Requester-Role': adminRole

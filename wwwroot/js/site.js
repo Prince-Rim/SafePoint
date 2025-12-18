@@ -66,13 +66,13 @@ if (newPasswordInput) {
 }
 
 function loadProfileData() {
-    const displayName = localStorage.getItem("username") || "Guest";
-    const userIdentifier = localStorage.getItem("userId") || "N/A";
-    const role = localStorage.getItem("userRole") || "User";
-    const email = localStorage.getItem("userEmail") || "N/A";
-    const firstName = localStorage.getItem("firstName") || "";
-    const lastName = localStorage.getItem("lastName") || "";
-    const middleName = localStorage.getItem("middleName") || "";
+    const displayName = localStorage.getItem("username") || sessionStorage.getItem("username") || "Guest";
+    const userIdentifier = localStorage.getItem("userId") || sessionStorage.getItem("userId") || "N/A";
+    const role = localStorage.getItem("userRole") || sessionStorage.getItem("userRole") || "User";
+    const email = localStorage.getItem("userEmail") || sessionStorage.getItem("userEmail") || "N/A";
+    const firstName = localStorage.getItem("firstName") || sessionStorage.getItem("firstName") || "";
+    const lastName = localStorage.getItem("lastName") || sessionStorage.getItem("lastName") || "";
+    const middleName = localStorage.getItem("middleName") || sessionStorage.getItem("middleName") || "";
 
     const fullName = (firstName && lastName)
         ? `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`
@@ -156,8 +156,8 @@ async function toggleEditField(button) {
             const newValue = input.value;
 
 
-            const userId = localStorage.getItem('userId');
-            const userRole = localStorage.getItem('userRole');
+            const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+            const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
             let currentDisplayName = profileModal.dataset.fullDisplayName;
             let currentEmail = profileModal.dataset.fullEmail;
 
@@ -216,11 +216,13 @@ async function toggleEditField(button) {
             if (field === 'email') {
                 const obscuredEmail = currentEmail.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
                 valueElement.textContent = obscuredEmail;
-                localStorage.setItem("userEmail", currentEmail);
+                const storage = localStorage.getItem("userEmail") ? localStorage : sessionStorage;
+                storage.setItem("userEmail", currentEmail);
                 profileModal.dataset.fullEmail = currentEmail;
             } else if (field === 'displayName') {
                 valueElement.textContent = currentDisplayName;
-                localStorage.setItem("username", currentDisplayName);
+                const storage = localStorage.getItem("username") ? localStorage : sessionStorage;
+                storage.setItem("username", currentDisplayName);
                 if (userBtn) userBtn.textContent = `${currentDisplayName} ▾`;
                 profileModal.dataset.fullDisplayName = currentDisplayName;
             }
@@ -338,8 +340,8 @@ if (saveProfileChangesBtn) {
                 }
 
                 try {
-                    const userId = localStorage.getItem('userId');
-                    const userRole = localStorage.getItem('userRole');
+                    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+                    const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
 
                     const response = await fetch(`${API_BASE_URL}/User/UpdatePassword`, {
                         method: 'PUT',
@@ -436,8 +438,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function checkDashboardAccess() {
-    const userId = localStorage.getItem('userId');
-    const userRole = localStorage.getItem('userRole');
+    const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+    const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
     const dashboardLink = document.getElementById('dashboardLink');
     const myReportsLink = document.getElementById('myReportsLink');
 
