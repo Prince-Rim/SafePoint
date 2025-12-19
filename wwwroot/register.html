@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     </script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
+
 <body>
     <div class="header">
         <div class="brand">
@@ -51,10 +53,9 @@
                 </div>
                 <div class="input-group">
                     <label for="contact">Contact Number</label>
-                    <input type="tel" id="contact" name="contact"
-                           placeholder="Enter your contact number"
-                           pattern="[0-9]{11}" maxlength="11"
-                           required title="Please enter an 11-digit contact number (numbers only)">
+                    <input type="tel" id="contact" name="contact" placeholder="Enter your contact number"
+                        pattern="[0-9]{11}" maxlength="11" required
+                        title="Please enter an 11-digit contact number (numbers only)">
                 </div>
                 <div class="input-group password-group">
                     <label for="password">Password</label>
@@ -67,7 +68,8 @@
                 </div>
                 <div class="input-group">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword"
+                        placeholder="Confirm your password" required>
                 </div>
                 <div class="input-group terms">
                     <label for="terms" class="terms-label">
@@ -75,49 +77,7 @@
                         I agree to the <span id="termsLink" class="terms-popup-link">Terms and Conditions</span>
                     </label>
                 </div>
-                <div id="termsModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3 class="tf">SafePoint Terms and Conditions</h3>
-                        <p>
-                            <strong>1. Acceptance of Terms</strong><br>
-                            By creating an account and using SafePoint, you agree to comply with these Terms and Conditions. If you do not agree, please do not use the platform.
-                        </p>
-                        <p>
-                            <strong>2. User Responsibility</strong><br>
-                            - You are responsible for the accuracy of the information you submit.<br>
-                            - Do not submit false, misleading, or malicious reports.<br>
-                            - Respect other users and the community. Harassment, threats, or abusive behavior will not be tolerated.
-                        </p>
-                        <p>
-                            <strong>3. Privacy & Confidentiality</strong><br>
-                            - Personal information submitted through the platform will be handled according to our Privacy Policy.<br>
-                            - Do not share sensitive personal information about others without their consent.
-                        </p>
-                        <p>
-                            <strong>4. Proper Use of the Platform</strong><br>
-                            - SafePoint is intended solely for reporting safety incidents, hazards, or emergencies.<br>
-                            - Users must not attempt to misuse, hack, or disrupt the platform in any way.
-                        </p>
-                        <p>
-                            <strong>5. Content Ownership</strong><br>
-                            - Reports submitted remain your responsibility, but SafePoint reserves the right to remove or moderate content that violates these Terms.
-                        </p>
-                        <p>
-                            <strong>6. Liability Disclaimer</strong><br>
-                            - SafePoint provides the platform to assist in reporting incidents, but we do not guarantee the accuracy, completeness, or timeliness of reports.<br>
-                            - You acknowledge that SafePoint is not liable for any direct or indirect damages arising from the use or misuse of the system.
-                        </p>
-                        <p>
-                            <strong>7. Termination of Account</strong><br>
-                            - SafePoint may suspend or terminate accounts for violation of these Terms or illegal activity.
-                        </p>
-                        <div class="modal-buttons">
-                            <button id="acceptTerms">Accept</button>
-                            <button id="rejectTerms">Reject</button>
-                        </div>
-                    </div>
-                </div>
+
                 <button type="submit" class="btnlogin" id="registerBtn">Register</button>
                 <p class="register-text">Already have an account? <a href="login.html">Log in here</a></p>
             </form>
@@ -141,6 +101,35 @@
     <footer class="footer">
         <p>&copy; 2025 SafePoint. All rights reserved.</p>
     </footer>
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Terms and Conditions</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p><strong>1. Acceptance of Terms</strong><br>By creating an account and using SafePoint, you agree to
+                    comply with these Terms. If you do not agree, please do not use the platform.</p>
+                <p><strong>2. User Responsibility</strong><br>- You are responsible for the accuracy of information
+                    submitted.<br>- Do not submit false, misleading, or malicious reports.<br>- Respect other users;
+                    harassment or abuse will not be tolerated.</p>
+                <p><strong>3. Privacy & Confidentiality</strong><br>- Personal info is handled per our Privacy
+                    Policy.<br>- Do not share others' sensitive info without consent.</p>
+                <p><strong>4. Proper Use</strong><br>- SafePoint is for reporting safety incidents only.<br>- Do not
+                    misuse, hack, or disrupt the platform.</p>
+                <p><strong>5. Content Ownership</strong><br>- Reports remain your responsibility. SafePoint may remove
+                    content violating terms.</p>
+                <p><strong>6. Liability Disclaimer</strong><br>- We do not guarantee report accuracy/timeliness.<br>-
+                    SafePoint is not liable for damages from system use/misuse.</p>
+                <p><strong>7. Termination</strong><br>- We may suspend accounts for violations.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="rejectTerms">Reject</button>
+                <button type="button" id="acceptTerms">Accept</button>
+            </div>
+        </div>
+    </div>
     <script src="js/register.js"></script>
 </body>
+
 </html>
