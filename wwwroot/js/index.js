@@ -78,82 +78,103 @@ function locateUser() {
         locateBtn.disabled = true;
     }
 
-    locationWatchId = navigator.geolocation.watchPosition(
-        pos => {
-            const { latitude, longitude, accuracy } = pos.coords;
-            const latLng = [latitude, longitude];
+    function startWatch(highAccuracy) {
+        if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
 
-            // UI Reset
-            if (locateBtn) {
-                locateBtn.textContent = originalBtnText;
-                locateBtn.disabled = false;
-            }
+        console.log(`Starting location watch. High Accuracy: ${highAccuracy}`);
 
-            // Determine zoom level and color based on accuracy
-            const zoomLevel = accuracy > 100 ? 15 : 17;
-            let circleColor = '#136AEC';
-            if (accuracy > 100) circleColor = '#ff9800'; // Orange warning
+        locationWatchId = navigator.geolocation.watchPosition(
+            pos => {
+                const { latitude, longitude, accuracy } = pos.coords;
+                const latLng = [latitude, longitude];
 
-            if (!userMarker) {
-                map.setView(latLng, zoomLevel);
-                userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
-            } else {
-                userMarker.setLatLng(latLng);
-            }
+                // UI Reset
+                if (locateBtn) {
+                    locateBtn.textContent = originalBtnText;
+                    locateBtn.disabled = false;
+                }
 
-            if (!accuracyCircle) {
-                accuracyCircle = L.circle(latLng, {
-                    radius: accuracy,
-                    color: circleColor,
-                    fillColor: circleColor,
-                    fillOpacity: 0.15
-                }).addTo(map);
-            } else {
-                accuracyCircle.setLatLng(latLng);
-                accuracyCircle.setRadius(accuracy);
-                accuracyCircle.setStyle({ color: circleColor, fillColor: circleColor });
-            }
+                // Determine zoom level and color based on accuracy
+                const zoomLevel = accuracy > 100 ? 15 : 17;
+                let circleColor = '#136AEC';
+                if (accuracy > 100) circleColor = '#ff9800'; // Orange warning
 
-            // Only reverse geocode if moved significantly (> ~10m) to save API calls
-            if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
-                lastGeocodedPos = { lat: latitude, lng: longitude };
+                if (!userMarker) {
+                    map.setView(latLng, zoomLevel);
+                    userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
+                } else {
+                    userMarker.setLatLng(latLng);
+                }
 
-                getAddress(latitude, longitude, (address) => {
-                    let accuracyWarning = "";
-                    if (accuracy > 100) {
-                        accuracyWarning = `<br><b style="color: #e65100;">⚠️ Low Accuracy (±${Math.round(accuracy)}m)</b>`;
+                if (!accuracyCircle) {
+                    accuracyCircle = L.circle(latLng, {
+                        radius: accuracy,
+                        color: circleColor,
+                        fillColor: circleColor,
+                        fillOpacity: 0.15
+                    }).addTo(map);
+                } else {
+                    accuracyCircle.setLatLng(latLng);
+                    accuracyCircle.setRadius(accuracy);
+                    accuracyCircle.setStyle({ color: circleColor, fillColor: circleColor });
+                }
+
+                // Only reverse geocode if moved significantly (> ~10m)
+                if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
+                    lastGeocodedPos = { lat: latitude, lng: longitude };
+
+                    getAddress(latitude, longitude, (address) => {
+                        let accuracyWarning = "";
+                        if (accuracy > 100) {
+                            accuracyWarning = `<br><b style="color: #e65100;">⚠️ Low Accuracy (±${Math.round(accuracy)}m)</b>`;
+                        }
+
+                        const popupContent = `
+                            <b>Your Location</b><br>
+                            📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>
+                            🎯 <b>Accuracy:</b> ±${Math.round(accuracy)}m${accuracyWarning}<br>
+                            🏠 <b>Address:</b> ${address}
+                        `;
+
+                        userMarker.bindPopup(popupContent);
+                        if (userMarker.isPopupOpen()) userMarker.setPopupContent(popupContent);
+
+                        // If extremely bad accuracy (>500m), auto-open popup to warn user
+                        if (accuracy > 500 && !userMarker.isPopupOpen()) {
+                            userMarker.openPopup();
+                        }
+
+                        localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude, address: address }));
+                    });
+                }
+            },
+            err => {
+                console.warn(`Location error (High Accuracy: ${highAccuracy}): ${err.message}`);
+
+                // If High Accuracy fails and it's not a permission issue (code 1), try Low Accuracy
+                if (highAccuracy && err.code !== 1) {
+                    console.log("High accuracy failed. Falling back to low accuracy...");
+                    startWatch(false);
+                } else {
+                    // Final failure
+                    if (locateBtn) {
+                        locateBtn.textContent = originalBtnText;
+                        locateBtn.disabled = false;
                     }
-
-                    const popupContent = `
-                        <b>Your Location</b><br>
-                        📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>
-                        🎯 <b>Accuracy:</b> ±${Math.round(accuracy)}m${accuracyWarning}<br>
-                        🏠 <b>Address:</b> ${address}
-                    `;
-
-                    userMarker.bindPopup(popupContent);
-                    if (userMarker.isPopupOpen()) userMarker.setPopupContent(popupContent);
-
-                    // If extremely bad accuracy (>500m), auto-open popup to warn user
-                    if (accuracy > 500 && !userMarker.isPopupOpen()) {
-                        userMarker.openPopup();
-                    }
-
-                    localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude, address: address }));
-                });
+                    if (err.code === 1) alert("Location permission denied. Please enable location services.");
+                    else alert("Could not determine location. Please check your GPS settings.");
+                }
+            },
+            {
+                enableHighAccuracy: highAccuracy,
+                timeout: highAccuracy ? 15000 : 30000,
+                maximumAge: highAccuracy ? 0 : 300000 // 5 mins cache allowed for low accuracy
             }
-        },
-        err => {
-            console.warn("Location update error: " + err.message);
-            if (locateBtn) {
-                locateBtn.textContent = originalBtnText;
-                locateBtn.disabled = false;
-            }
-            if (err.code === 1) alert("Location permission denied.");
-            else alert("Could not determine location.");
-        },
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
-    );
+        );
+    }
+
+    // Start with High Accuracy
+    startWatch(true);
 }
 
 function resetMap() {
@@ -226,7 +247,20 @@ async function loadValidatedIncidents(type = '', severity = '') {
         const text = await response.text();
         if (!text) return;
 
-        allIncidents = JSON.parse(text);
+        let data = JSON.parse(text);
+
+        // Apply Status Filter
+        const statusEl = document.getElementById('status');
+        const status = statusEl ? statusEl.value : 'active'; // Default to active
+
+        if (status === 'active') {
+            data = data.filter(i => !i.isResolved);
+        } else if (status === 'resolved') {
+            data = data.filter(i => i.isResolved);
+        }
+        // status === 'all' -> no filter
+
+        allIncidents = data;
         renderIncidents(allIncidents);
 
     } catch (error) {
@@ -766,6 +800,7 @@ if (username && userBtn) {
 
 const categoryFilter = document.getElementById('category');
 const severityFilter = document.getElementById('severity');
+const statusFilter = document.getElementById('status');
 
 function applyFilters() {
     const type = categoryFilter.value;
@@ -776,6 +811,7 @@ function applyFilters() {
 
 if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
 if (severityFilter) severityFilter.addEventListener('change', applyFilters);
+if (statusFilter) statusFilter.addEventListener('change', applyFilters);
 
 document.addEventListener('DOMContentLoaded', () => {
     checkDashboardAccess();

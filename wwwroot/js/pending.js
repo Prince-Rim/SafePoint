@@ -32,6 +32,7 @@ async function fetchIncidentsByStatus(status) {
             endpoint = '/Admin/pending';
             break;
         case 'Validated':
+        case 'Resolved':
             endpoint = '/Incidents';
             break;
         case 'Rejected':
@@ -52,7 +53,16 @@ async function fetchIncidentsByStatus(status) {
             console.error(`Error loading ${status} incidents: HTTP ${response.status}`);
             return [];
         }
-        return await response.json();
+        const data = await response.json();
+
+        // Client-side filtering for Validated vs Resolved
+        if (status === 'Validated') {
+            return data.filter(i => !i.isResolved);
+        } else if (status === 'Resolved') {
+            return data.filter(i => i.isResolved);
+        }
+
+        return data;
     } catch (error) {
         console.error(`Error fetching ${status} incidents:`, error);
         return [];
