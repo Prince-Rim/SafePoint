@@ -195,6 +195,7 @@ namespace SafePoint_IRS.Controllers
                 .Include(i => i.IType)
                 .Include(i => i.ValidStatus)
                 .Include(i => i.User)
+                    .ThenInclude(u => u.Badges) // Include Badges
                 .Include(i => i.Area)
                 .Where(i => i.ValidStatus != null && i.ValidStatus.Validation_Status == true);
 
@@ -229,11 +230,16 @@ namespace SafePoint_IRS.Controllers
                     i.IncidentDateTime,
                     i.LocationAddress,
                     i.CreatedAt,
-                    User = i.User != null ? new { i.User.Username, i.User.Email } : null,
+                    User = i.User != null ? new { 
+                        i.User.Username, 
+                        i.User.Email,
+                        Badges = i.User.Badges == null ? null : i.User.Badges.Select(b => new { b.BadgeName, b.AwardedAt }).ToList()
+                    } : null,
                     IncidentType = i.IType != null ? i.IType.Incident_Type : null,
                     Area = i.Area != null ? new { i.Area.ALocation, i.Area.Area_Code } : null,
                     i.Img,
                     i.OtherHazard,
+                    i.IsResolved,
                     ValidStatus = i.ValidStatus != null ? new { i.ValidStatus.Validation_Status, i.ValidStatus.Validation_Date } : null
                 })
                 .ToListAsync();
@@ -254,6 +260,22 @@ namespace SafePoint_IRS.Controllers
                 return NotFound(new { error = "Incident not found." });
 
             return Ok(incident);
+        }
+
+        [HttpPut("{id}/resolve")]
+        public async Task<IActionResult> ResolveIncident(int id)
+        {
+            var incident = await _context.Incident.FindAsync(id);
+            if (incident == null)
+                return NotFound(new { message = "Incident not found." });
+
+            incident.IsResolved = true;
+            await _context.SaveChangesAsync();
+            
+            // Notify
+            await _hubContext.Clients.All.SendAsync("ReceiveResolutionNotification", incident.Title, incident.IncidentID, incident.Userid.ToString());
+
+            return Ok(new { message = "Incident marked as resolved.", incident });
         }
 
         [HttpPut("{id}")]
@@ -301,6 +323,9 @@ namespace SafePoint_IRS.Controllers
                 return StatusCode(500, new { message = "Error updating incident.", details = ex.Message });
             }
         }
+
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIncident(int id)
         {

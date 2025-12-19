@@ -213,6 +213,24 @@ connection.on("ReceiveIncidentNotification", function (title, location, lat, lng
     }
 });
 
+connection.on("ReceiveBadgeNotification", function (userId, badgeName) {
+    const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    if (currentUserId && userId && currentUserId.trim().toLowerCase() === userId.trim().toLowerCase()) {
+        addNotification(`You unlocked the "${badgeName}" badge!`, "Badge Awarded", null, null, null, "Badge Unlocked");
+        showToast("Badge Unlocked!", `You earned the "${badgeName}" badge!`);
+    }
+});
+
+connection.on("ReceiveResolutionNotification", function (title, incidentId, reporterId) {
+    const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+
+    // Notify Reporter
+    if (currentUserId && reporterId && currentUserId.trim().toLowerCase() === reporterId.trim().toLowerCase()) {
+        addNotification(`Your report "${title}" has been resolved.`, "Incident Resolved", null, null, incidentId, "Report Resolved");
+        showToast("Report Resolved", `Your report "${title}" is now resolved.`);
+    }
+});
+
 connection.start().then(function () {
     console.log("SignalR Connected!");
 }).catch(function (err) {

@@ -55,6 +55,7 @@ namespace SafePoint_IRS.DTOs
     {
         public string Username { get; set; } = string.Empty;
         public string UserRole { get; set; } = string.Empty;
+        public object? Badges { get; set; } // Added Badges
     }
 
     public class ChangeRoleDto
@@ -95,5 +96,11 @@ namespace SafePoint_IRS.DTOs
         
         [EmailAddress]
         public string? Email { get; set; }
+    }
+
+    public class AddBadgeDto
+    {
+        public Guid UserId { get; set; }
+        public string BadgeName { get; set; } = string.Empty;
     }
 }

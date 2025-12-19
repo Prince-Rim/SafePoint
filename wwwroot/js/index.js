@@ -295,12 +295,22 @@ function renderIncidents(incidentsToRender) {
 
             // NEW: Use custom DivIcon for markers
             const iconName = iconMapping[incident.incident_Code] || 'place';
+            let markerClass = `custom-map-marker map-severity-${severityKey}`;
+
+            // Keep original icon, but distinct for resolved
+            let markerHtml = `<span class="material-icons">${iconName}</span>`;
+
+            if (incident.isResolved) {
+                markerClass += ' marker-resolved';
+                // We keep the iconName but wrapper class handles color/border
+            }
+
             const customIcon = L.divIcon({
-                className: `custom-map-marker map-severity-${severityKey}`,
-                html: `<span class="material-icons">${iconName}</span>`,
-                iconSize: [32, 32], // Adjust size as needed
-                iconAnchor: [16, 16], // Center of the icon
-                popupAnchor: [0, -18] // Popup opens above
+                className: markerClass,
+                html: markerHtml,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -18]
             });
 
             L.marker([incident.latitude, incident.longitude], { icon: customIcon })
@@ -310,6 +320,10 @@ function renderIncidents(incidentsToRender) {
             if (index < 5 && recentReportsContainer) {
                 const reportBox = document.createElement('div');
                 reportBox.className = 'report-box';
+
+                if (incident.isResolved) {
+                    reportBox.classList.add('resolved-report');
+                }
 
                 let severityClassRaw = incident.severity ? incident.severity.toLowerCase() : 'low';
                 if (severityClassRaw === 'moderate') severityClassRaw = 'moderate';
@@ -326,7 +340,7 @@ function renderIncidents(incidentsToRender) {
                         <span class="material-icons">${iconName}</span>
                     </div>
                     <div class="report-content">
-                        <strong>${filterProfanity(incident.title) || 'Untitled Incident'}</strong>
+                        <strong>${filterProfanity(incident.title) || 'Untitled Incident'} ${incident.isResolved ? '<span style="color:green; font-size:0.8em; font-weight:bold;">(RESOLVED)</span>' : ''}</strong>
                         <div class="report-meta">
                             <span>${displayType}</span>
                             <span>•</span>
@@ -373,20 +387,93 @@ function openViewModal(incident) {
     document.getElementById('modalType').textContent = displayType;
 
     const reporterName = incident.user ? (incident.user.username || incident.user.userName) : 'Anonymous';
-    document.getElementById('modalReporter').textContent = reporterName;
+    let reporterHtml = reporterName;
+
+    // Render Badges if present
+    if (incident.user && incident.user.badges && incident.user.badges.length > 0) {
+        const badgeIconMap = {
+            'Certified Reporter': 'shield',
+            'Community Guardian': 'star',
+            'Top Contributor': 'award',
+            'Reliable Source': 'check-circle',
+            'Sociable': 'forum'
+        };
+
+        reporterHtml += ' <span class="reporter-badges" style="margin-left:5px;">';
+        incident.user.badges.forEach(b => {
+            const icon = badgeIconMap[b.badgeName] || 'certificate';
+            // Simple tooltip with title attribute
+            let matIcon = 'verified';
+            if (icon === 'shield') matIcon = 'security';
+            if (icon === 'star') matIcon = 'star';
+            if (icon === 'award') matIcon = 'emoji_events';
+            if (icon === 'forum') matIcon = 'forum';
+
+            reporterHtml += `<span class="material-icons" title="${b.badgeName}" style="font-size:16px; color:#FFD700; vertical-align:middle; margin-left:2px;">${matIcon}</span>`;
+            // Note: Mapping FontAwesome names to Material Icons where possible for consistency in this modal, 
+            // or just use FA if included. The map page uses Material Icons primarily.
+            // Certified Reporter (Shield) -> security
+            // Community Guardian (Star) -> star
+            // Top Contributor (Award) -> emoji_events
+            // Reliable Source (Check) -> verified
+        });
+        reporterHtml += '</span>';
+    }
+
+    document.getElementById('modalReporter').innerHTML = reporterHtml;
 
     let severity = incident.severity || 'N/A';
     if (severity.toLowerCase() === 'moderate' || severity.toLowerCase() === 'medium') severity = 'Moderate';
     else severity = severity.charAt(0).toUpperCase() + severity.slice(1).toLowerCase();
 
+    // SEVERITY BADGE
     const badge = document.getElementById('modalSeverityBadge');
     badge.textContent = severity;
     badge.className = 'severity-badge badge-' + (severity.toLowerCase() || 'default');
+    badge.style.display = 'inline-block';
+    badge.style.backgroundColor = '';
+
+    // RESOLVED BADGE LOGIC
+    // Remove existing resolved badge if any
+    const existingResolved = document.getElementById('modalResolvedBadge');
+    if (existingResolved) existingResolved.remove();
+
+    if (incident.isResolved) {
+        const resolvedBadge = document.createElement('span');
+        resolvedBadge.id = 'modalResolvedBadge';
+        resolvedBadge.textContent = "RESOLVED";
+        resolvedBadge.className = 'severity-badge';
+        resolvedBadge.style.backgroundColor = '#4caf50';
+        resolvedBadge.style.color = 'white';
+        resolvedBadge.style.marginLeft = '10px';
+
+        badge.parentNode.appendChild(resolvedBadge);
+    }
 
     const dateObj = new Date(incident.incidentDateTime);
     document.getElementById('modalDate').textContent = dateObj.toLocaleString();
     document.getElementById('modalLocation').textContent = incident.locationAddress || 'Lat: ' + incident.latitude + ', Lng: ' + incident.longitude;
     document.getElementById('modalDescription').textContent = filterProfanity(incident.descr) || 'No description available.';
+
+    // Inject Resolve Button if Admin/Mod and not resolved
+    const existingResolveBtn = document.getElementById('resolve-btn-container');
+    if (existingResolveBtn) existingResolveBtn.remove();
+
+    const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+    if (!incident.isResolved && (userRole === 'Admin' || userRole === 'Moderator')) {
+        const headerSection = document.querySelector('.modal-header-section');
+        const resolveBtnContainer = document.createElement('div');
+        resolveBtnContainer.id = 'resolve-btn-container';
+        resolveBtnContainer.style.marginTop = '10px';
+        resolveBtnContainer.innerHTML = `
+            <button onclick="resolveIncident(${incident.incidentID})" 
+                style="background-color: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                <span class="material-icons" style="vertical-align: middle; font-size: 18px; margin-right: 5px;">check_circle</span>
+                Mark as Resolved
+            </button>
+        `;
+        headerSection.appendChild(resolveBtnContainer);
+    }
 
     const modalImage = document.getElementById('modalImage');
     const noImageText = document.getElementById('modalNoImage');
@@ -405,6 +492,30 @@ function openViewModal(incident) {
 
     modal.style.display = 'flex';
 }
+
+window.resolveIncident = async function (incidentId) {
+    if (!confirm("Are you sure you want to mark this incident as RESOLVED? This will update the status for everyone.")) return;
+
+    try {
+        const response = await fetch(`/api/incidents/${incidentId}/resolve`, {
+            method: 'PUT'
+        });
+
+        if (response.ok) {
+            alert("Incident marked as resolved!");
+            document.getElementById('viewIncidentModal').style.display = 'none';
+            // Reload incidents to reflect change
+            // We need to trigger a map refresh. Assuming getIncidents is global or we can reload page.
+            if (window.getIncidents) window.getIncidents();
+            else location.reload();
+        } else {
+            alert("Failed to resolve incident.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error resolving incident.");
+    }
+};
 
 async function loadComments(incidentId) {
     const commentsList = document.getElementById('commentsList');
@@ -435,6 +546,37 @@ async function loadComments(incidentId) {
 
                     const userName = c.user ? (c.user.username || c.user.userName) : (c.userName || 'Anonymous');
 
+                    // BADGE RENDERING FOR COMMENTS
+                    let badgesHtml = '';
+                    if (c.user && c.user.badges && Array.isArray(c.user.badges) && c.user.badges.length > 0) {
+                        const badgeIconMap = {
+                            'Certified Reporter': 'shield',
+                            'Community Guardian': 'star',
+                            'Top Contributor': 'award',
+                            'Reliable Source': 'check-circle',
+                            'Sociable': 'forum'
+                        };
+                        badgesHtml += ' <span class="comment-badges" style="margin-left:5px;">';
+                        c.user.badges.forEach(b => {
+                            const bName = b.badgeName || b; // Handle object or string
+                            const icon = badgeIconMap[bName] || 'certificate';
+                            // Use FontAwesome or Material Icons. Material Icons preferred for index.js consistency, but user-accounts uses FA.
+                            // Let's use Material Icons mapping:
+                            // Shield -> security
+                            // Star -> star
+                            // Award -> emoji_events
+                            // Check -> verified
+                            let matIcon = 'verified';
+                            if (icon === 'shield') matIcon = 'security';
+                            if (icon === 'star') matIcon = 'star';
+                            if (icon === 'award') matIcon = 'emoji_events';
+                            if (icon === 'forum') matIcon = 'forum';
+
+                            badgesHtml += `<span class="material-icons" title="${bName}" style="font-size:14px; color:#FFD700; vertical-align:middle; margin-left:2px;">${matIcon}</span>`;
+                        });
+                        badgesHtml += '</span>';
+                    }
+
                     let buttonsHtml = '';
                     if (userId && c.userid && userId.toLowerCase() === c.userid.toLowerCase()) {
                         buttonsHtml = `
@@ -446,7 +588,10 @@ async function loadComments(incidentId) {
                     }
 
                     commentItem.innerHTML = `
-                    <div class="comment-user">${userName}</div>
+                    <div class="comment-user">
+                        ${userName}
+                        ${badgesHtml}
+                    </div>
                     <div class="comment-text">${filterProfanity(c.comment || c.content)}</div>
                     <span class="comment-date">${date}</span>
                     ${buttonsHtml}

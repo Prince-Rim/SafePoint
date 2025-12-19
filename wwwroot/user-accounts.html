@@ -280,8 +280,30 @@
                         <input type="password" id="edit-password" name="password" minlength="8">
                     </div>
                     <div class="form-group">
-                        <label for="edit-confirm-password">Confirm New Password</label>
                         <input type="password" id="edit-confirm-password" name="confirm-password" minlength="8">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Badges & Reputation</label>
+                        <div class="badge-management-container"
+                            style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                            <div class="current-badges" id="current-badges-list"
+                                style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
+                                <!-- Badges will differ here -->
+                            </div>
+                            <div class="add-badge-controls" style="display: flex; gap: 5px;">
+                                <select id="new-badge-name" style="flex: 1; padding: 5px;">
+                                    <option value="">-- Select Badge --</option>
+                                    <option value="Certified Reporter">Certified Reporter (Shield)</option>
+                                    <option value="Community Guardian">Community Guardian (Star)</option>
+                                    <option value="Top Contributor">Top Contributor (Award)</option>
+                                    <option value="Reliable Source">Reliable Source (Check)</option>
+                                    <option value="Sociable">Sociable (Chat Bubble)</option>
+                                </select>
+                                <button type="button" id="add-badge-btn" class="btn-secondary"
+                                    style="padding: 5px 10px;">Add</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

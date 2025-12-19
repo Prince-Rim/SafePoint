@@ -6,6 +6,8 @@ using SafePoint_IRS.DTOs;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using SafePoint_IRS.Hubs;
 
 namespace SafePoint_IRS.Controllers
 {
@@ -14,10 +16,12 @@ namespace SafePoint_IRS.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public CommentsController(AppDbContext context)
+        public CommentsController(AppDbContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         [HttpGet("incident/{incidentId}")]
@@ -26,6 +30,7 @@ namespace SafePoint_IRS.Controllers
             var comments = await _context.Comments
                 .Where(c => c.IncidentID == incidentId)
                 .Include(c => c.User)
+                    .ThenInclude(u => u.Badges) // Include Badges
                 .Include(c => c.Admin)
                 .Include(c => c.Moderator)
                 .OrderByDescending(c => c.dttm)
@@ -40,6 +45,7 @@ namespace SafePoint_IRS.Controllers
                 {
                     userDto.Username = c.User.Username;
                     userDto.UserRole = c.User.UserRole;
+                    userDto.Badges = c.User.Badges?.Select(b => new { b.BadgeName }).ToList(); // Populate Badges
                     userIdStr = c.Userid.ToString();
                 }
                 else if (c.Admin != null)
@@ -125,6 +131,34 @@ namespace SafePoint_IRS.Controllers
             {
                 _context.Comments.Add(newComment);
                 await _context.SaveChangesAsync();
+
+                // AUTO-BADGE LOGIC: Sociable
+                // Count comments by this user
+                if (requesterId != Guid.Empty && newComment.Userid.HasValue && newComment.Userid.Value != Guid.Empty)
+                {
+                    int commentCount = await _context.Comments.CountAsync(c => c.Userid == newComment.Userid);
+                    if (commentCount >= 20)
+                    {
+                        string badgeName = "Sociable";
+                        bool hasBadge = await _context.UserBadges.AnyAsync(b => b.UserId == newComment.Userid.Value && b.BadgeName == badgeName);
+                        if (!hasBadge)
+                        {
+                             var autoBadge = new UserBadge
+                             {
+                                 UserId = newComment.Userid.Value,
+                                 BadgeName = badgeName,
+                                 AwardedBy = "System",
+                                 AwardedAt = DateTime.UtcNow
+                             };
+                             _context.UserBadges.Add(autoBadge);
+                             await _context.SaveChangesAsync();
+
+                             // Notify User
+                             await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", newComment.Userid.Value.ToString(), badgeName);
+                        }
+                    }
+                }
+                // End Auto-Badge Logic
             }
             catch (Exception ex)
             {

@@ -705,11 +705,74 @@ namespace SafePoint_IRS.Controllers
                     u.Contact,
                     u.UserRole,
                     u.IsActive,
-                    u.SuspensionEndTime
+                    u.SuspensionEndTime,
+                    u.TrustScore,
+                    Badges = u.Badges.Select(b => new { b.Id, b.BadgeName, b.AwardedAt, b.AwardedBy }).ToList()
                 })
                 .ToListAsync();
 
             return Ok(users);
+        }
+
+        [HttpPost("add-badge")]
+        public async Task<IActionResult> AddBadge([FromBody] AddBadgeDto badgeDto)
+        {
+            var requester = GetRequesterInfo();
+            if (requester == null || (requester.RequesterRole != "Admin" && requester.RequesterRole != "Moderator"))
+            {
+                return Unauthorized(new { error = "Only Admin/Moderator can add badges." });
+            }
+
+            var user = await _context.Users.FindAsync(badgeDto.UserId);
+            if (user == null) return NotFound(new { error = "User not found." });
+
+            var badge = new UserBadge
+            {
+                UserId = badgeDto.UserId,
+                BadgeName = badgeDto.BadgeName,
+                AwardedBy = await GetUsernameById(requester.RequesterId, requester.RequesterRole)
+            };
+
+            _context.UserBadges.Add(badge);
+            await _context.SaveChangesAsync();
+            
+            // Notify User
+            await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", badgeDto.UserId.ToString(), badgeDto.BadgeName);
+
+            return Ok(new { message = "Badge added successfully.", badge });
+        }
+
+        [HttpDelete("remove-badge/{id}")]
+        public async Task<IActionResult> RemoveBadge(int id)
+        {
+             var requester = GetRequesterInfo();
+            if (requester == null || (requester.RequesterRole != "Admin" && requester.RequesterRole != "Moderator"))
+            {
+                return Unauthorized(new { error = "Only Admin/Moderator can remove badges." });
+            }
+
+            var badge = await _context.UserBadges.FindAsync(id);
+            if (badge == null) return NotFound(new { error = "Badge not found." });
+
+            _context.UserBadges.Remove(badge);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Badge removed successfully." });
+        }
+
+        private async Task<string> GetUsernameById(string id, string role)
+        {
+            if (role == "Admin")
+            {
+                 var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid.ToString() == id);
+                 return admin?.Username ?? "Unknown Admin";
+            }
+            else if (role == "Moderator")
+            {
+                 var mod = await _context.Moderators.FirstOrDefaultAsync(m => m.Modid.ToString() == id);
+                 return mod?.Username ?? "Unknown Moderator";
+            }
+            return "Unknown";
         }
 
         [HttpGet("moderators")]
@@ -745,7 +808,9 @@ namespace SafePoint_IRS.Controllers
                     m.UserRole,
                     AreaName = m.Area != null ? m.Area.ALocation : null,
                     m.IsActive,
-                    m.SuspensionEndTime
+                    m.SuspensionEndTime,
+                    TrustScore = 0, // Mods don't have TrustScore yet in model, assume 0 or add it.
+                    Badges = new List<object>() // Mods don't have Badges collection in model yet.
                 })
                 .ToListAsync();
 
@@ -961,9 +1026,28 @@ namespace SafePoint_IRS.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                
-                 // Notify all clients about the approved incident
+
                 await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Validated", incident.Userid);
+
+                // AUTO-BADGE LOGIC
+                // Count verified incidents for this user
+                var userVerifiedCount = await _context.Incident
+                    .Include(i => i.ValidStatus)
+                    .CountAsync(i => i.Userid == incident.Userid && i.ValidStatus != null && i.ValidStatus.Validation_Status == true);
+
+                if (userVerifiedCount >= 10)
+                {
+                    await CheckAndAwardBadge(incident.Userid, "Certified Reporter");
+                }
+                if (userVerifiedCount >= 25)
+                {
+                    await CheckAndAwardBadge(incident.Userid, "Reliable Source");
+                }
+                if (userVerifiedCount >= 50)
+                {
+                    await CheckAndAwardBadge(incident.Userid, "Top Contributor");
+                }
+                // End Auto-Badge Logic
 
                 return Ok(new { message = $"Incident ID {incidentId} accepted." });
             }
@@ -1523,6 +1607,25 @@ namespace SafePoint_IRS.Controllers
             {
                 await transaction.RollbackAsync();
                 return StatusCode(500, new { error = "Role change failed.", details = ex.Message });
+            }
+        }
+        private async Task CheckAndAwardBadge(Guid userId, string badgeName)
+        {
+            var hasBadge = await _context.UserBadges.AnyAsync(b => b.UserId == userId && b.BadgeName == badgeName);
+            if (!hasBadge)
+            {
+                var autoBadge = new UserBadge
+                {
+                    UserId = userId,
+                    BadgeName = badgeName,
+                    AwardedBy = "System",
+                    AwardedAt = DateTime.UtcNow
+                };
+                _context.UserBadges.Add(autoBadge);
+                await _context.SaveChangesAsync();
+                
+                // Notify User
+                await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", userId.ToString(), badgeName);
             }
         }
     }

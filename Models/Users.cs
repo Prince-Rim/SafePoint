@@ -46,6 +46,10 @@ namespace SafePoint_IRS.Models
         [MaxLength(20)]
         public string UserRole { get; set; } = "User"; 
 
+        public int TrustScore { get; set; } = 0;
+
+        public ICollection<UserBadge>? Badges { get; set; }
+
         public ICollection<Incident>? Incidents { get; set; }
         public ICollection<Comment>? Comments { get; set; }
     }

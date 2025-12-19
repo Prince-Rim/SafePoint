@@ -266,8 +266,9 @@ function renderIncidentDetails(incident) {
     const restoreBtn = detailPanel.querySelector('#restoreBtn');
     const deleteBtn = detailPanel.querySelector('#deletePermBtn');
     const editBtn = detailPanel.querySelector('#editBtn');
+    const resolveBtn = detailPanel.querySelector('#resolveBtn');
 
-    const actionButtons = [approveBtn, rejectBtn, unvalidateBtn, restoreBtn, deleteBtn, editBtn];
+    const actionButtons = [approveBtn, rejectBtn, unvalidateBtn, restoreBtn, deleteBtn, editBtn, resolveBtn];
     actionButtons.forEach(btn => {
         if (btn) btn.style.display = 'none';
     });
@@ -285,6 +286,26 @@ function renderIncidentDetails(incident) {
         if (unvalidateBtn) unvalidateBtn.style.display = 'flex';
         if (editBtn) editBtn.style.display = 'flex';
 
+        // Show Mark Resolved only if not already resolved
+        if (resolveBtn) {
+            // Reset state
+            resolveBtn.innerHTML = '<span class="material-icons">check_circle</span> Mark Resolved';
+            resolveBtn.disabled = false;
+            resolveBtn.style.opacity = '1';
+            resolveBtn.style.backgroundColor = '#4caf50';
+
+            if (!incident.isResolved) {
+                resolveBtn.style.display = 'flex';
+                resolveBtn.onclick = () => resolveIncident(incident.incidentID);
+            } else {
+                resolveBtn.style.display = 'flex';
+                resolveBtn.innerHTML = '<span class="material-icons">check</span> Resolved';
+                resolveBtn.disabled = true;
+                resolveBtn.style.opacity = '0.7';
+                // keep the green color or use a gray? User said it's green in HTML.
+            }
+        }
+
         if (unvalidateBtn) unvalidateBtn.onclick = () => unvalidateIncident(incident.incidentID);
     }
     else if (currentStatus === 'Rejected') {
@@ -296,6 +317,33 @@ function renderIncidentDetails(incident) {
     }
 
     if (editBtn) editBtn.onclick = () => openEditModal(incident);
+}
+
+// NEW FUNCTION
+async function resolveIncident(incidentId) {
+    if (!confirm("Are you sure you want to mark this incident as RESOLVED?")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/Incidents/${incidentId}/resolve`, {
+            method: 'PUT',
+            headers: {
+                'X-Requester-Id': localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+                'X-Requester-Role': localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
+            }
+        });
+
+        if (response.ok) {
+            alert("Incident marked as resolved!");
+            // Refresh list
+            const active = document.querySelector('.filter-btn.active');
+            if (active) handleFilterClick(active, active.textContent.trim());
+        } else {
+            alert("Failed to resolve incident.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error resolving incident.");
+    }
 }
 
 function openEditModal(incident) {

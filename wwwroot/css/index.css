@@ -1028,6 +1028,23 @@ select {
     border-color: #fff;
 }
 
+/* Resolved Styles */
+.custom-map-marker.marker-resolved {
+    background: #4caf50 !important;
+    border: 2px solid #fff !important;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.report-box.resolved-report {
+    border-left: 5px solid #4caf50;
+    background-color: #f1f8f1;
+}
+
+.report-box.resolved-report:hover {
+    border-color: #4caf50;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.15);
+}
+
 .cancel-btn {
     background: #555;
     color: #fff;

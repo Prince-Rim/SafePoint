@@ -22,6 +22,7 @@ namespace SafePoint_IRS.Data
         public DbSet<Moderator> Moderators { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<UserBadge> UserBadges { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,7 @@ namespace SafePoint_IRS.Data
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<UserArchive>().ToTable("UserArchive");
             modelBuilder.Entity<IncidentArchive>().ToTable("IncidentArchive");
+            modelBuilder.Entity<UserBadge>().ToTable("UserBadge");
 
             modelBuilder.Entity<Incident>()
                 .HasOne(i => i.ValidStatus)

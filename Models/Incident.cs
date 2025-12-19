@@ -57,6 +57,8 @@ namespace SafePoint_IRS.Models
         [ForeignKey("Incident_Code")]
         public IType? IType { get; set; }
 
+        public bool IsResolved { get; set; } = false;
+
         public Valid? ValidStatus { get; set; }
         public ICollection<Comment>? Comments { get; set; }
     }

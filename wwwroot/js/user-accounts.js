@@ -393,8 +393,124 @@ function openEditModal(account) {
         permissionCheckboxes.forEach(checkbox => checkbox.checked = false);
     }
 
+    // BADGE RENDERING
+    const badgeList = document.getElementById('current-badges-list');
+    const addBadgeBtn = document.getElementById('add-badge-btn');
+
+    const badgeIconMap = {
+        'Certified Reporter': 'shield',
+        'Community Guardian': 'star',
+        'Top Contributor': 'award',
+        'Reliable Source': 'check-circle',
+        'Sociable': 'comments'
+    };
+
+    if (badgeList) {
+        badgeList.innerHTML = '';
+        if (Array.isArray(account.badges)) {
+            account.badges.forEach(badge => {
+                const badgeEl = document.createElement('span');
+                badgeEl.className = 'badge';
+                badgeEl.style.backgroundColor = '#6200ea';
+                badgeEl.style.color = 'white';
+                badgeEl.style.display = 'inline-flex';
+                badgeEl.style.alignItems = 'center';
+                badgeEl.style.gap = '5px';
+
+                // Icon Logic
+                let iconClass = badgeIconMap[badge.badgeName] || 'certificate';
+
+                badgeEl.innerHTML = `
+                    <i class="fas fa-${iconClass}"></i> ${badge.badgeName} 
+                    <span onclick="deleteBadge(${badge.id}, '${account.id}', '${account.accountType}')" 
+                          style="cursor:pointer; font-weight:bold; color:#ffcccc; margin-left: 5px;">&times;</span>
+                `;
+                badgeList.appendChild(badgeEl);
+            });
+        }
+    }
+
+    if (addBadgeBtn) {
+        // Clone to remove old listeners
+        const newBtn = addBadgeBtn.cloneNode(true);
+        addBadgeBtn.parentNode.replaceChild(newBtn, addBadgeBtn);
+
+        newBtn.addEventListener('click', () => {
+            const nameInput = document.getElementById('new-badge-name');
+            const name = nameInput.value;
+            if (!name) {
+                alert("Please select a badge.");
+                return;
+            }
+            addBadge(account.id, name, account.accountType);
+        });
+    }
+
     modal.style.display = 'flex';
 }
+
+async function addBadge(userId, badgeName, accountType) {
+    if (accountType !== 'User') {
+        alert("Badges are currently only supported for Users.");
+        return;
+    }
+
+    try {
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+        const response = await fetch(`${API_BASE_URL}/Admin/add-badge`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requester-Id': adminId,
+                'X-Requester-Role': adminRole
+            },
+            body: JSON.stringify({ userId: userId, badgeName: badgeName })
+        });
+
+        if (response.ok) {
+            alert('Badge added!');
+            document.getElementById('new-badge-name').value = '';
+            document.getElementById('editUserModal').style.display = 'none';
+            loadAllAccounts(); // Reload to refresh data
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Failed to add badge');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error adding badge');
+    }
+}
+
+window.deleteBadge = async function (badgeId, userId, accountType) {
+    if (!confirm("Remove this badge?")) return;
+
+    try {
+        const adminId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+        const adminRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+        const response = await fetch(`${API_BASE_URL}/Admin/remove-badge/${badgeId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requester-Id': adminId,
+                'X-Requester-Role': adminRole
+            }
+        });
+
+        if (response.ok) {
+            alert('Badge removed!');
+            document.getElementById('editUserModal').style.display = 'none';
+            loadAllAccounts();
+        } else {
+            alert('Failed to remove badge');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error removing badge');
+    }
+};
 
 async function updateAccount(formData) {
     const id = formData.get('id');
