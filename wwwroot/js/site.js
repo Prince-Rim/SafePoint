@@ -65,7 +65,7 @@ if (newPasswordInput) {
     newPasswordInput.addEventListener("input", updatePasswordStrengthDisplay);
 }
 
-function loadProfileData() {
+async function loadProfileData() {
     const displayName = localStorage.getItem("username") || sessionStorage.getItem("username") || "Guest";
     const userIdentifier = localStorage.getItem("userId") || sessionStorage.getItem("userId") || "N/A";
     const role = localStorage.getItem("userRole") || sessionStorage.getItem("userRole") || "User";
@@ -91,11 +91,55 @@ function loadProfileData() {
         if (document.getElementById("profileRole")) document.getElementById("profileRole").textContent = role;
         if (document.getElementById("profileFullName")) document.getElementById("profileFullName").textContent = fullName;
 
+        // NEW: specific header name
+        if (document.getElementById("modalProfileName")) document.getElementById("modalProfileName").textContent = displayName;
+
         const obscuredEmail = email.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
         if (document.getElementById("profileEmail")) document.getElementById("profileEmail").textContent = obscuredEmail;
 
         profileModal.dataset.fullDisplayName = displayName;
         profileModal.dataset.fullEmail = email;
+
+        // FETCH AND RENDER BADGES
+        const badgesContainer = document.getElementById('profileBadgesContainer');
+        if (badgesContainer && userIdentifier !== "N/A") {
+            badgesContainer.innerHTML = ''; // Clear previous
+            try {
+                const response = await fetch(`${API_BASE_URL}/User/profile/${userIdentifier}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.badges && data.badges.length > 0) {
+                        const badgeIconMap = {
+                            'Certified Reporter': 'security',
+                            'Community Guardian': 'star',
+                            'Top Contributor': 'emoji_events',
+                            'Reliable Source': 'verified',
+                            'Sociable': 'forum'
+                        };
+
+                        data.badges.forEach(b => {
+                            const icon = badgeIconMap[b.badgeName] || 'verified';
+
+                            const badgeDiv = document.createElement('div');
+                            badgeDiv.className = 'badge-item';
+                            badgeDiv.title = b.badgeName;
+
+                            const iconSpan = document.createElement('span');
+                            iconSpan.className = 'material-icons';
+                            iconSpan.textContent = icon;
+
+                            badgeDiv.appendChild(iconSpan);
+                            badgesContainer.appendChild(badgeDiv);
+                        });
+                    } else {
+                        // Optional: empty state or nothing
+                        badgesContainer.style.display = 'none';
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch profile badges", err);
+            }
+        }
     }
 
     const loggedInActions = document.getElementById("loggedInActions");

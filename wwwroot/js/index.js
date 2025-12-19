@@ -541,7 +541,10 @@ async function loadComments(incidentId) {
                         commentItem.classList.add('comment-official');
                     }
 
-                    const dateVal = c.dttm || c.createdAt;
+                    let dateVal = c.dttm || c.createdAt;
+                    if (dateVal && typeof dateVal === 'string' && !dateVal.endsWith('Z') && !dateVal.includes('+')) {
+                        dateVal += 'Z';
+                    }
                     const date = dateVal ? new Date(dateVal).toLocaleString() : 'Unknown Date';
 
                     const userName = c.user ? (c.user.username || c.user.userName) : (c.userName || 'Anonymous');

@@ -333,10 +333,11 @@
     overflow-y: auto;
 }
 
-.profile-modal-content {
+.modal-content.profile-modal-content {
     max-width: 650px;
     background-color: #ffffff;
     color: #333;
+    padding: 0;
     padding-bottom: 0;
     animation: slideUp 0.3s ease-out;
 }
@@ -347,10 +348,18 @@
     border-radius: 16px 16px 0 0;
 }
 
-.profile-avatar {
+.profile-header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 30px;
+    margin-top: -10px;
+    margin-bottom: 20px;
     position: relative;
-    top: -40px;
-    margin-left: 30px;
+}
+
+.profile-avatar {
     width: 90px;
     height: 90px;
     border-radius: 50%;
@@ -359,6 +368,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .profile-avatar .profile-icon {
@@ -366,9 +377,55 @@
     color: #397DFA;
 }
 
+.profile-header-details {
+    margin-left: 20px;
+    margin-top: 15px;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-header-details h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #222;
+    line-height: 1;
+}
+
+#profileBadgesContainer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.badge-item {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #FFD700;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.badge-item:hover {
+    transform: translateY(-2px);
+}
+
+.badge-item .material-icons {
+    font-size: 18px;
+    color: #FFD700;
+    /* Gold */
+}
+
 .profile-info-section {
-    padding: 0 30px 20px;
-    margin-top: -30px;
+    padding: 20px 30px;
     overflow-y: auto;
     max-height: calc(90vh - 180px);
 }

@@ -187,6 +187,64 @@ namespace SafePoint_IRS.Controllers
 
             return NotFound(new { error = "Email not linked to any account." });
         }
+        [HttpGet("profile/{userId}")]
+        public async Task<IActionResult> GetProfile(string userId)
+        {
+            if (string.IsNullOrEmpty(userId)) return BadRequest("User ID is required.");
+
+            if (!Guid.TryParse(userId, out Guid userGuid))
+            {
+                return BadRequest("Invalid User ID format.");
+            }
+
+            // Try to find as User first (since only Users have badges usually)
+            var user = await _context.Users
+                .Include(u => u.Badges)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Userid == userGuid);
+
+            if (user != null)
+            {
+                return Ok(new
+                {
+                    UserId = user.Userid,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Role = "User",
+                    Badges = user.Badges.Select(b => new { b.BadgeName, b.AwardedAt }).ToList()
+                });
+            }
+
+            // Fallback for Admin
+            var admin = await _context.Admins.FindAsync(userGuid);
+            if (admin != null)
+            {
+                return Ok(new
+                {
+                    UserId = admin.Adminid,
+                    Username = admin.Username,
+                    Email = admin.Email,
+                    Role = "Admin",
+                    Badges = new List<object>() // Admins don't have badges contextually yet
+                });
+            }
+
+            // Fallback for Moderator
+            var mod = await _context.Moderators.FindAsync(userGuid);
+            if (mod != null)
+            {
+                return Ok(new
+                {
+                    UserId = mod.Modid,
+                    Username = mod.Username,
+                    Email = mod.Email,
+                    Role = "Moderator",
+                    Badges = new List<object>()
+                });
+            }
+
+            return NotFound(new { error = "User not found." });
+        }
     }
 
 

@@ -1,4 +1,4 @@
-﻿* {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -873,10 +873,24 @@ select {
     border-radius: 16px 16px 0 0;
 }
 
-.profile-avatar {
+.profile-info-section {
+    padding: 20px 30px;
+    overflow-y: auto;
+    max-height: calc(90vh - 180px);
+}
+
+.profile-header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0 30px;
+    margin-top: -10px;
+    margin-bottom: 20px;
     position: relative;
-    top: -40px;
-    margin-left: 30px;
+}
+
+.profile-avatar {
     width: 90px;
     height: 90px;
     border-radius: 50%;
@@ -885,18 +899,64 @@ select {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
 }
 
-.profile-avatar .profile-icon {
-    font-size: 60px;
-    color: #397DFA;
+.profile-header-details {
+    margin-left: 20px;
+    margin-top: 15px;
+    /* Reduced from 40px to pull text up closer to the header line */
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Left align text */
 }
 
-.profile-info-section {
-    padding: 0 30px 20px;
-    margin-top: -30px;
-    overflow-y: auto;
-    max-height: calc(90vh - 180px);
+.profile-header-details h2 {
+    margin: 0 0 8px 0;
+    /* Space between name and badges */
+    font-size: 1.8rem;
+    /* Slightly larger */
+    font-weight: 800;
+    color: #222;
+    line-height: 1;
+}
+
+#profileBadgesContainer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    /* Left align badges */
+}
+
+.badge-item {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #FFD700;
+    /* Gold border */
+    border-radius: 8px;
+    /* Softer corners */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.2);
+    /* Golden shadow */
+    transition: transform 0.2s;
+}
+
+.badge-item:hover {
+    transform: translateY(-2px);
+}
+
+.badge-item .material-icons {
+    font-size: 18px;
+    color: #FFC107;
+    /* Richer Amber/Gold */
 }
 
 .info-group {
@@ -1030,9 +1090,11 @@ select {
 
 /* Resolved Styles */
 .custom-map-marker.marker-resolved {
-    background: #4caf50 !important;
-    border: 2px solid #fff !important;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    /* Background removed to let severity gradient show through */
+    border: 3px solid #4CAF50 !important;
+    /* Green border */
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.8) !important;
+    /* Green Glow */
 }
 
 .report-box.resolved-report {

@@ -129,7 +129,12 @@ function handleNotificationClick(notification) {
             }
         }
     } else {
-        alert("Location coordinates not available for this incident.");
+        // If it's a badge or system notification, don't show the location error
+        if (notification.title && (notification.title.includes("Badge") || notification.message.includes("Badge"))) {
+            // Do nothing or optional: window.location.href = 'mypost.html';
+        } else {
+            alert("Location coordinates not available for this incident.");
+        }
     }
 
     const dropdown = document.getElementById('notificationDropdown');
