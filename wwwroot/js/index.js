@@ -167,8 +167,7 @@ function locateUser() {
                         alert("Location permission denied. Please enable location services.");
                     } else {
                         console.warn("Could not determine location. Using default view.");
-                        // Optional: Show a toast or small message instead of an alert
-                        // alert("Could not determine location. Please check your GPS settings."); 
+                        alert("Could not determine location. Please refresh the page.");
                     }
                 }
             },
