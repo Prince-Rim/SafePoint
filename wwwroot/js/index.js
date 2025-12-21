@@ -15,6 +15,8 @@ let allIncidents = [];
 let locationWatchId = null;
 let accuracyCircle = null;
 let lastGeocodedPos = { lat: 0, lng: 0 };
+let isHeatmapActive = false;
+let heatLayer = null;
 
 const icons = {
     high: new L.Icon({
@@ -161,14 +163,19 @@ function locateUser() {
                         locateBtn.textContent = originalBtnText;
                         locateBtn.disabled = false;
                     }
-                    if (err.code === 1) alert("Location permission denied. Please enable location services.");
-                    else alert("Could not determine location. Please check your GPS settings.");
+                    if (err.code === 1) {
+                        alert("Location permission denied. Please enable location services.");
+                    } else {
+                        console.warn("Could not determine location. Using default view.");
+                        // Optional: Show a toast or small message instead of an alert
+                        // alert("Could not determine location. Please check your GPS settings."); 
+                    }
                 }
             },
             {
                 enableHighAccuracy: highAccuracy,
-                timeout: highAccuracy ? 15000 : 30000,
-                maximumAge: highAccuracy ? 0 : 300000 // 5 mins cache allowed for low accuracy
+                timeout: highAccuracy ? 20000 : 60000, // Increased timeout (20s High, 60s Low)
+                maximumAge: highAccuracy ? 0 : 300000
             }
         );
     }
@@ -270,6 +277,36 @@ async function loadValidatedIncidents(type = '', severity = '') {
 
 function renderIncidents(incidentsToRender) {
     incidentLayerGroup.clearLayers();
+    if (heatLayer) {
+        map.removeLayer(heatLayer);
+        heatLayer = null;
+    }
+
+    // Heatmap Mode
+    if (isHeatmapActive) {
+        const heatPoints = incidentsToRender
+            .filter(i => i.latitude && i.longitude)
+            .map(i => {
+                // intensity numbers: 0 to 1
+                // We lower them further so it takes MANY incidents to trigger Red.
+                // Low = 0.1 (Need 10 for pure red)
+                // Moderate = 0.2 (Need 5 for pure red)
+                // High = 0.3 (Need 3-4 for pure red)
+                let intensity = 0.1;
+                if (i.severity && i.severity.toLowerCase() === 'moderate') intensity = 0.2;
+                if (i.severity && i.severity.toLowerCase() === 'high') intensity = 0.3;
+                return [i.latitude, i.longitude, intensity];
+            });
+
+        if (heatPoints.length > 0) {
+            heatLayer = L.heatLayer(heatPoints, {
+                radius: 40,
+                blur: 25,
+                maxZoom: 17,
+                gradient: { 0.4: 'green', 0.65: 'yellow', 1: 'red' }
+            }).addTo(map);
+        }
+    }
 
     const recentReportsContainer = document.querySelector('.recent-reports');
     if (recentReportsContainer) {
@@ -296,17 +333,20 @@ function renderIncidents(incidentsToRender) {
 
     incidentsToRender.forEach((incident, index) => {
         if (incident.latitude && incident.longitude) {
-            let displayType = typeMapping[incident.incident_Code] || incident.incident_Code || 'N/A';
 
-            if (incident.incident_Code === 'other' && incident.otherHazard) {
-                displayType = incident.otherHazard;
-            }
+            // Marker Logic: Only add markers if Heatmap is NOT active
+            if (!isHeatmapActive) {
+                let displayType = typeMapping[incident.incident_Code] || incident.incident_Code || 'N/A';
 
-            let severityRaw = incident.severity || 'N/A';
-            if (severityRaw.toLowerCase() === 'moderate' || severityRaw.toLowerCase() === 'medium') severityRaw = 'Moderate';
-            const severityDisplay = severityRaw.charAt(0).toUpperCase() + severityRaw.slice(1).toLowerCase();
+                if (incident.incident_Code === 'other' && incident.otherHazard) {
+                    displayType = incident.otherHazard;
+                }
 
-            const popupContent = `
+                let severityRaw = incident.severity || 'N/A';
+                if (severityRaw.toLowerCase() === 'moderate' || severityRaw.toLowerCase() === 'medium') severityRaw = 'Moderate';
+                const severityDisplay = severityRaw.charAt(0).toUpperCase() + severityRaw.slice(1).toLowerCase();
+
+                const popupContent = `
                 <div style="text-align:center; min-width:150px;">
                     <b style="font-size:1.1em; color:#333;">${filterProfanity(incident.title) || 'Incident'}</b><br>
                     
@@ -324,33 +364,32 @@ function renderIncidents(incidentsToRender) {
                 </div>
             `;
 
-            let severityKey = incident.severity ? incident.severity.toLowerCase() : 'default';
-            if (severityKey === 'medium') severityKey = 'moderate';
+                let severityKey = incident.severity ? incident.severity.toLowerCase() : 'default';
+                if (severityKey === 'medium') severityKey = 'moderate';
 
-            // NEW: Use custom DivIcon for markers
-            const iconName = iconMapping[incident.incident_Code] || 'place';
-            let markerClass = `custom-map-marker map-severity-${severityKey}`;
+                const iconName = iconMapping[incident.incident_Code] || 'place';
+                let markerClass = `custom-map-marker map-severity-${severityKey}`;
 
-            // Keep original icon, but distinct for resolved
-            let markerHtml = `<span class="material-icons">${iconName}</span>`;
+                let markerHtml = `<span class="material-icons">${iconName}</span>`;
 
-            if (incident.isResolved) {
-                markerClass += ' marker-resolved';
-                // We keep the iconName but wrapper class handles color/border
+                if (incident.isResolved) {
+                    markerClass += ' marker-resolved';
+                }
+
+                const customIcon = L.divIcon({
+                    className: markerClass,
+                    html: markerHtml,
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16],
+                    popupAnchor: [0, -18]
+                });
+
+                L.marker([incident.latitude, incident.longitude], { icon: customIcon })
+                    .bindPopup(popupContent)
+                    .addTo(incidentLayerGroup);
             }
 
-            const customIcon = L.divIcon({
-                className: markerClass,
-                html: markerHtml,
-                iconSize: [32, 32],
-                iconAnchor: [16, 16],
-                popupAnchor: [0, -18]
-            });
-
-            L.marker([incident.latitude, incident.longitude], { icon: customIcon })
-                .bindPopup(popupContent)
-                .addTo(incidentLayerGroup);
-
+            // List Logic: Always populate list regardless of Heatmap status
             if (index < 5 && recentReportsContainer) {
                 const reportBox = document.createElement('div');
                 reportBox.className = 'report-box';
@@ -368,6 +407,11 @@ function renderIncidents(incidentsToRender) {
                 const dateObj = new Date(incident.incidentDateTime);
                 const dateStr = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
                 const timeStr = dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                let displayType = typeMapping[incident.incident_Code] || incident.incident_Code || 'N/A';
+                if (incident.incident_Code === 'other' && incident.otherHazard) {
+                    displayType = incident.otherHazard;
+                }
 
                 reportBox.innerHTML = `
                     <div class="report-icon-box ${severityClass}">
@@ -395,13 +439,11 @@ function renderIncidents(incidentsToRender) {
                 recentReportsContainer.appendChild(reportBox);
             }
         }
-    });
+    }); // End loop
 }
 
 function openViewModal(incident) {
     const modal = document.getElementById('viewIncidentModal');
-    if (!modal) return;
-
     currentIncidentId = incident.incidentID;
 
     document.getElementById('modalTitle').textContent = filterProfanity(incident.title) || 'Untitled Incident';
@@ -790,7 +832,23 @@ function checkDashboardAccess() {
 }
 
 document.getElementById("locateBtn").addEventListener("click", locateUser);
+document.getElementById("locateBtn").addEventListener("click", locateUser);
 document.getElementById("resetBtn").addEventListener("click", resetMap);
+
+const heatmapBtn = document.getElementById("heatmapBtn");
+if (heatmapBtn) {
+    heatmapBtn.addEventListener("click", () => {
+        isHeatmapActive = !isHeatmapActive;
+        if (isHeatmapActive) {
+            heatmapBtn.textContent = "Show Pins";
+            heatmapBtn.classList.add("active");
+        } else {
+            heatmapBtn.textContent = "Heatmap";
+            heatmapBtn.classList.remove("active");
+        }
+        renderIncidents(allIncidents);
+    });
+}
 
 const username = localStorage.getItem("username") || sessionStorage.getItem("username");
 const userBtn = document.getElementById("userBtn");

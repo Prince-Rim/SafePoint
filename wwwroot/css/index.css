@@ -388,6 +388,13 @@ select {
     background: #f0f0f0;
 }
 
+.map-btn.active {
+    background-color: #397DFA;
+    color: white;
+    border-color: #397DFA;
+}
+
+
 .map-legend {
     position: absolute;
     bottom: 30px;
