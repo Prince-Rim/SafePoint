@@ -139,6 +139,9 @@ function locateUser() {
                             accuracyWarning = `<br><b style="color: #e65100;">⚠️ Low Accuracy (±${Math.round(accuracy)}m)</b>`;
                         }
 
+                        // Save location for notifications
+                        localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude }));
+
                         const popupContent = `
                             <b>Your Location</b><br>
                             📍 <b>Coords:</b> ${latitude.toFixed(5)}, ${longitude.toFixed(5)}<br>

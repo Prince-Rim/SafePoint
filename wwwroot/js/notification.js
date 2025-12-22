@@ -191,22 +191,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- Haversine Formula for Distance Calculation (km) ---
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+
 // --- SignalR Connection ---
 connection.on("ReceiveIncidentNotification", function (title, location, lat, lng, incidentId, status, reporterId) {
     const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
+    const userLocString = localStorage.getItem("userLocation");
 
     // Log for debugging
     // console.log(`Notification: ${status}, Reporter: ${reporterId}, Me: ${currentUserId}`);
 
     if (status === "Validated") {
         if (currentUserId && reporterId && currentUserId.trim() === reporterId.trim()) {
-            // Specific message for the reporter
+            // Specific message for the reporter - Always show
             addNotification(title, location, lat, lng, incidentId, "Report Approved");
             showToast("Report Approved", `Your report "${title}" is now public.`);
         } else {
-            // General message for everyone else
-            addNotification(title, location, lat, lng, incidentId, "New Incident");
-            showToast("New Incident Reported", `${title}<br>${location}`);
+            // General message for everyone else - Check Radius
+            let shouldNotify = true;
+
+            if (userLocString && lat && lng) {
+                try {
+                    const userLoc = JSON.parse(userLocString);
+                    if (userLoc && userLoc.lat && userLoc.lng) {
+                        const distance = calculateDistance(userLoc.lat, userLoc.lng, lat, lng);
+                        if (distance > 5) { // 5km Radius
+                            console.log(`Incident filtered: ${distance.toFixed(2)}km away (Limit: 5km)`);
+                            shouldNotify = false;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error parsing user location for notification filter:", e);
+                }
+            }
+
+            if (shouldNotify) {
+                addNotification(title, location, lat, lng, incidentId, "New Incident");
+                showToast("New Incident Reported", `${title}<br>${location}`);
+            }
         }
     }
     else if (status === "Rejected") {
