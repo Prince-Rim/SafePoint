@@ -14,6 +14,14 @@ if (togglePassword && passwordInput) {
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.textContent : "Log In";
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Logging In...";
+    }
+
     const username = document.getElementById("username").value.trim();
     const password = passwordInput.value.trim();
 
@@ -65,10 +73,18 @@ loginForm.addEventListener("submit", async (e) => {
             } else {
                 console.error(data.error);
             }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
         }
     } catch (err) {
         console.error("Login failed:", err);
         if (errorMessage) errorMessage.textContent = "An unexpected error occurred. Try again.";
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
     }
 });
 
