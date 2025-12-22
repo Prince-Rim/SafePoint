@@ -200,6 +200,15 @@ function resetMap() {
     sessionStorage.removeItem("incidentLocation");
 }
 
+window.removeIncidentMarker = function () {
+    if (incidentMarker) {
+        map.removeLayer(incidentMarker);
+        incidentMarker = null;
+    }
+    localStorage.removeItem("incidentLocation");
+    sessionStorage.removeItem("incidentLocation");
+};
+
 map.on("click", (e) => {
     const { lat, lng } = e.latlng;
 
@@ -207,7 +216,8 @@ map.on("click", (e) => {
         const popupContent = `
             <b>Incident Location</b><br>
             📍 <b>Coords:</b> ${lat.toFixed(5)}, ${lng.toFixed(5)}<br>
-            🏠 <b>Address:</b> ${address}
+            🏠 <b>Address:</b> ${address}<br>
+            <button onclick="removeIncidentMarker()" style="margin-top:8px; background:#ff4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove Pin</button>
         `;
 
         if (incidentMarker) map.removeLayer(incidentMarker);
