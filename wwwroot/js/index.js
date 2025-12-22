@@ -952,8 +952,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             setTimeout(() => {
-                if (window.map) {
-                    window.map.invalidateSize();
+                if (typeof map !== 'undefined' && map) {
+                    map.invalidateSize();
                 }
             }, 300);
         }
