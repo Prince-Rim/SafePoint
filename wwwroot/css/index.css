@@ -448,6 +448,94 @@ select {
     background-color: #2563eb;
 }
 
+/* Legend Info Guide Styling */
+.legend-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.map-legend h4 {
+    margin: 0;
+}
+
+.legend-info-icon {
+    font-size: 18px;
+    color: #999;
+    cursor: help;
+    transition: color 0.2s;
+}
+
+.legend-info-icon:hover {
+    color: #397DFA;
+}
+
+.legend-info-popup {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    /* Shows above the legend */
+    right: 0;
+    width: 320px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #eee;
+    z-index: 2000;
+    margin-bottom: 12px;
+    text-align: left;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.legend-info-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    right: 6px;
+    /* Align near the info icon */
+    border-width: 6px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+.legend-header:hover .legend-info-popup {
+    display: block;
+}
+
+.legend-info-popup h5 {
+    margin: 0 0 10px 0;
+    font-size: 0.95rem;
+    color: #1f3b73;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 5px;
+}
+
+.legend-guide-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+.legend-guide-item:last-child {
+    margin-bottom: 0;
+}
+
+.legend-guide-item .color-dot {
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.legend-guide-item strong {
+    color: #333;
+}
+
 .content {
     display: flex;
     flex: 1;
