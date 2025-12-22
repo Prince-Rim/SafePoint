@@ -37,7 +37,56 @@ body {
     height: 100%;
     box-sizing: border-box;
     overflow-y: auto;
+    transition: all 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+    /* Prevent sidebar from shrinking, which causes the gap */
 }
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    border-right: none;
+    overflow: hidden;
+}
+
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 320px;
+    z-index: 2000;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 4px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -2px;
+    /* Increased overlap to safeguard against sub-pixel rendering gaps */
+}
+
+.sidebar-toggle-btn.btn-collapsed {
+    left: 0;
+    margin-left: 0;
+    border-left: 1px solid #ddd;
+    /* Restore border when detached */
+}
+
+.sidebar-toggle-btn:hover {
+    background: #f0f0f0;
+}
+
+.sidebar.collapsed+.map-container .sidebar-toggle-btn {
+    left: 0;
+    /* Moves to left edge when collapsed - wait, structure check */
+}
+
 
 h3 {
     margin-top: 0;
@@ -543,6 +592,8 @@ select {
     height: calc(100vh - 65px);
     overflow: hidden;
     animation: fadeInUp 1s ease;
+    position: relative;
+    /* Essential for sidebar toggle positioning */
 }
 
 @keyframes fadeInUp {

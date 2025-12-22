@@ -80,6 +80,9 @@ function locateUser() {
         locateBtn.disabled = true;
     }
 
+    // Flag to force map centering on the first update of this call
+    let forceCenter = true;
+
     function startWatch(highAccuracy) {
         if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
 
@@ -102,10 +105,15 @@ function locateUser() {
                 if (accuracy > 100) circleColor = '#ff9800'; // Orange warning
 
                 if (!userMarker) {
-                    map.setView(latLng, zoomLevel);
                     userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
                 } else {
                     userMarker.setLatLng(latLng);
+                }
+
+                // Center map if this is the first update for this locate request
+                if (forceCenter) {
+                    map.setView(latLng, zoomLevel);
+                    forceCenter = false;
                 }
 
                 if (!accuracyCircle) {
@@ -173,13 +181,11 @@ function locateUser() {
             },
             {
                 enableHighAccuracy: highAccuracy,
-                timeout: highAccuracy ? 20000 : 60000, // Increased timeout (20s High, 60s Low)
+                timeout: highAccuracy ? 20000 : 60000,
                 maximumAge: highAccuracy ? 0 : 300000
             }
         );
     }
-
-    // Start with High Accuracy
     startWatch(true);
 }
 
@@ -336,7 +342,6 @@ function renderIncidents(incidentsToRender) {
             // Marker Logic: Only add markers if Heatmap is NOT active
             if (!isHeatmapActive) {
                 let displayType = typeMapping[incident.incident_Code] || incident.incident_Code || 'N/A';
-
                 if (incident.incident_Code === 'other' && incident.otherHazard) {
                     displayType = incident.otherHazard;
                 }
@@ -908,3 +913,46 @@ function filterAndRenderIncidents(searchTerm) {
     });
     renderIncidents(filteredIncidents);
 }
+
+// Sidebar Toggle Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    if (sidebarToggle && sidebar) {
+
+        // Remove initial inline style to let CSS take over
+        sidebarToggle.style.left = '';
+
+        function updateSidebarState() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            const icon = sidebarToggle.querySelector('.material-icons');
+
+            if (isCollapsed) {
+                icon.textContent = 'chevron_right';
+                sidebarToggle.classList.add('btn-collapsed');
+                sidebarToggle.title = "Show Sidebar";
+            } else {
+                icon.textContent = 'chevron_left';
+                sidebarToggle.classList.remove('btn-collapsed');
+                sidebarToggle.title = "Hide Sidebar";
+            }
+
+            setTimeout(() => {
+                if (window.map) {
+                    window.map.invalidateSize();
+                }
+            }, 300);
+        }
+
+        sidebarToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            sidebar.classList.toggle('collapsed');
+            updateSidebarState();
+        });
+
+        // Initialize state
+        updateSidebarState();
+    }
+});
