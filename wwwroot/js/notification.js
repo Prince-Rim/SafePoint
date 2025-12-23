@@ -2,8 +2,7 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
 
-// --- Notification State Management ---
-// Base key, but we will append UserID dynamically
+
 const BASE_STORAGE_KEY = 'safepoint_notifications';
 
 function getStorageKey() {
@@ -28,8 +27,8 @@ function addNotification(title, location, lat, lng, incidentId, statusHeader) {
     const newNotification = {
         id: Date.now(),
         incidentId: incidentId,
-        title: statusHeader || "New Incident", // Use header (e.g. "Report Rejected") or default
-        message: title, // Store actual title as message
+        title: statusHeader || "New Incident",
+        message: title,
         location: location,
         lat: lat,
         lng: lng,
@@ -37,7 +36,7 @@ function addNotification(title, location, lat, lng, incidentId, statusHeader) {
         read: false
     };
     notifications.unshift(newNotification);
-    if (notifications.length > 20) notifications.pop(); // Keep last 20
+    if (notifications.length > 20) notifications.pop();
     saveNotifications(notifications);
 }
 
@@ -60,12 +59,12 @@ function formatTime(isoString) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// --- UI Updates ---
+
 function updateNotificationUI() {
     const notifications = getNotifications();
     const unreadCount = notifications.filter(n => !n.read).length;
 
-    // Update Badge
+
     const badge = document.getElementById('notificationBadge');
     if (badge) {
         badge.innerText = unreadCount;
@@ -79,7 +78,7 @@ function updateNotificationUI() {
         }
     }
 
-    // Update List
+
     const list = document.getElementById('notificationList');
     const clearBtn = document.getElementById('clearNotifications');
 
@@ -109,8 +108,7 @@ function updateNotificationUI() {
 }
 
 function handleNotificationClick(notification) {
-    // 1. Mark as read (optional logic, usually handled by opening menu but good to be safe)
-    // 2. Zoom logic
+
     if (notification.lat && notification.lng) {
         if (typeof map !== 'undefined' && map.setView) {
             map.setView([notification.lat, notification.lng], 16, { animate: true });
@@ -123,25 +121,24 @@ function handleNotificationClick(notification) {
                 `)
                 .openOn(map);
         } else {
-            // Check if we are not on index.html, redirect
+
             if (window.location.pathname.indexOf('index.html') === -1 && window.location.pathname !== '/') {
                 window.location.href = `index.html?lat=${notification.lat}&lng=${notification.lng}`;
             }
         }
     } else {
-        // If it's a badge or system notification, don't show the location error
         if (notification.title && (notification.title.includes("Badge") || notification.message.includes("Badge"))) {
-            // Do nothing or optional: window.location.href = 'mypost.html';
         } else {
             alert("Location coordinates not available for this incident.");
         }
     }
-
-    const dropdown = document.getElementById('notificationDropdown');
-    if (dropdown) dropdown.classList.remove('show');
 }
 
-// --- Event Listeners ---
+const dropdown = document.getElementById('notificationDropdown');
+if (dropdown) dropdown.classList.remove('show');
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     updateNotificationUI();
 
@@ -176,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Check for query params to auto-zoom (if redirected from another page)
+
     const urlParams = new URLSearchParams(window.location.search);
     const latParam = urlParams.get('lat');
     const lngParam = urlParams.get('lng');
@@ -187,13 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .setLatLng([parseFloat(latParam), parseFloat(lngParam)])
                 .setContent("<b>Incident Location</b>")
                 .openOn(map);
-        }, 1000); // Small delay to let map load
+        }, 1000);
     }
 });
 
-// --- Haversine Formula for Distance Calculation (km) ---
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radius of the earth in km
+    const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a =
@@ -201,7 +198,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+    const d = R * c;
     return d;
 }
 
@@ -209,21 +206,20 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
 
-// --- SignalR Connection ---
+
 connection.on("ReceiveIncidentNotification", function (title, location, lat, lng, incidentId, status, reporterId) {
     const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
     const userLocString = localStorage.getItem("userLocation");
 
-    // Log for debugging
-    // console.log(`Notification: ${status}, Reporter: ${reporterId}, Me: ${currentUserId}`);
+
 
     if (status === "Validated") {
         if (currentUserId && reporterId && currentUserId.trim() === reporterId.trim()) {
-            // Specific message for the reporter - Always show
+
             addNotification(title, location, lat, lng, incidentId, "Report Approved");
             showToast("Report Approved", `Your report "${title}" is now public.`);
         } else {
-            // General message for everyone else - Check Radius
+
             let shouldNotify = true;
 
             if (userLocString && lat && lng) {
@@ -231,7 +227,7 @@ connection.on("ReceiveIncidentNotification", function (title, location, lat, lng
                     const userLoc = JSON.parse(userLocString);
                     if (userLoc && userLoc.lat && userLoc.lng) {
                         const distance = calculateDistance(userLoc.lat, userLoc.lng, lat, lng);
-                        if (distance > 5) { // 5km Radius
+                        if (distance > 5) {
                             console.log(`Incident filtered: ${distance.toFixed(2)}km away (Limit: 5km)`);
                             shouldNotify = false;
                         }
@@ -248,7 +244,7 @@ connection.on("ReceiveIncidentNotification", function (title, location, lat, lng
         }
     }
     else if (status === "Rejected") {
-        // ONLY show to the reporter
+
         if (currentUserId && reporterId && currentUserId.trim() === reporterId.trim()) {
             addNotification(title, location, lat, lng, incidentId, "Report Rejected");
             showToast("Report Rejected", `Your report "${title}" was not approved.`);
@@ -267,7 +263,7 @@ connection.on("ReceiveBadgeNotification", function (userId, badgeName) {
 connection.on("ReceiveResolutionNotification", function (title, incidentId, reporterId) {
     const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
-    // Notify Reporter
+
     if (currentUserId && reporterId && currentUserId.trim().toLowerCase() === reporterId.trim().toLowerCase()) {
         addNotification(`Your report "${title}" has been resolved.`, "Incident Resolved", null, null, incidentId, "Report Resolved");
         showToast("Report Resolved", `Your report "${title}" is now resolved.`);
@@ -304,7 +300,7 @@ function showToast(header, message) {
     toast.style.alignItems = 'center';
     toast.style.minWidth = '300px';
 
-    // Color coding based on header
+
     const accentColor = header.includes("Rejected") ? '#666' : '#ff4444';
     const iconName = header.includes("Rejected") ? 'block' : 'warning';
 
@@ -328,7 +324,7 @@ function showToast(header, message) {
     }, 5000);
 }
 
-// Add CSS for toast animations if not present
+
 const style = document.createElement('style');
 style.innerHTML = `
 @keyframes slideIn {

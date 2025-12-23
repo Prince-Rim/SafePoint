@@ -195,7 +195,7 @@ namespace SafePoint_IRS.Controllers
                 .Include(i => i.IType)
                 .Include(i => i.ValidStatus)
                 .Include(i => i.User)
-                    .ThenInclude(u => u.Badges) // Include Badges
+                    .ThenInclude(u => u.Badges)
                 .Include(i => i.Area)
                 .Where(i => i.ValidStatus != null && i.ValidStatus.Validation_Status == true);
 
@@ -272,7 +272,7 @@ namespace SafePoint_IRS.Controllers
             incident.IsResolved = true;
             await _context.SaveChangesAsync();
             
-            // Notify
+
             await _hubContext.Clients.All.SendAsync("ReceiveResolutionNotification", incident.Title, incident.IncidentID, incident.Userid.ToString());
 
             return Ok(new { message = "Incident marked as resolved.", incident });

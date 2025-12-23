@@ -42,7 +42,7 @@ loginForm.addEventListener("submit", async (e) => {
             const storage = rememberMe ? localStorage : sessionStorage;
             const otherStorage = rememberMe ? sessionStorage : localStorage;
 
-            // Clear other storage to avoid conflicts
+
             otherStorage.removeItem("username");
             otherStorage.removeItem("userId");
             otherStorage.removeItem("userRole");

@@ -393,7 +393,7 @@ function openEditModal(account) {
         permissionCheckboxes.forEach(checkbox => checkbox.checked = false);
     }
 
-    // BADGE RENDERING
+
     const badgeList = document.getElementById('current-badges-list');
     const addBadgeBtn = document.getElementById('add-badge-btn');
 
@@ -417,7 +417,7 @@ function openEditModal(account) {
                 badgeEl.style.alignItems = 'center';
                 badgeEl.style.gap = '5px';
 
-                // Icon Logic
+
                 let iconClass = badgeIconMap[badge.badgeName] || 'certificate';
 
                 badgeEl.innerHTML = `
@@ -431,7 +431,7 @@ function openEditModal(account) {
     }
 
     if (addBadgeBtn) {
-        // Clone to remove old listeners
+
         const newBtn = addBadgeBtn.cloneNode(true);
         addBadgeBtn.parentNode.replaceChild(newBtn, addBadgeBtn);
 
@@ -473,7 +473,7 @@ async function addBadge(userId, badgeName, accountType) {
             alert('Badge added!');
             document.getElementById('new-badge-name').value = '';
             document.getElementById('editUserModal').style.display = 'none';
-            loadAllAccounts(); // Reload to refresh data
+            loadAllAccounts();
         } else {
             const data = await response.json();
             alert(data.error || 'Failed to add badge');

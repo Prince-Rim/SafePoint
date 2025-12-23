@@ -736,7 +736,7 @@ namespace SafePoint_IRS.Controllers
             _context.UserBadges.Add(badge);
             await _context.SaveChangesAsync();
             
-            // Notify User
+
             await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", badgeDto.UserId.ToString(), badgeDto.BadgeName);
 
             return Ok(new { message = "Badge added successfully.", badge });
@@ -809,8 +809,8 @@ namespace SafePoint_IRS.Controllers
                     AreaName = m.Area != null ? m.Area.ALocation : null,
                     m.IsActive,
                     m.SuspensionEndTime,
-                    TrustScore = 0, // Mods don't have TrustScore yet in model, assume 0 or add it.
-                    Badges = new List<object>() // Mods don't have Badges collection in model yet.
+                    TrustScore = 0,
+                    Badges = new List<object>()
                 })
                 .ToListAsync();
 
@@ -1029,8 +1029,7 @@ namespace SafePoint_IRS.Controllers
 
                 await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Validated", incident.Userid);
 
-                // AUTO-BADGE LOGIC
-                // Count verified incidents for this user
+
                 var userVerifiedCount = await _context.Incident
                     .Include(i => i.ValidStatus)
                     .CountAsync(i => i.Userid == incident.Userid && i.ValidStatus != null && i.ValidStatus.Validation_Status == true);
@@ -1047,7 +1046,7 @@ namespace SafePoint_IRS.Controllers
                 {
                     await CheckAndAwardBadge(incident.Userid, "Top Contributor");
                 }
-                // End Auto-Badge Logic
+
 
                 return Ok(new { message = $"Incident ID {incidentId} accepted." });
             }
@@ -1624,7 +1623,7 @@ namespace SafePoint_IRS.Controllers
                 _context.UserBadges.Add(autoBadge);
                 await _context.SaveChangesAsync();
                 
-                // Notify User
+
                 await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", userId.ToString(), badgeName);
             }
         }

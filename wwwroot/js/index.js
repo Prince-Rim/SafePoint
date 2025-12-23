@@ -72,7 +72,7 @@ function locateUser() {
         navigator.geolocation.clearWatch(locationWatchId);
     }
 
-    // UX: Show searching state
+
     const locateBtn = document.getElementById("locateBtn");
     const originalBtnText = locateBtn ? locateBtn.textContent : "Locate Me";
     if (locateBtn) {
@@ -80,7 +80,7 @@ function locateUser() {
         locateBtn.disabled = true;
     }
 
-    // Flag to force map centering on the first update of this call
+
     let forceCenter = true;
 
     function startWatch(highAccuracy) {
@@ -93,16 +93,16 @@ function locateUser() {
                 const { latitude, longitude, accuracy } = pos.coords;
                 const latLng = [latitude, longitude];
 
-                // UI Reset
+
                 if (locateBtn) {
                     locateBtn.textContent = originalBtnText;
                     locateBtn.disabled = false;
                 }
 
-                // Determine zoom level and color based on accuracy
+
                 const zoomLevel = accuracy > 100 ? 15 : 17;
                 let circleColor = '#136AEC';
-                if (accuracy > 100) circleColor = '#ff9800'; // Orange warning
+                if (accuracy > 100) circleColor = '#ff9800';
 
                 if (!userMarker) {
                     userMarker = L.marker(latLng, { title: "Your Location" }).addTo(map);
@@ -110,7 +110,7 @@ function locateUser() {
                     userMarker.setLatLng(latLng);
                 }
 
-                // Center map if this is the first update for this locate request
+
                 if (forceCenter) {
                     map.setView(latLng, zoomLevel);
                     forceCenter = false;
@@ -129,7 +129,7 @@ function locateUser() {
                     accuracyCircle.setStyle({ color: circleColor, fillColor: circleColor });
                 }
 
-                // Only reverse geocode if moved significantly (> ~10m)
+
                 if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
                     lastGeocodedPos = { lat: latitude, lng: longitude };
 
@@ -139,7 +139,7 @@ function locateUser() {
                             accuracyWarning = `<br><b style="color: #e65100;">⚠️ Low Accuracy (±${Math.round(accuracy)}m)</b>`;
                         }
 
-                        // Save location for notifications
+
                         localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude }));
 
                         const popupContent = `
@@ -152,7 +152,7 @@ function locateUser() {
                         userMarker.bindPopup(popupContent);
                         if (userMarker.isPopupOpen()) userMarker.setPopupContent(popupContent);
 
-                        // If extremely bad accuracy (>500m), auto-open popup to warn user
+
                         if (accuracy > 500 && !userMarker.isPopupOpen()) {
                             userMarker.openPopup();
                         }
@@ -164,12 +164,12 @@ function locateUser() {
             err => {
                 console.warn(`Location error (High Accuracy: ${highAccuracy}): ${err.message}`);
 
-                // If High Accuracy fails and it's not a permission issue (code 1), try Low Accuracy
+
                 if (highAccuracy && err.code !== 1) {
                     console.log("High accuracy failed. Falling back to low accuracy...");
                     startWatch(false);
                 } else {
-                    // Final failure
+
                     if (locateBtn) {
                         locateBtn.textContent = originalBtnText;
                         locateBtn.disabled = false;
@@ -198,7 +198,7 @@ function resetMap() {
         map.removeLayer(incidentMarker);
         incidentMarker = null;
     }
-    // Also clear the stored location so it doesn't persist to the report page
+
     localStorage.removeItem("incidentLocation");
     sessionStorage.removeItem("incidentLocation");
 }
@@ -225,7 +225,7 @@ map.on("click", (e) => {
 
         if (incidentMarker) map.removeLayer(incidentMarker);
 
-        // Create draggable marker
+
         incidentMarker = L.marker([lat, lng], { draggable: true })
             .addTo(map)
             .bindPopup(popupContent)
@@ -233,7 +233,7 @@ map.on("click", (e) => {
 
         localStorage.setItem("incidentLocation", JSON.stringify({ lat, lng, address }));
 
-        // Handle Drag Event
+
         incidentMarker.on('dragend', function (event) {
             const position = event.target.getLatLng();
             const newLat = position.lat;
@@ -274,16 +274,16 @@ async function loadValidatedIncidents(type = '', severity = '') {
 
         let data = JSON.parse(text);
 
-        // Apply Status Filter
+
         const statusEl = document.getElementById('status');
-        const status = statusEl ? statusEl.value : 'active'; // Default to active
+        const status = statusEl ? statusEl.value : 'active';
 
         if (status === 'active') {
             data = data.filter(i => !i.isResolved);
         } else if (status === 'resolved') {
             data = data.filter(i => i.isResolved);
         }
-        // status === 'all' -> no filter
+
 
         allIncidents = data;
         renderIncidents(allIncidents);
@@ -300,16 +300,12 @@ function renderIncidents(incidentsToRender) {
         heatLayer = null;
     }
 
-    // Heatmap Mode
+
     if (isHeatmapActive) {
         const heatPoints = incidentsToRender
             .filter(i => i.latitude && i.longitude)
             .map(i => {
-                // intensity numbers: 0 to 1
-                // We lower them further so it takes MANY incidents to trigger Red.
-                // Low = 0.1 (Need 10 for pure red)
-                // Moderate = 0.2 (Need 5 for pure red)
-                // High = 0.3 (Need 3-4 for pure red)
+
                 let intensity = 0.1;
                 if (i.severity && i.severity.toLowerCase() === 'moderate') intensity = 0.2;
                 if (i.severity && i.severity.toLowerCase() === 'high') intensity = 0.3;
@@ -352,7 +348,7 @@ function renderIncidents(incidentsToRender) {
     incidentsToRender.forEach((incident, index) => {
         if (incident.latitude && incident.longitude) {
 
-            // Marker Logic: Only add markers if Heatmap is NOT active
+
             if (!isHeatmapActive) {
                 let displayType = typeMapping[incident.incident_Code] || incident.incident_Code || 'N/A';
                 if (incident.incident_Code === 'other' && incident.otherHazard) {
@@ -406,7 +402,7 @@ function renderIncidents(incidentsToRender) {
                     .addTo(incidentLayerGroup);
             }
 
-            // List Logic: Always populate list regardless of Heatmap status
+
             if (index < 5 && recentReportsContainer) {
                 const reportBox = document.createElement('div');
                 reportBox.className = 'report-box';
@@ -456,7 +452,7 @@ function renderIncidents(incidentsToRender) {
                 recentReportsContainer.appendChild(reportBox);
             }
         }
-    }); // End loop
+    });
 }
 
 function openViewModal(incident) {
@@ -482,7 +478,7 @@ function openViewModal(incident) {
     const reporterName = incident.user ? (incident.user.username || incident.user.userName) : 'Anonymous';
     let reporterHtml = reporterName;
 
-    // Render Badges if present
+
     if (incident.user && incident.user.badges && incident.user.badges.length > 0) {
         const badgeIconMap = {
             'Certified Reporter': 'shield',
@@ -495,7 +491,7 @@ function openViewModal(incident) {
         reporterHtml += ' <span class="reporter-badges" style="margin-left:5px;">';
         incident.user.badges.forEach(b => {
             const icon = badgeIconMap[b.badgeName] || 'certificate';
-            // Simple tooltip with title attribute
+
             let matIcon = 'verified';
             if (icon === 'shield') matIcon = 'security';
             if (icon === 'star') matIcon = 'star';
@@ -503,12 +499,7 @@ function openViewModal(incident) {
             if (icon === 'forum') matIcon = 'forum';
 
             reporterHtml += `<span class="material-icons" title="${b.badgeName}" style="font-size:16px; color:#FFD700; vertical-align:middle; margin-left:2px;">${matIcon}</span>`;
-            // Note: Mapping FontAwesome names to Material Icons where possible for consistency in this modal, 
-            // or just use FA if included. The map page uses Material Icons primarily.
-            // Certified Reporter (Shield) -> security
-            // Community Guardian (Star) -> star
-            // Top Contributor (Award) -> emoji_events
-            // Reliable Source (Check) -> verified
+
         });
         reporterHtml += '</span>';
     }
@@ -519,15 +510,14 @@ function openViewModal(incident) {
     if (severity.toLowerCase() === 'moderate' || severity.toLowerCase() === 'medium') severity = 'Moderate';
     else severity = severity.charAt(0).toUpperCase() + severity.slice(1).toLowerCase();
 
-    // SEVERITY BADGE
+
     const badge = document.getElementById('modalSeverityBadge');
     badge.textContent = severity;
     badge.className = 'severity-badge badge-' + (severity.toLowerCase() || 'default');
     badge.style.display = 'inline-block';
     badge.style.backgroundColor = '';
 
-    // RESOLVED BADGE LOGIC
-    // Remove existing resolved badge if any
+
     const existingResolved = document.getElementById('modalResolvedBadge');
     if (existingResolved) existingResolved.remove();
 
@@ -548,7 +538,7 @@ function openViewModal(incident) {
     document.getElementById('modalLocation').textContent = incident.locationAddress || 'Lat: ' + incident.latitude + ', Lng: ' + incident.longitude;
     document.getElementById('modalDescription').textContent = filterProfanity(incident.descr) || 'No description available.';
 
-    // Inject Resolve Button if Admin/Mod and not resolved
+
     const existingResolveBtn = document.getElementById('resolve-btn-container');
     if (existingResolveBtn) existingResolveBtn.remove();
 
@@ -597,8 +587,7 @@ window.resolveIncident = async function (incidentId) {
         if (response.ok) {
             alert("Incident marked as resolved!");
             document.getElementById('viewIncidentModal').style.display = 'none';
-            // Reload incidents to reflect change
-            // We need to trigger a map refresh. Assuming getIncidents is global or we can reload page.
+
             if (window.getIncidents) window.getIncidents();
             else location.reload();
         } else {
@@ -642,7 +631,7 @@ async function loadComments(incidentId) {
 
                     const userName = c.user ? (c.user.username || c.user.userName) : (c.userName || 'Anonymous');
 
-                    // BADGE RENDERING FOR COMMENTS
+
                     let badgesHtml = '';
                     if (c.user && c.user.badges && Array.isArray(c.user.badges) && c.user.badges.length > 0) {
                         const badgeIconMap = {
@@ -656,12 +645,7 @@ async function loadComments(incidentId) {
                         c.user.badges.forEach(b => {
                             const bName = b.badgeName || b; // Handle object or string
                             const icon = badgeIconMap[bName] || 'certificate';
-                            // Use FontAwesome or Material Icons. Material Icons preferred for index.js consistency, but user-accounts uses FA.
-                            // Let's use Material Icons mapping:
-                            // Shield -> security
-                            // Star -> star
-                            // Award -> emoji_events
-                            // Check -> verified
+
                             let matIcon = 'verified';
                             if (icon === 'shield') matIcon = 'security';
                             if (icon === 'star') matIcon = 'star';
@@ -811,8 +795,7 @@ window.addEventListener('click', (event) => {
 });
 
 function handlePostIncident() {
-    // If user hasn't selected a specific point (no Red Marker), clear the stored incident location
-    // This ensures the Report page uses the current GPS location, not an old click
+
     if (!incidentMarker) {
         localStorage.removeItem("incidentLocation");
         sessionStorage.removeItem("incidentLocation");
@@ -927,14 +910,14 @@ function filterAndRenderIncidents(searchTerm) {
     renderIncidents(filteredIncidents);
 }
 
-// Sidebar Toggle Logic
+
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('.sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
 
     if (sidebarToggle && sidebar) {
 
-        // Remove initial inline style to let CSS take over
+
         sidebarToggle.style.left = '';
 
         function updateSidebarState() {
@@ -965,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSidebarState();
         });
 
-        // Initialize state
+
         updateSidebarState();
     }
 });

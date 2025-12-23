@@ -55,7 +55,7 @@ async function fetchIncidentsByStatus(status) {
         }
         const data = await response.json();
 
-        // Client-side filtering for Validated vs Resolved
+
         if (status === 'Validated') {
             return data.filter(i => !i.isResolved);
         } else if (status === 'Resolved') {
@@ -296,9 +296,9 @@ function renderIncidentDetails(incident) {
         if (unvalidateBtn) unvalidateBtn.style.display = 'flex';
         if (editBtn) editBtn.style.display = 'flex';
 
-        // Show Mark Resolved only if not already resolved
+
         if (resolveBtn) {
-            // Reset state
+
             resolveBtn.innerHTML = '<span class="material-icons">check_circle</span> Mark Resolved';
             resolveBtn.disabled = false;
             resolveBtn.style.opacity = '1';
@@ -312,7 +312,7 @@ function renderIncidentDetails(incident) {
                 resolveBtn.innerHTML = '<span class="material-icons">check</span> Resolved';
                 resolveBtn.disabled = true;
                 resolveBtn.style.opacity = '0.7';
-                // keep the green color or use a gray? User said it's green in HTML.
+
             }
         }
 
@@ -329,7 +329,7 @@ function renderIncidentDetails(incident) {
     if (editBtn) editBtn.onclick = () => openEditModal(incident);
 }
 
-// NEW FUNCTION
+
 async function resolveIncident(incidentId) {
     if (!confirm("Are you sure you want to mark this incident as RESOLVED?")) return;
 
@@ -344,7 +344,7 @@ async function resolveIncident(incidentId) {
 
         if (response.ok) {
             alert("Incident marked as resolved!");
-            // Refresh list
+
             const active = document.querySelector('.filter-btn.active');
             if (active) handleFilterClick(active, active.textContent.trim());
         } else {

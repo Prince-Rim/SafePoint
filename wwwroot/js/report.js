@@ -122,7 +122,7 @@ function loadLocation() {
             if (storedLocation.lat) latitudeInput.value = storedLocation.lat;
             if (storedLocation.lng) longitudeInput.value = storedLocation.lng;
 
-            // If we have stored location, init map there and stop auto-watching
+
             userManuallySetLocation = true;
             initMap(storedLocation.lat, storedLocation.lng);
             return;
@@ -154,10 +154,10 @@ function initMap(lat, lng) {
             updateLocationFields(position.lat, position.lng);
         });
 
-        // Add Click Listener: Move marker to where user clicks
+
         map.on('click', function (e) {
             const { lat, lng } = e.latlng;
-            userManuallySetLocation = true; // Mark as manual so GPS doesn't override
+            userManuallySetLocation = true;
 
             if (locationWatchId) navigator.geolocation.clearWatch(locationWatchId);
 
@@ -174,7 +174,7 @@ function updateLocationFields(lat, lng) {
     latitudeInput.value = lat;
     longitudeInput.value = lng;
 
-    // Loading indicator
+
     locationInput.placeholder = "Fetching address...";
 
     fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`)
@@ -191,7 +191,7 @@ function updateLocationFields(lat, lng) {
 function fetchCurrentLocation() {
     if (!navigator.geolocation) {
         alert("Geolocation not supported by your browser.");
-        // Fallback to default map view if no geo
+
         initMap(0, 0);
         return;
     }
@@ -204,16 +204,16 @@ function fetchCurrentLocation() {
 
     locationWatchId = navigator.geolocation.watchPosition(
         (position) => {
-            // STOP if user took control
+
             if (userManuallySetLocation) return;
 
             const { latitude, longitude, accuracy } = position.coords;
 
-            // Initialize map on first valid fix
+
             if (!map) {
                 initMap(latitude, longitude);
             } else {
-                // If map exists and user hasn't taken control, update pin
+
                 if (marker) marker.setLatLng([latitude, longitude]);
 
                 const zoomLevel = accuracy > 100 ? 15 : 17;
@@ -223,14 +223,14 @@ function fetchCurrentLocation() {
             latitudeInput.value = latitude;
             longitudeInput.value = longitude;
 
-            // Visual warning if accuracy is low
+
             if (accuracy > 100) {
-                locationInput.style.borderColor = '#ff9800'; // Orange border
+                locationInput.style.borderColor = '#ff9800';
             } else {
-                locationInput.style.borderColor = ''; // Reset
+                locationInput.style.borderColor = '';
             }
 
-            // Throttle address lookup
+
             if (Math.abs(latitude - lastGeocodedPos.lat) > 0.0001 || Math.abs(longitude - lastGeocodedPos.lng) > 0.0001) {
                 lastGeocodedPos = { lat: latitude, lng: longitude };
 
@@ -256,7 +256,7 @@ function fetchCurrentLocation() {
         },
         (error) => {
             console.warn("Could not get location: " + error.message);
-            if (!map) initMap(0, 0); // Init map anyway so they can drag to find themselves
+            if (!map) initMap(0, 0);
             if (!latitudeInput.value) {
                 locationInput.value = "";
                 locationInput.placeholder = "Location Error. Please select on map.";

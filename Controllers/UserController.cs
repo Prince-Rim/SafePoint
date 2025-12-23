@@ -197,7 +197,7 @@ namespace SafePoint_IRS.Controllers
                 return BadRequest("Invalid User ID format.");
             }
 
-            // Try to find as User first (since only Users have badges usually)
+
             var user = await _context.Users
                 .Include(u => u.Badges)
                 .AsNoTracking()
@@ -215,7 +215,7 @@ namespace SafePoint_IRS.Controllers
                 });
             }
 
-            // Fallback for Admin
+
             var admin = await _context.Admins.FindAsync(userGuid);
             if (admin != null)
             {
@@ -225,11 +225,11 @@ namespace SafePoint_IRS.Controllers
                     Username = admin.Username,
                     Email = admin.Email,
                     Role = "Admin",
-                    Badges = new List<object>() // Admins don't have badges contextually yet
+                    Badges = new List<object>()
                 });
             }
 
-            // Fallback for Moderator
+
             var mod = await _context.Moderators.FindAsync(userGuid);
             if (mod != null)
             {

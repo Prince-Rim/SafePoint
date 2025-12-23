@@ -37,7 +37,7 @@ togglePassword.addEventListener("click", () => {
 
 termsLink.addEventListener('click', (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent label click
+    e.stopPropagation();
     modal.style.display = 'flex';
 });
 

@@ -30,7 +30,7 @@ namespace SafePoint_IRS.Controllers
             var comments = await _context.Comments
                 .Where(c => c.IncidentID == incidentId)
                 .Include(c => c.User)
-                    .ThenInclude(u => u.Badges) // Include Badges
+                    .ThenInclude(u => u.Badges)
                 .Include(c => c.Admin)
                 .Include(c => c.Moderator)
                 .OrderByDescending(c => c.dttm)
@@ -45,7 +45,7 @@ namespace SafePoint_IRS.Controllers
                 {
                     userDto.Username = c.User.Username;
                     userDto.UserRole = c.User.UserRole;
-                    userDto.Badges = c.User.Badges?.Select(b => new { b.BadgeName }).ToList(); // Populate Badges
+                    userDto.Badges = c.User.Badges?.Select(b => new { b.BadgeName }).ToList();
                     userIdStr = c.Userid.ToString();
                 }
                 else if (c.Admin != null)
@@ -132,8 +132,7 @@ namespace SafePoint_IRS.Controllers
                 _context.Comments.Add(newComment);
                 await _context.SaveChangesAsync();
 
-                // AUTO-BADGE LOGIC: Sociable
-                // Count comments by this user
+
                 if (requesterId != Guid.Empty && newComment.Userid.HasValue && newComment.Userid.Value != Guid.Empty)
                 {
                     int commentCount = await _context.Comments.CountAsync(c => c.Userid == newComment.Userid);
@@ -153,12 +152,12 @@ namespace SafePoint_IRS.Controllers
                              _context.UserBadges.Add(autoBadge);
                              await _context.SaveChangesAsync();
 
-                             // Notify User
+
                              await _hubContext.Clients.All.SendAsync("ReceiveBadgeNotification", newComment.Userid.Value.ToString(), badgeName);
                         }
                     }
                 }
-                // End Auto-Badge Logic
+
             }
             catch (Exception ex)
             {

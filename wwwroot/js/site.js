@@ -91,7 +91,7 @@ async function loadProfileData() {
         if (document.getElementById("profileRole")) document.getElementById("profileRole").textContent = role;
         if (document.getElementById("profileFullName")) document.getElementById("profileFullName").textContent = fullName;
 
-        // NEW: specific header name
+
         if (document.getElementById("modalProfileName")) document.getElementById("modalProfileName").textContent = displayName;
 
         const obscuredEmail = email.replace(/^(.{3}).*(@.*)$/, "$1*******$2");
@@ -100,10 +100,10 @@ async function loadProfileData() {
         profileModal.dataset.fullDisplayName = displayName;
         profileModal.dataset.fullEmail = email;
 
-        // FETCH AND RENDER BADGES
+
         const badgesContainer = document.getElementById('profileBadgesContainer');
         if (badgesContainer && userIdentifier !== "N/A") {
-            badgesContainer.innerHTML = ''; // Clear previous
+            badgesContainer.innerHTML = '';
             try {
                 const response = await fetch(`${API_BASE_URL}/User/profile/${userIdentifier}`);
                 if (response.ok) {
@@ -132,7 +132,7 @@ async function loadProfileData() {
                             badgesContainer.appendChild(badgeDiv);
                         });
                     } else {
-                        // Optional: empty state or nothing
+
                         badgesContainer.style.display = 'none';
                     }
                 }
