@@ -1027,8 +1027,7 @@ namespace SafePoint_IRS.Controllers
 
                 await _context.SaveChangesAsync();
 
-                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Validated", incident.Userid);
-
+                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Validated", incident.Userid.ToString());
 
                 var userVerifiedCount = await _context.Incident
                     .Include(i => i.ValidStatus)
@@ -1083,7 +1082,7 @@ namespace SafePoint_IRS.Controllers
                 _context.Incident.Remove(incident);
                 await _context.SaveChangesAsync();
 
-                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Rejected", incident.Userid);
+                await _hubContext.Clients.All.SendAsync("ReceiveIncidentNotification", incident.Title, incident.LocationAddress, incident.Latitude, incident.Longitude, incident.IncidentID, "Rejected", incident.Userid.ToString());
 
                 return Ok(new { message = $"Incident ID {incidentId} rejected and moved to archive." });
             }

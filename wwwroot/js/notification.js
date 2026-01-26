@@ -108,6 +108,8 @@ function updateNotificationUI() {
 }
 
 function handleNotificationClick(notification) {
+    const dropdown = document.getElementById('notificationDropdown');
+    if (dropdown) dropdown.classList.remove('show');
 
     if (notification.lat && notification.lng) {
         if (typeof map !== 'undefined' && map.setView) {
@@ -132,10 +134,6 @@ function handleNotificationClick(notification) {
             alert("Location coordinates not available for this incident.");
         }
     }
-}
-
-const dropdown = document.getElementById('notificationDropdown');
-if (dropdown) dropdown.classList.remove('show');
 }
 
 
@@ -214,6 +212,8 @@ connection.on("ReceiveIncidentNotification", function (title, location, lat, lng
 
 
     if (status === "Validated") {
+        if (window.refreshIncidents) window.refreshIncidents();
+
         if (currentUserId && reporterId && currentUserId.trim() === reporterId.trim()) {
 
             addNotification(title, location, lat, lng, incidentId, "Report Approved");
@@ -260,12 +260,12 @@ connection.on("ReceiveBadgeNotification", function (userId, badgeName) {
     }
 });
 
-connection.on("ReceiveResolutionNotification", function (title, incidentId, reporterId) {
+connection.on("ReceiveResolutionNotification", function (title, incidentId, reporterId, location, lat, lng) {
     const currentUserId = localStorage.getItem("userId") || sessionStorage.getItem("userId");
 
 
     if (currentUserId && reporterId && currentUserId.trim().toLowerCase() === reporterId.trim().toLowerCase()) {
-        addNotification(`Your report "${title}" has been resolved.`, "Incident Resolved", null, null, incidentId, "Report Resolved");
+        addNotification(`Your report "${title}" has been resolved.`, location || "Incident Resolved", lat, lng, incidentId, "Report Resolved");
         showToast("Report Resolved", `Your report "${title}" is now resolved.`);
     }
 });

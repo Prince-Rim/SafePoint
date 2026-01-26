@@ -878,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.openViewModal = openViewModal;
+window.refreshIncidents = applyFilters;
 
 const searchInput = document.getElementById('searchInput');
 if (searchInput) {

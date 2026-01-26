@@ -273,7 +273,7 @@ namespace SafePoint_IRS.Controllers
             await _context.SaveChangesAsync();
             
 
-            await _hubContext.Clients.All.SendAsync("ReceiveResolutionNotification", incident.Title, incident.IncidentID, incident.Userid.ToString());
+            await _hubContext.Clients.All.SendAsync("ReceiveResolutionNotification", incident.Title, incident.IncidentID, incident.Userid.ToString(), incident.LocationAddress, incident.Latitude, incident.Longitude);
 
             return Ok(new { message = "Incident marked as resolved.", incident });
         }

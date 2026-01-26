@@ -15,9 +15,9 @@ namespace SafePoint_IRS.Hubs
             await Clients.All.SendAsync("ReceiveBadgeNotification", userId, badgeName);
         }
 
-        public async Task SendResolutionNotification(string title, int incidentId, string reporterId)
+        public async Task SendResolutionNotification(string title, int incidentId, string reporterId, string location, double lat, double lng)
         {
-            await Clients.All.SendAsync("ReceiveResolutionNotification", title, incidentId, reporterId);
+            await Clients.All.SendAsync("ReceiveResolutionNotification", title, incidentId, reporterId, location, lat, lng);
         }
     }
 }
