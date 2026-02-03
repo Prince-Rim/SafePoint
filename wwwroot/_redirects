@@ -1,0 +1,2 @@
+# Redirect root to landing page
+/ /landing.html 301
