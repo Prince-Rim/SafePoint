@@ -159,9 +159,9 @@ namespace SafePoint_IRS.Controllers
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message} - {ex.InnerException?.Message}");
+                return StatusCode(500, "Internal server error.");
             }
 
             return CreatedAtAction(nameof(GetCommentsForIncident), new { incidentId = newComment.IncidentID }, newComment);

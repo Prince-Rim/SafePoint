@@ -776,7 +776,7 @@ function setupEditModalListeners() {
 
 function setupRoleChange() {
     const roleSelect = document.getElementById('role');
-    const areaGroup = document.querySelector('.form-group:has(#area)');
+    const areaGroup = document.getElementById('create-area-group-container');
     const permissionGroup = document.getElementById('create-permissions-group');
 
     if (roleSelect && areaGroup && permissionGroup) {

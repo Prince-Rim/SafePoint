@@ -70,7 +70,7 @@ namespace SafePoint_IRS.Controllers
                     Contact = userDto.Contact,
                     Userpassword = hashedPassword,
                     IsActive = true,
-                    UserRole = "User"
+                    UserRole = UserRoles.User
                 };
 
                 _context.Users.Add(newUser);
@@ -78,9 +78,9 @@ namespace SafePoint_IRS.Controllers
 
                 return Ok(new { message = "User created successfully.", userId = newUser.Userid });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { error = "An error occurred while creating user.", details = ex.Message });
+                return StatusCode(500, new { error = "An error occurred while creating user." });
             }
         }
 
@@ -294,9 +294,9 @@ namespace SafePoint_IRS.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(new { message = $"Incident ID {id} has been marked as rejected/deleted." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { error = "Error marking incident as deleted.", details = ex.InnerException?.Message ?? ex.Message });
+                return StatusCode(500, new { error = "An error occurred." });
             }
         }
     }

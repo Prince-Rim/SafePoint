@@ -316,6 +316,11 @@ main {
     color: #721c24;
 }
 
+.badge.resolved {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
 .detail-header {
     display: flex;
     justify-content: space-between;

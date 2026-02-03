@@ -24,6 +24,30 @@ namespace SafePoint_IRS.Controllers
             _hubContext = hubContext;
         }
 
+        private RequesterInfo? GetRequesterInfo()
+        {
+            var requesterId = Request.Headers["X-Requester-Id"].FirstOrDefault();
+            var requesterRole = Request.Headers["X-Requester-Role"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(requesterId) || string.IsNullOrEmpty(requesterRole))
+                return null;
+
+            return new RequesterInfo
+            {
+                RequesterId = requesterId,
+                RequesterRole = requesterRole
+            };
+        }
+
+        private async Task<bool> IsAdminOrModerator(string requesterId)
+        {
+             var isAdmin = await _context.Admins.AnyAsync(a => a.Adminid.ToString() == requesterId && a.IsActive);
+             if (isAdmin) return true;
+
+             var isMod = await _context.Moderators.AnyAsync(m => m.Modid.ToString() == requesterId && m.IsActive);
+             return isMod;
+        }
+
         [HttpPost]
         [EnableRateLimiting("Fixed")]
         public async Task<IActionResult> PostIncident([FromForm] IncidentReportDto report)
@@ -50,6 +74,17 @@ namespace SafePoint_IRS.Controllers
 
                 var user = await _context.Users.FindAsync(report.Userid);
                 if (user == null) return BadRequest(new { message = "User not found." });
+
+                // Basic check: Authenticated user should match the reporter (unless we allow reporting for others, but checking match is safer)
+                var requester = GetRequesterInfo();
+                if (requester != null && requester.RequesterRole == UserRoles.User)
+                {
+                     if (requester.RequesterId != report.Userid.ToString())
+                     {
+                         return Unauthorized(new { message = "You can only report incidents for yourself." });
+                     }
+                }
+
 
                 var requestedAreaCode = string.IsNullOrWhiteSpace(report.Area_Code) ? "DEFAULT" : report.Area_Code;
                 var area = await _context.Area.FirstOrDefaultAsync(a => a.Area_Code == requestedAreaCode);
@@ -86,7 +121,7 @@ namespace SafePoint_IRS.Controllers
                             
                             if (area == null)
                             {
-                                return StatusCode(500, new { message = "Failed to create or retrieve area.", details = dbEx.InnerException?.Message ?? dbEx.Message });
+                                return StatusCode(500, new { message = "Failed to create or retrieve area." });
                             }
                         }
                     }
@@ -120,7 +155,7 @@ namespace SafePoint_IRS.Controllers
                         
                         if (incidentType == null)
                         {
-                            return StatusCode(500, new { message = "Failed to create or retrieve incident type.", details = dbEx.InnerException?.Message ?? dbEx.Message });
+                            return StatusCode(500, new { message = "Failed to create or retrieve incident type." });
                         }
                     }
                 }
@@ -177,14 +212,15 @@ namespace SafePoint_IRS.Controllers
                         : $"Incident created in {area.ALocation} (No moderators assigned to this area)"
                 });
             }
-            catch (DbUpdateException dbEx)
+            catch (DbUpdateException)
             {
-                var innerException = dbEx.InnerException?.Message ?? dbEx.Message;
-                return StatusCode(500, new { message = "Failed to submit incident.", details = innerException });
+                // Masking DB errors
+                return StatusCode(500, new { message = "Failed to submit incident." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { message = "Failed to submit incident.", details = ex.Message, stackTrace = ex.StackTrace });
+                // Masking general errors
+                return StatusCode(500, new { message = "Failed to submit incident." });
             }
         }
 
@@ -265,6 +301,17 @@ namespace SafePoint_IRS.Controllers
         [HttpPut("{id}/resolve")]
         public async Task<IActionResult> ResolveIncident(int id)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null) return Unauthorized(new { message = "Authentication required." });
+
+            // Only Admin or Moderator should be able to resolve incidents officially
+            // Exceptions: Maybe a User resolving their OWN incident?
+            // For now, let's assume only Admin/Mod can resolve.
+             if (requester.RequesterRole == UserRoles.User)
+             {
+                 return StatusCode(403, new { message = "Only admins or moderators can resolve incidents." });
+             }
+
             var incident = await _context.Incident.FindAsync(id);
             if (incident == null)
                 return NotFound(new { message = "Incident not found." });
@@ -272,7 +319,6 @@ namespace SafePoint_IRS.Controllers
             incident.IsResolved = true;
             await _context.SaveChangesAsync();
             
-
             await _hubContext.Clients.All.SendAsync("ReceiveResolutionNotification", incident.Title, incident.IncidentID, incident.Userid.ToString(), incident.LocationAddress, incident.Latitude, incident.Longitude);
 
             return Ok(new { message = "Incident marked as resolved.", incident });
@@ -281,11 +327,25 @@ namespace SafePoint_IRS.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutIncident(int id, [FromForm] IncidentReportDto report)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null) return Unauthorized(new { message = "Authentication required." });
+
             var incident = await _context.Incident.FindAsync(id);
             if (incident == null)
             {
                 return NotFound(new { message = "Incident not found." });
             }
+
+            // IDOR Check: Authenticated User must be the owner of the incident OR an Admin/Moderator
+            if (requester.RequesterRole == UserRoles.User)
+            {
+                if (incident.Userid.ToString() != requester.RequesterId)
+                {
+                    return StatusCode(403, new { message = "You are not authorized to edit this incident." });
+                }
+            }
+            // Admin/Moderator can probably edit, but strictly speaking maybe only the reporter should?
+            // Let's assume Admin/Mod CAN edit for moderation purposes.
 
             incident.Title = report.Title;
             incident.Incident_Code = report.Incident_Code;
@@ -313,28 +373,37 @@ namespace SafePoint_IRS.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Incident updated successfully.", incident });
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
-                var innerEx = ex.InnerException?.Message ?? ex.Message;
-                return StatusCode(500, new { message = "Error updating incident (DB constraint failure).", details = innerEx });
+                return StatusCode(500, new { message = "Error updating incident." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { message = "Error updating incident.", details = ex.Message });
+                return StatusCode(500, new { message = "Error updating incident." });
             }
         }
-
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIncident(int id)
         {
+            var requester = GetRequesterInfo();
+            if (requester == null) return Unauthorized(new { message = "Authentication required." });
+
             var incident = await _context.Incident.FindAsync(id);
             if (incident == null)
             {
                 return NotFound(new { message = "Incident not found." });
             }
 
+            // IDOR Check
+            if (requester.RequesterRole == UserRoles.User)
+            {
+                if (incident.Userid.ToString() != requester.RequesterId)
+                {
+                    return StatusCode(403, new { message = "You are not authorized to delete this incident." });
+                }
+            }
+            // Admins/Mods can delete.
 
             var incidentArchive = new IncidentArchive
             {

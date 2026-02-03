@@ -28,7 +28,7 @@ namespace SafePoint_IRS.Controllers
                 return BadRequest(new { error = "Current and new passwords are required." });
             }
 
-            if (request.UserRole == "User")
+            if (request.UserRole == UserRoles.User)
             {
                 var user = await _context.Users.FindAsync(request.UserId);
                 if (user == null) return NotFound(new { error = "User not found." });
@@ -40,7 +40,7 @@ namespace SafePoint_IRS.Controllers
 
                 user.Userpassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             }
-            else if (request.UserRole == "Admin")
+            else if (request.UserRole == UserRoles.Admin)
             {
                 var admin = await _context.Admins.FindAsync(request.UserId);
                 if (admin == null) return NotFound(new { error = "Admin not found." });
@@ -52,7 +52,7 @@ namespace SafePoint_IRS.Controllers
 
                 admin.Adminpassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             }
-            else if (request.UserRole == "Moderator")
+            else if (request.UserRole == UserRoles.Moderator)
             {
                 var moderator = await _context.Moderators.FindAsync(request.UserId);
                 if (moderator == null) return NotFound(new { error = "Moderator not found." });
@@ -92,7 +92,7 @@ namespace SafePoint_IRS.Controllers
                 }
             }
 
-            if (string.Equals(request.UserRole, "User", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(request.UserRole, UserRoles.User, StringComparison.OrdinalIgnoreCase))
             {
                 var user = await _context.Users.FindAsync(request.UserId);
                 if (user == null) return NotFound(new { error = "User not found." });
@@ -100,7 +100,7 @@ namespace SafePoint_IRS.Controllers
                 if (!string.IsNullOrEmpty(request.DisplayName)) user.Username = request.DisplayName;
                 if (!string.IsNullOrEmpty(request.Email)) user.Email = request.Email;
             }
-            else if (string.Equals(request.UserRole, "Admin", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(request.UserRole, UserRoles.Admin, StringComparison.OrdinalIgnoreCase))
             {
                 var admin = await _context.Admins.FindAsync(request.UserId);
                 if (admin == null) return NotFound(new { error = "Admin not found." });
@@ -108,7 +108,7 @@ namespace SafePoint_IRS.Controllers
                 if (!string.IsNullOrEmpty(request.DisplayName)) admin.Username = request.DisplayName;
                 if (!string.IsNullOrEmpty(request.Email)) admin.Email = request.Email;
             }
-            else if (string.Equals(request.UserRole, "Moderator", StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(request.UserRole, UserRoles.Moderator, StringComparison.OrdinalIgnoreCase))
             {
                 var moderator = await _context.Moderators.FindAsync(request.UserId);
                 if (moderator == null) return NotFound(new { error = "Moderator not found." });
@@ -126,9 +126,9 @@ namespace SafePoint_IRS.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Profile updated successfully." });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, new { error = "An error occurred while updating profile.", details = ex.Message });
+                return StatusCode(500, new { error = "An error occurred while updating profile." });
             }
         }
 
@@ -210,7 +210,7 @@ namespace SafePoint_IRS.Controllers
                     UserId = user.Userid,
                     Username = user.Username,
                     Email = user.Email,
-                    Role = "User",
+                    Role = UserRoles.User,
                     Badges = user.Badges.Select(b => new { b.BadgeName, b.AwardedAt }).ToList()
                 });
             }
@@ -224,7 +224,7 @@ namespace SafePoint_IRS.Controllers
                     UserId = admin.Adminid,
                     Username = admin.Username,
                     Email = admin.Email,
-                    Role = "Admin",
+                    Role = UserRoles.Admin,
                     Badges = new List<object>()
                 });
             }
@@ -238,7 +238,7 @@ namespace SafePoint_IRS.Controllers
                     UserId = mod.Modid,
                     Username = mod.Username,
                     Email = mod.Email,
-                    Role = "Moderator",
+                    Role = UserRoles.Moderator,
                     Badges = new List<object>()
                 });
             }

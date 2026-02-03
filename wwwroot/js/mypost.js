@@ -33,7 +33,13 @@ async function fetchIncidentsByStatus(status) {
 
     try {
         console.log(`Fetching ${status} incidents from ${endpoint}...`);
-        const response = await fetch(`${API_BASE_URL}${endpoint}`);
+
+        const headers = {
+            'X-Requester-Id': userId,
+            'X-Requester-Role': userRole
+        };
+
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, { headers });
         if (!response.ok) {
             console.error(`Error loading ${status} incidents: HTTP ${response.status}`);
             return [];
@@ -138,13 +144,18 @@ function renderIncidentList(status) {
             imgSrc = '<span class="material-icons" style="font-size:24px; color:#ccc;">image</span>';
         }
 
+        let displayStatus = status;
+        if (incident.isResolved) {
+            displayStatus = 'Resolved';
+        }
+
         item.innerHTML = `
             <div class="report-thumbnail">${imgSrc}</div>
             <div class="report-info">
                 <h4>${incident.title || 'Untitled'}</h4>
                 <p>${dateStr}</p>
             </div>
-            <span class="badge ${status.toLowerCase()}">${status}</span>
+            <span class="badge ${displayStatus.toLowerCase()}">${displayStatus}</span>
         `;
 
         item.addEventListener('click', () => selectIncident(incident, status));
@@ -202,7 +213,7 @@ function renderIncidentDetails(incident, status) {
     incidentDetailsDiv.innerHTML = `
         <h3>Incident Details</h3>
         <div class="detail-group">
-            <p>Status:</p> <span class="detail-value">${status}</span>
+            <p>Status:</p> <span class="detail-value">${incident.isResolved ? 'Resolved' : status}</span>
             <p>Incident Title:</p> <span class="detail-value">${incident.title || 'N/A'}</span>
             <p>Type:</p> <span class="detail-value">${typeDisplay}</span>
             <p>Severity:</p> <span class="detail-value">${(incident.severity ? incident.severity.charAt(0).toUpperCase() + incident.severity.slice(1).toLowerCase() : 'N/A')}</span>

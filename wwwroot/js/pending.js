@@ -57,9 +57,9 @@ async function fetchIncidentsByStatus(status) {
 
 
         if (status === 'Validated') {
-            return data.filter(i => !i.isResolved);
+            return data.filter(i => i.isResolved !== true);
         } else if (status === 'Resolved') {
-            return data.filter(i => i.isResolved);
+            return data.filter(i => i.isResolved === true);
         }
 
         return data;
@@ -148,7 +148,9 @@ function renderIncidentList() {
         }
 
         let currentStatus = 'Pending';
-        if (incident.validStatus) {
+        if (incident.isResolved) {
+            currentStatus = 'Resolved';
+        } else if (incident.validStatus) {
             if (incident.validStatus.validation_Status === true) currentStatus = 'Validated';
             else if (incident.validStatus.validation_Status === false && incident.validStatus.validation_Date) currentStatus = 'Rejected';
         } else if (incident.validationDate) {
@@ -205,7 +207,9 @@ function renderIncidentDetails(incident) {
     }
 
     let currentStatus = 'Pending';
-    if (incident.validStatus) {
+    if (incident.isResolved) {
+        currentStatus = 'Resolved';
+    } else if (incident.validStatus) {
         if (incident.validStatus.validation_Status === true) currentStatus = 'Validated';
         else if (incident.validStatus.validation_Status === false && incident.validStatus.validation_Date) currentStatus = 'Rejected';
     } else if (incident.validationDate) {
@@ -292,7 +296,7 @@ function renderIncidentDetails(incident) {
         if (approveBtn) approveBtn.onclick = () => validateIncident(incident.incidentID, true);
         if (rejectBtn) rejectBtn.onclick = () => validateIncident(incident.incidentID, false);
     }
-    else if (currentStatus === 'Validated') {
+    else if (currentStatus === 'Validated' || currentStatus === 'Resolved') {
         if (unvalidateBtn) unvalidateBtn.style.display = 'flex';
         if (editBtn) editBtn.style.display = 'flex';
 

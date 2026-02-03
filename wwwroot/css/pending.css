@@ -272,6 +272,11 @@
     color: #721c24;
 }
 
+.report-item .badge.resolved {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
 .view-btn {
     display: none;
 }

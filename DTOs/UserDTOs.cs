@@ -103,4 +103,9 @@ namespace SafePoint_IRS.DTOs
         public Guid UserId { get; set; }
         public string BadgeName { get; set; } = string.Empty;
     }
+
+    public class ValidationRequestDto
+    {
+        public bool IsValid { get; set; }
+    }
 }

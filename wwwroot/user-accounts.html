@@ -115,6 +115,7 @@
 
             <form autocomplete="off">
                 <div class="form-grid">
+                    <div class="form-section-title">Personal Information</div>
                     <div class="form-group">
                         <label for="firstname">First Name</label>
                         <input type="text" id="firstname" name="firstname" required>
@@ -128,23 +129,19 @@
                         <input type="text" id="middlename" name="middlename">
                     </div>
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
+                        <label for="contact">Contact Number</label>
+                        <input type="tel" id="contact" name="contact" required>
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address</label>
                         <input type="email" id="email" name="email" required>
                     </div>
+
+
+                    <div class="form-section-title">Account Settings</div>
                     <div class="form-group">
-                        <label for="contact">Contact Number</label>
-                        <input type="tel" id="contact" name="contact" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="area">Area/Location</label>
-                        <select id="area" name="area">
-                            <option value="DEFAULT" selected>DEFAULT (Default Area)</option>
-                        </select>
-                        <span class="help-text">Will use DEFAULT if not specified. You can create areas later.</span>
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
                     </div>
                     <div class="form-group">
                         <label for="role">User Role</label>
@@ -155,6 +152,17 @@
                             <option value="admin">Admin</option>
                         </select>
                     </div>
+
+                    <div class="form-group" id="create-area-group-container">
+                        <div id="create-area-group" style="width: 100%;">
+                            <label for="area">Area/Location</label>
+                            <select id="area" name="area" style="width: 100%;">
+                                <option value="DEFAULT" selected>DEFAULT (Default Area)</option>
+                            </select>
+                            <span class="help-text">Will use DEFAULT if not specified.</span>
+                        </div>
+                    </div>
+
                     <div class="form-group admin-only-permission-group" id="create-permissions-group"
                         style="display: none;">
                         <label for="permissions">Admin Permissions</label>
@@ -169,6 +177,8 @@
                         </div>
                         <span class="help-text">Select specific permissions for this admin.</span>
                     </div>
+
+                    <div class="form-section-title">Security</div>
                     <div class="form-group" id="create-password-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required minlength="8">
@@ -199,6 +209,7 @@
                 <input type="hidden" id="edit-original-role" name="original-role">
 
                 <div class="form-grid">
+                    <div class="form-section-title">Personal Information</div>
                     <div class="form-group">
                         <label for="edit-firstname">First Name</label>
                         <input type="text" id="edit-firstname" name="firstname" required>
@@ -212,18 +223,27 @@
                         <input type="text" id="edit-middlename" name="middlename">
                     </div>
                     <div class="form-group">
-                        <label for="edit-username">Username</label>
-                        <input type="text" id="edit-username" name="username" required>
+                        <label for="edit-contact">Contact Number</label>
+                        <input type="text" id="edit-contact" name="contact" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-email">Email Address</label>
                         <input type="email" id="edit-email" name="email" required>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-contact">Contact Number</label>
-                        <input type="text" id="edit-contact" name="contact" required>
-                    </div>
 
+                    <div class="form-section-title">Account Settings</div>
+                    <div class="form-group">
+                        <label for="edit-username">Username</label>
+                        <input type="text" id="edit-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-role">User Role</label>
+                        <select id="edit-role" name="role" required>
+                            <option value="user">User</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="edit-status">Status</label>
                         <select id="edit-status" name="status">
@@ -236,12 +256,9 @@
                         <label for="edit-suspension-end">Suspension End Time</label>
                         <input type="datetime-local" id="edit-suspension-end" name="suspensionEnd">
                         <span class="help-text" style="color: #d32f2f; font-size: 0.8rem;">
-                            Leave blank for indefinite
-                            suspension.
+                            Leave blank for indefinite suspension.
                         </span>
                     </div>
-
-                    <div class="form-group" id="suspension-spacer"></div>
 
                     <div class="form-group" id="edit-area-group" style="display: none;">
                         <label for="edit-area">Area/Location</label>
@@ -267,14 +284,8 @@
                         </div>
                         <span class="help-text">Permissions are granted only to non-Super Admins.</span>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-role">User Role</label>
-                        <select id="edit-role" name="role" required>
-                            <option value="user">User</option>
-                            <option value="moderator">Moderator</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+
+                    <div class="form-section-title">Security</div>
                     <div class="form-group" id="edit-password-group">
                         <label for="edit-password">New Password (Optional)</label>
                         <input type="password" id="edit-password" name="password" minlength="8">
@@ -315,6 +326,8 @@
             </form>
         </div>
     </div>
+    <script src="lib/signalr/signalr.min.js"></script>
+    <script src="js/notification.js"></script>
     <script src="js/user-accounts.js?v=2"></script>
 </body>
 
