@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SafePoint_IRS.Models;
 using SafePoint_IRS.Data;
 using SafePoint_IRS.DTOs;
@@ -12,10 +13,12 @@ namespace SafePoint_IRS.Controllers
     public class RegisterController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public RegisterController(AppDbContext context)
+        public RegisterController(AppDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [HttpPost]
@@ -23,6 +26,9 @@ namespace SafePoint_IRS.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { error = "Invalid data provided." });
+
+            if (string.IsNullOrEmpty(userDto.Otp) || !_cache.TryGetValue("otp:" + userDto.Email, out string? cachedOtp) || cachedOtp != userDto.Otp)
+                return BadRequest(new { error = "Invalid or expired OTP." });
 
             if (await _context.Admins.AnyAsync(a => a.Username == userDto.Username || a.Email == userDto.Email) ||
                 await _context.Moderators.AnyAsync(m => m.Username == userDto.Username || m.Email == userDto.Email) ||
@@ -52,6 +58,7 @@ namespace SafePoint_IRS.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                _cache.Remove("otp:" + userDto.Email);
                 return Ok(new { message = "User registered successfully" });
             }
             catch (Exception ex)

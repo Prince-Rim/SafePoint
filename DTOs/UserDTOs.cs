@@ -22,6 +22,7 @@ namespace SafePoint_IRS.DTOs
 
         public string Password { get; set; } = string.Empty;
         public string UserRole { get; set; } = "User";
+        public string? Otp { get; set; }
     }
 
     public class UpdateUserDto
@@ -86,6 +87,9 @@ namespace SafePoint_IRS.DTOs
 
         [Required]
         public string NewPassword { get; set; } = string.Empty;
+
+        [Required]
+        public string Otp { get; set; } = string.Empty;
     }
 
     public class UpdateProfileRequest

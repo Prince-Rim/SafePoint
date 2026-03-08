@@ -1,4 +1,4 @@
-﻿const loginForm = document.getElementById("loginForm");
+const loginForm = document.getElementById("loginForm");
 const errorMessage = document.getElementById("loginError");
 const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
@@ -90,16 +90,6 @@ loginForm.addEventListener("submit", async (e) => {
 
 
 (function () {
-    const PUBLIC_KEY = "q_WaGpOvP6-Rea8xD";
-    const SERVICE_ID = "service_0yfgbor";
-    const TEMPLATE_ID = "template_i7i1bux";
-
-
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init(PUBLIC_KEY);
-    }
-
-
     const loginContainer = document.getElementById("loginContainer");
     const fpContainer = document.getElementById("forgotPasswordContainer");
     const fpLink = document.getElementById("forgotPasswordLink");
@@ -120,7 +110,6 @@ loginForm.addEventListener("submit", async (e) => {
     const btnK2 = document.getElementById("fp-btn-k2");
     const btnK3 = document.getElementById("fp-btn-k3");
 
-    let generatedOTP = null;
     let targetEmail = "";
 
 
@@ -178,16 +167,19 @@ loginForm.addEventListener("submit", async (e) => {
             }
 
 
-            generatedOTP = Math.floor(100000 + Math.random() * 900000);
-
             btnK1.textContent = "Sending...";
             btnK1.disabled = true;
 
             try {
-                await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-                    to_email: email,
-                    passcode: generatedOTP
+                const res = await fetch("/api/email/send-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, type: "forgot" })
                 });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.detail || err.title || "Failed to send");
+                }
 
                 targetEmail = email;
                 document.getElementById("fp-email-display").textContent = email;
@@ -197,8 +189,8 @@ loginForm.addEventListener("submit", async (e) => {
                 step2.style.display = "block";
 
             } catch (err) {
-                console.error("EmailJS Error:", err);
-                alert("Failed to send OTP. Please check console.");
+                console.error("OTP Error:", err);
+                alert("Failed to send OTP. Please try again.");
             } finally {
                 btnK1.textContent = "Send Code";
                 btnK1.disabled = false;
@@ -209,7 +201,7 @@ loginForm.addEventListener("submit", async (e) => {
 
     if (btnK2) {
         btnK2.onclick = function () {
-            if (otpInput.value == generatedOTP) {
+            if (otpInput.value.trim()) {
                 step2.style.display = "none";
                 step3.style.display = "block";
             } else {
@@ -267,7 +259,8 @@ loginForm.addEventListener("submit", async (e) => {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         Email: targetEmail,
-                        NewPassword: p1
+                        NewPassword: p1,
+                        Otp: otpInput.value.trim()
                     })
                 });
 

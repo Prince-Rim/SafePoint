@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using SafePoint_IRS.Data;
 using SafePoint_IRS.Models;
 using SafePoint_IRS.DTOs;
@@ -14,10 +15,12 @@ namespace SafePoint_IRS.Controllers
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public UserController(AppDbContext context)
+        public UserController(AppDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         [HttpPut("UpdatePassword")]
@@ -156,6 +159,9 @@ namespace SafePoint_IRS.Controllers
             if (!ModelState.IsValid)
                 return BadRequest("Invalid request.");
 
+            if (!_cache.TryGetValue("otp:" + request.Email, out string? cachedOtp) || cachedOtp != request.Otp)
+                return BadRequest("Invalid or expired OTP.");
+
             string newPasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
 
@@ -164,6 +170,7 @@ namespace SafePoint_IRS.Controllers
             {
                 user.Userpassword = newPasswordHash;
                 await _context.SaveChangesAsync();
+                _cache.Remove("otp:" + request.Email);
                 return Ok(new { message = "Password reset successfully." });
             }
 
@@ -173,6 +180,7 @@ namespace SafePoint_IRS.Controllers
             {
                 admin.Adminpassword = newPasswordHash;
                 await _context.SaveChangesAsync();
+                _cache.Remove("otp:" + request.Email);
                 return Ok(new { message = "Password reset successfully." });
             }
 

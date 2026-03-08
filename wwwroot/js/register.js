@@ -1,9 +1,3 @@
-﻿const PUBLIC_KEY = "q_WaGpOvP6-Rea8xD";
-const SERVICE_ID = "service_0yfgbor";
-const TEMPLATE_ID = "template_9we53op";
-
-emailjs.init(PUBLIC_KEY);
-
 let generatedOTP = null;
 let userDataStorage = {};
 
@@ -99,18 +93,18 @@ function checkPasswordStrength(password) {
     if (score === 5) return "strong";
 }
 
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000);
-}
-
 async function sendOtpEmail(email) {
-    generatedOTP = generateOTP();
     try {
-        await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-            to_email: email,
-            passcode: generatedOTP,
+        const res = await fetch("/api/email/send-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, type: "register" })
         });
-        return true;
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.error("Send OTP failed:", err.detail || err.title);
+        }
+        return res.ok;
     } catch (error) {
         console.error("Failed to send OTP:", error);
         return false;
@@ -181,7 +175,7 @@ registerForm.addEventListener('submit', async function (event) {
 });
 
 resendOtpBtn.addEventListener('click', async function () {
-    if (!userDataStorage.email) {
+    if (!userDataStorage.Email) {
         alert("Please complete the registration form first.");
         return;
     }
@@ -201,7 +195,7 @@ resendOtpBtn.addEventListener('click', async function () {
         }
     }, 1000);
 
-    if (await sendOtpEmail(userDataStorage.email)) {
+    if (await sendOtpEmail(userDataStorage.Email)) {
         alert("New OTP sent to your email.");
     } else {
         alert("Failed to resend OTP. Try again later.");
@@ -216,28 +210,24 @@ otpForm.addEventListener('submit', async function (event) {
 
     const otpInput = document.getElementById("otp").value;
 
-    if (otpInput == generatedOTP) {
-        try {
-            const response = await fetch("/api/Register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userDataStorage)
-            });
+    try {
+        const response = await fetch("/api/Register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...userDataStorage, Otp: otpInput })
+        });
 
             if (!response.ok) {
-                const err = await response.json();
-                throw err;
-            }
-
-            await response.json();
-            alert("Registration successful! You can now log in.");
-            window.location.href = "login.html";
-
-        } catch (err) {
-            console.error("Server error:", err);
-            alert("Error saving to database: " + (err.error || JSON.stringify(err)));
+            const err = await response.json();
+            throw err;
         }
-    } else {
-        alert("Incorrect OTP. Please try again.");
+
+        await response.json();
+        alert("Registration successful! You can now log in.");
+        window.location.href = "login.html";
+
+    } catch (err) {
+        console.error("Server error:", err);
+        alert(err.error || "Error saving to database. Please check your OTP and try again.");
     }
 });
