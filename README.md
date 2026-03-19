@@ -1,4 +1,4 @@
-<img width="1896" height="871" alt="image" src="https://github.com/user-attachments/assets/840163c5-fbf2-4910-8fa5-0b03a8e81009" /># SafePoint
+# SafePoint
 
 [![Framework: ASP.NET Core](https://img.shields.io/badge/Framework-ASP.NET%20Core%20(Razor)-512bd4)](https://dotnet.microsoft.com/en-us/apps/aspnet)
 [![Database: SQL Server](https://img.shields.io/badge/Database-SQL%20Server-red)](https://www.microsoft.com/en-us/sql-server)
