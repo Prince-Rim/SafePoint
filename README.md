@@ -17,6 +17,7 @@
     * **Windy API:** Real-time weather overlays for hazard anticipation.
     * **EmailJS:** Secure OTP (One-Time Password) delivery for user verification.
     * **Formspree:** Automated contact and feedback handling.
+    * * **Leaflet:** Mapping of the world for visual reporting, and viewing.
 
 ## 🛠 Tech Stack
 
